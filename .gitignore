@@ -10,3 +10,7 @@ data/raw/
 tools/pmtiles.exe
 .claude/
 *.log
+
+# Local notes, kept off GitHub
+CLAUDE.md
+Brownout_Brain_Build_Plan.md
