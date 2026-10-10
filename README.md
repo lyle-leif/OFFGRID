@@ -178,8 +178,6 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 
 ### E. iPhone (Safari)
 
-The steps are written but **not yet tested on a real iPhone.**
-
 1. Connect the iPhone to the same network as the laptop (step C).
 2. Open **Safari** (not Chrome) and type the setup address, for example `http://192.168.1.26:8080/setup`.
 3. Tap **Download certificate**, then **Allow**. Check that the code matches the laptop screen.
