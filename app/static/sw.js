@@ -15,7 +15,7 @@ const PRECACHE = [
   "/app.js", "/map.js", "/chat.js", "/directions.js", "/icons.js", "/ui-icons.js", "/reports.js", "/report-kinds.js", "/sheet.js",
   "/offline/search.js", "/offline/intents.js", "/offline/router.js", "/offline/answers.js", "/offline/brain.js", "/offline/reports.js", "/offline/normalize.js",
   "/vendor/maplibre-gl.js", "/vendor/maplibre-gl.css", "/vendor/pmtiles.js",
-  "/icons/icon-192.png", "/icons/icon-512.png", "/icons/icon-maskable-512.png", "/icons/logo.svg",
+  "/icons/icon-192.png", "/icons/icon-512.png", "/icons/icon-maskable-512.png", "/icons/apple-touch-icon.png", "/icons/logo.svg",
   "/map/style.json", "/map/style-dark.json",
   ...["light", "dark"].flatMap((t) => [`/map/sprites/${t}.json`, `/map/sprites/${t}.png`, `/map/sprites/${t}@2x.json`, `/map/sprites/${t}@2x.png`]),
   ...FONTS.flatMap((f) => FONT_RANGES.map((r) => `/map/fonts/${encodeURIComponent(f)}/${r}.pbf`)),
@@ -29,15 +29,32 @@ async function report(msg) {
   for (const c of await self.clients.matchAll({ includeUncontrolled: true })) c.postMessage({ type: "offline-copy", ...msg });
 }
 
+// The copy of `url` saved by an earlier version, if any.
+async function previous(url) {
+  for (const key of await caches.keys()) {
+    if (!key.startsWith("offgrid-") || key === RUNTIME) continue;
+    const hit = await (await caches.open(key)).match(url);
+    if (hit) return hit;
+  }
+  return null;
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     let done = 0;
     for (const url of PRECACHE) {
-      // cache: "reload" so the copy is fresh from the hub, not from the browser's HTTP cache.
-      const resp = await fetch(url, { cache: "reload" });
-      if (!resp.ok) throw new Error(`could not save ${url}: ${resp.status}`);
-      await cache.put(url, resp);
+      // An update downloads only what changed: a file saved before is asked for with its
+      // ETag, and the hub answers 304 if it is the same (the 32 MB map usually is).
+      // Otherwise cache: "reload", so the copy is fresh from the hub, not the HTTP cache.
+      const old = await previous(url);
+      const etag = old?.headers.get("ETag");
+      const resp = etag
+        ? await fetch(url, { cache: "no-store", headers: { "If-None-Match": etag } })
+        : await fetch(url, { cache: "reload" });
+      if (resp.status === 304) await cache.put(url, old);
+      else if (!resp.ok) throw new Error(`could not save ${url}: ${resp.status}`);
+      else await cache.put(url, resp);
       done += 1;
       await report({ state: "saving", done, total: PRECACHE.length });
     }
@@ -75,15 +92,16 @@ async function rangeResponse(request, cached) {
   });
 }
 
-// Live data from the hub when reachable; the saved copy when not.
-async function networkFirst(request, timeoutMs = 3000) {
+// Live data from the hub when reachable; the saved copy when not. `save: false` leaves the
+// saved copy as it is (pack/version.json must keep describing the copy it belongs to).
+async function networkFirst(request, { timeoutMs = 3000, save = true } = {}) {
   const cache = await caches.open(CACHE);
   try {
     const resp = await Promise.race([
       fetch(request),
       new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), timeoutMs)),
     ]);
-    if (resp.ok) cache.put(request, resp.clone());
+    if (resp.ok && save) cache.put(request, resp.clone());
     return resp;
   } catch {
     const cached = await cache.match(request);
@@ -109,6 +127,12 @@ self.addEventListener("fetch", (event) => {
   // Places, hotlines and health: try the hub first, fall back to the saved copy.
   if (url.pathname === "/api/locations" || url.pathname === "/api/hotlines") {
     event.respondWith(networkFirst(request));
+    return;
+  }
+  // Which pack the hub has now: this is how the page notices an update, so it must come
+  // from the hub when reachable (a page's cache: "no-store" doesn't get past this worker).
+  if (url.pathname === "/pack/version.json") {
+    event.respondWith(networkFirst(request, { save: false }));
     return;
   }
   if (url.pathname.startsWith("/api/")) return; // health etc.: no offline copy (the page handles failure)

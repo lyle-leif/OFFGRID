@@ -160,7 +160,7 @@ class LocateControl {
   setBusy(busy) { this._btn?.classList.toggle("busy", busy); }
 }
 
-export async function createMap(container, { onSelect, onReport, onLoad, onUserMove, onManualMove, onLocate, theme = "light" }) {
+export async function createMap(container, { onSelect, onReport, onLoad, onReady, onUserMove, onManualMove, onLocate, theme = "light" }) {
   const protocol = new pmtiles.Protocol();
   maplibregl.addProtocol("pmtiles", protocol.tile);
 
@@ -403,6 +403,13 @@ export async function createMap(container, { onSelect, onReport, onLoad, onUserM
   map.on("style.load", () => { addOverlays(); });
   const loaded = new Promise((resolve) => map.once("load", resolve));
   loaded.then(() => onLoad?.());
+  // Ready to be seen: the first tiles are drawn (the first "idle"), or 1.5 s after load at most.
+  loaded.then(() => {
+    let done = false;
+    const ready = () => { if (!done) { done = true; onReady?.(); } };
+    map.once("idle", ready);
+    setTimeout(ready, 1500);
+  });
 
   async function setLocations(locs) {
     locations = locs;

@@ -134,7 +134,7 @@ try {
   // Phone first: it must save its offline copy (about 46 MB) before the hub goes away.
   const phone = await open(`${BASE}/?debug`, PHONE, IPHONE_UA);
   await waitFor(() => phone.evaluate("document.readyState === 'complete'"), 30000, "phone page");
-  await phone.evaluate(setup("localStorage.setItem('bb.sheet', 'half');"));
+  await phone.evaluate(setup("localStorage.setItem('bb.sheet.start', 'half');"));
   await phone.send("Page.reload", {});
   console.log("phone: saving its offline copy…");
   await waitFor(() => phone.evaluate(`(document.getElementById('offline-copy')||{}).innerText?.includes('Saved on this phone') ?? false`), 300000, "offline copy");
