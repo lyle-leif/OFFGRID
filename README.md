@@ -11,8 +11,6 @@ OFFGRID keeps working when the power and the internet are gone. A laptop runs a 
 > **Information aid only.** OFFGRID does not replace official alerts, emergency services or local authorities. In an emergency, call **911**.
 > Facilities come from OpenStreetMap (community-mapped, **not an official government list**). Hotlines come from official sources. Some guide sections are still drafts (see [Data and sources](#data-and-sources)).
 
-**Watch the 1-minute demo:** [docs/demo_video.mp4](docs/demo_video.mp4) (55 s, recorded from the real app with the internet blocked).
-
 ---
 
 ## Contents
