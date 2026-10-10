@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>OFFGRID · Ready beyond the grid</title>
+  <meta name="description" content="Ready beyond the grid: offline emergency map, guides, reports and directions for Batangas.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f8f4">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/icons/logo.svg">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <!-- iPhone: opened from the home screen, run full screen like an app -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="OFFGRID">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <script>
+    // Set the theme before first paint so dark mode doesn't flash white.
+    (() => {
+      let t = null;
+      try { t = localStorage.getItem("bb.theme"); } catch (e) { /* no storage */ }
+      if (t !== "dark" && t !== "light") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="stylesheet" href="/vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <!-- The tern: colours come from CSS variables, so it follows light and dark mode. -->
+      <svg class="logo" viewBox="0 0 100 100" width="38" height="38" aria-hidden="true" focusable="false">
+        <circle class="lg-disc" cx="50" cy="50" r="48"/>
+        <path class="lg-bird" d="M24 29C36 30 49 35 59 45C57 49 55 52 53 54C45 47 35 38 24 29Z"/>
+        <path class="lg-shade" d="M29 32.5C39 38 47 46 53 54C54.6 52.4 55.8 50.6 56.8 48.6C48 42 38.5 36.3 29 32.5Z"/>
+        <path class="lg-bird" d="M61 51C59.4 41.5 59.6 32 62.6 23.6C68.6 26.4 74.6 30.6 76.6 35.8C74.4 42 71.2 47 68 52Z"/>
+        <path class="lg-shade2" d="M61 51C59.8 43 60 35 62.4 27.6C63.8 35 64.8 43 65.6 51.5Z"/>
+        <path class="lg-bird" d="M22 64.5C32 62 40 60 47 58C53 54 61 51 68 51C72 51 75 53 76 56C70 59 63 63 55 63.6C47 64.2 40 63 33 63.6C29 64 25 64.5 22 64.5Z"/>
+        <path class="lg-shade2" d="M33 63.6C40 63 47 64.2 55 63.6C61 63.2 66 61 70 59C64 61.5 58 62.2 52 62C45 61.8 39 62.4 33 63.6Z"/>
+        <path class="lg-bird" d="M21 66.6C28 64.6 35 63 41 62.2L41.4 63.2C35 64.3 28 65.6 21 66.6Z"/>
+        <path class="lg-cap" d="M66.8 53C69 49.8 73.6 49.8 76 52.8C74.8 54.2 72.8 54.8 70.6 54.8C69.4 54 68.2 53.4 66.8 53Z"/>
+        <path class="lg-red" d="M75.4 54.2L82 58L75.8 56.4Z"/>
+        <path class="lg-red" d="M47.6 63.2L50 65L51.2 63.4Z"/>
+      </svg>
+      <div class="brand-text">
+        <h1>OFFGRID</h1>
+        <p class="tagline">Ready beyond the grid</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <div id="status" class="status" role="status" aria-live="polite">
+        <span class="dot"></span><span id="status-text">Checking…</span>
+      </div>
+      <button id="theme-toggle" type="button" class="icon-btn theme-toggle" aria-label="Switch to dark mode"></button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <main class="layout">
+    <section class="map-wrap" aria-label="Map">
+      <div id="map"></div>
+      <div id="map-loading" class="map-loading" role="status"><span class="spinner" aria-hidden="true"></span>Loading offline map…</div>
+      <div id="map-error" class="map-error" hidden></div>
+      <div class="map-tools">
+        <button id="set-pos" type="button" class="tool-btn" aria-pressed="false" aria-label="Set my location"><span data-icon="pin"></span><span>Set my location</span></button>
+        <button id="use-gps" type="button" class="tool-btn" aria-label="Use GPS" hidden><span data-icon="gps"></span><span>Use GPS</span></button>
+        <button id="report-btn" type="button" class="tool-btn" aria-label="Report something"><span data-icon="flag"></span><span>Report</span></button>
+        <button id="legend-toggle" type="button" class="tool-btn legend-toggle" aria-expanded="false" aria-controls="legend" aria-label="Legend"><span data-icon="layers"></span><span>Legend</span></button>
+      </div>
+      <div id="pos-hint" class="pos-hint" role="status" hidden>Click the map where you are.</div>
+      <ul class="legend" id="legend" aria-label="Map legend" hidden></ul>
+    </section>
+
+    <!-- Laptop: a floating card over the map (collapses to the rail below).
+         Phone: a bottom sheet you drag between peek, half and full. -->
+    <aside class="side" id="side-panel" aria-label="Assistant and lists">
+      <div class="sheet-handle" id="sheet-handle" role="button" tabindex="0" aria-label="Resize panel"><span></span></div>
+      <div class="side-head" id="side-head">
+        <div class="tabs" role="tablist">
+          <button id="tab-chat" class="tab" role="tab" aria-selected="true" aria-controls="panel-chat"><span data-icon="chat"></span><span class="tab-label">Assistant</span></button>
+          <button id="tab-list" class="tab" role="tab" aria-selected="false" aria-controls="panel-list"><span data-icon="list"></span><span class="tab-label">Places</span><span id="fac-count" class="badge"></span></button>
+          <button id="tab-reports" class="tab" role="tab" aria-selected="false" aria-controls="panel-reports"><span data-icon="flag"></span><span class="tab-label">Reports</span><span id="report-count" class="badge"></span></button>
+          <button id="tab-hotlines" class="tab" role="tab" aria-selected="false" aria-controls="panel-hotlines"><span data-icon="phone"></span><span class="tab-label">Hotlines</span></button>
+        </div>
+        <button id="panel-collapse" type="button" class="icon-btn panel-collapse" aria-label="Hide panel" title="Hide panel"><span data-icon="chevron-right"></span></button>
+      </div>
+
+      <section id="place" class="place" hidden aria-live="polite">
+        <div class="place-head">
+          <div class="place-chips">
+            <span id="place-type" class="chip"></span>
+            <span id="place-sample" class="chip chip-sample" hidden>SAMPLE DATA</span>
+            <span id="place-osm" class="chip chip-osm" hidden title="From OpenStreetMap, a community-mapped database. Not an official government list.">Community-mapped</span>
+          </div>
+          <button id="place-close" class="icon-btn" aria-label="Clear selected location"><span data-icon="close"></span></button>
+        </div>
+        <h2 id="place-name"></h2>
+        <ul id="place-reports" class="place-reports" hidden></ul>
+        <p id="place-distance" class="distance" hidden></p>
+        <div class="place-actions">
+          <button id="place-route" type="button" class="btn"><span data-icon="route" data-icon-size="16"></span><span>Directions</span></button>
+          <div class="mode-toggle" role="group" aria-label="Travel mode">
+            <button type="button" class="mode" data-mode="walk" aria-pressed="true"><span data-icon="walk" data-icon-size="15"></span><span>Walk</span></button>
+            <button type="button" class="mode" data-mode="drive" aria-pressed="false"><span data-icon="car" data-icon-size="15"></span><span>Drive</span></button>
+          </div>
+          <button id="place-ask" type="button" class="btn secondary"><span data-icon="chat" data-icon-size="16"></span><span>Ask</span></button>
+        </div>
+        <div id="route-card" class="route-card" hidden>
+          <div class="route-head">
+            <strong id="route-summary"></strong>
+            <button id="route-clear" type="button" class="link-btn">Clear route</button>
+          </div>
+          <p id="route-next" class="route-next" role="status" aria-live="polite" hidden></p>
+          <p id="route-tracking" class="route-tracking"></p>
+          <p id="route-reports" class="route-reports" role="status" hidden></p>
+          <ol id="route-steps" class="route-steps"></ol>
+          <label class="route-avoid"><input id="route-avoid" type="checkbox" checked> Avoid roads reported flooded or blocked</label>
+          <p class="route-warning"><span data-icon="warning" data-icon-size="14"></span> Uses saved road data and local reports, which can be missing or wrong. It does not know about other floods, landslides, closures or damage. Follow official instructions and never walk or drive through floodwater.</p>
+        </div>
+        <details class="place-details">
+          <summary>Details</summary>
+          <dl id="place-fields" class="fields"></dl>
+          <p id="place-evac-note" class="evac-note" hidden>Tagged as an evacuation center in OpenStreetMap. Confirm with your barangay or MDRRMO before going.</p>
+          <p class="note">Saved record only. It does not show whether this place is open, safe, or has space right now.</p>
+        </details>
+      </section>
+
+      <section id="panel-chat" class="panel chat" role="tabpanel" aria-labelledby="tab-chat">
+        <div class="chat-head">
+          <h2 class="sr-only">Ask the assistant</h2>
+          <span id="chat-context" class="context" hidden></span>
+          <button id="new-topic" type="button" class="link-btn" hidden>New topic</button>
+          <button id="battery-saver" type="button" class="saver-toggle" aria-pressed="false"
+                  title="Battery saver: answer with the guide text only, without running the AI">
+            <span data-icon="battery" data-icon-size="15"></span><span>Battery saver</span>
+          </button>
+        </div>
+        <div id="messages" class="messages" aria-live="polite">
+          <div class="empty" id="empty">
+            <p>Answers come only from guides and reports saved on this device. Try:</p>
+            <div class="suggestions">
+              <button class="suggest">What should I pack for a baby when evacuating?</button>
+              <button class="suggest">Is it safe to walk through floodwater?</button>
+              <button class="suggest">Can I run a generator inside the house?</button>
+            </div>
+          </div>
+        </div>
+        <div id="context-chips" class="context-chips" aria-label="Suggested questions"></div>
+        <form id="ask-form" class="ask">
+          <label for="question" class="sr-only">Your question</label>
+          <textarea id="question" rows="1" maxlength="500" placeholder="Ask about safety, floods, first aid…" required></textarea>
+          <button id="send" type="submit" class="send-btn" aria-label="Ask"><span data-icon="send" data-icon-size="18"></span></button>
+        </form>
+        <div class="ask-foot">
+          <span class="disclaimer">Information aid only. In an emergency, call <a href="tel:911"><strong>911</strong></a>.</span>
+          <span id="count" class="count" hidden>0/500</span>
+        </div>
+      </section>
+
+      <section id="panel-list" class="panel list" role="tabpanel" aria-labelledby="tab-list" hidden>
+        <div class="list-top">
+          <label for="fac-search" class="sr-only">Search places</label>
+          <div class="search"><span data-icon="search" data-icon-size="16"></span><input id="fac-search" type="search" placeholder="Search name, type, address…" autocomplete="off"></div>
+          <div id="fac-filters" class="filters" aria-label="Filter by type"></div>
+          <p id="fac-note" class="list-note"></p>
+        </div>
+        <ul id="fac-list" class="fac-list"></ul>
+      </section>
+
+      <section id="panel-reports" class="panel list reports" role="tabpanel" aria-labelledby="tab-reports" hidden>
+        <div class="reports-head">
+          <button id="report-new" type="button" class="btn"><span data-icon="flag" data-icon-size="15"></span><span>Report something</span></button>
+          <p id="reports-sync" class="list-note" role="status"></p>
+        </div>
+        <div id="report-kinds" class="report-kinds" hidden></div>
+        <p id="report-msg" class="report-msg" role="status" aria-live="polite" hidden></p>
+        <ul id="report-list" class="fac-list report-list"></ul>
+        <p class="list-note">Reports come from people nearby and may be wrong. They are shared only through the hub, and expire on their own: roads after 2 hours, evacuation centers after 6. No names or phone numbers are collected.</p>
+        <p class="list-note"><button id="responder-btn" type="button" class="link-btn">I'm a responder</button></p>
+        <form id="responder-form" class="responder-form" hidden>
+          <label for="responder-pin" class="sr-only">Responder PIN</label>
+          <input id="responder-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="32" placeholder="Hub PIN">
+          <button type="submit" class="btn secondary">Unlock</button>
+        </form>
+      </section>
+
+      <section id="panel-hotlines" class="panel hotlines" role="tabpanel" aria-labelledby="tab-hotlines" hidden>
+        <a class="hotline-911" href="tel:911"><span data-icon="phone" data-icon-size="20"></span><span>Emergency anywhere in the Philippines</span><strong>911</strong></a>
+        <div id="hotline-list"></div>
+        <p class="list-note">Copied from official sources (named in each section), checked Oct 2026. From a mobile, dial (043) before Batangas landlines.</p>
+      </section>
+
+      <p id="offline-copy" class="offline-copy" role="status" aria-live="polite" hidden></p>
+    </aside>
+
+    <!-- Laptop, panel hidden: a slim rail of tab icons. -->
+    <nav class="rail" id="panel-rail" aria-label="Open panel" hidden>
+      <button type="button" class="rail-btn" data-tab="open" aria-label="Show panel" title="Show panel"><span data-icon="chevron-left"></span></button>
+      <button type="button" class="rail-btn" data-tab="chat" aria-label="Assistant" title="Assistant"><span data-icon="chat"></span></button>
+      <button type="button" class="rail-btn" data-tab="list" aria-label="Places" title="Places"><span data-icon="list"></span></button>
+      <button type="button" class="rail-btn" data-tab="reports" aria-label="Reports" title="Reports"><span data-icon="flag"></span><span id="rail-report-count" class="rail-badge" hidden></span></button>
+      <button type="button" class="rail-btn" data-tab="hotlines" aria-label="Hotlines" title="Hotlines"><span data-icon="phone"></span></button>
+    </nav>
+  </main>
+
+  <script src="/vendor/maplibre-gl.js"></script>
+  <script src="/vendor/pmtiles.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

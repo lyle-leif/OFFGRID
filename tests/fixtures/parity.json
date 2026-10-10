@@ -1,0 +1,5369 @@
+{
+ "search": [
+  {
+   "q": "What should I bring for my baby when evacuating?",
+   "evidence": [
+    "typhoon-prep#when-to-evacuate",
+    "go-bag#infants-and-young-children",
+    "go-bag#older-adults-persons-with-disabilities-and-pets",
+    "go-bag#light-power-and-communication"
+   ],
+   "top": [
+    [
+     "typhoon-prep#when-to-evacuate",
+     7.193415,
+     2
+    ],
+    [
+     "go-bag#infants-and-young-children",
+     7.099293,
+     2
+    ],
+    [
+     "go-bag#older-adults-persons-with-disabilities-and-pets",
+     4.518743,
+     2
+    ],
+    [
+     "go-bag#light-power-and-communication",
+     4.017853,
+     2
+    ]
+   ]
+  },
+  {
+   "q": "How much water should I pack in my go-bag?",
+   "evidence": [
+    "go-bag#water-and-food",
+    "typhoon-prep#when-to-evacuate",
+    "go-bag#older-adults-persons-with-disabilities-and-pets",
+    "go-bag#clothes-and-protection"
+   ],
+   "top": [
+    [
+     "go-bag#water-and-food",
+     4.708578,
+     4
+    ],
+    [
+     "typhoon-prep#when-to-evacuate",
+     4.697116,
+     4
+    ],
+    [
+     "go-bag#older-adults-persons-with-disabilities-and-pets",
+     4.551899,
+     4
+    ],
+    [
+     "go-bag#clothes-and-protection",
+     4.302172,
+     3
+    ]
+   ]
+  },
+  {
+   "q": "Is it safe to walk through floodwater?",
+   "evidence": [
+    "flood-safety#walking-or-driving-through-floodwater",
+    "flood-safety#health-risks-after-floods"
+   ],
+   "top": [
+    [
+     "flood-safety#walking-or-driving-through-floodwater",
+     11.474271,
+     3
+    ],
+    [
+     "flood-safety#health-risks-after-floods",
+     6.520496,
+     2
+    ],
+    [
+     "typhoon-prep#after-the-typhoon",
+     4.452336,
+     2
+    ],
+    [
+     "flood-safety#clean-drinking-water",
+     3.064673,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "How do I treat a burn?",
+   "evidence": [
+    "first-aid-basics#burns"
+   ],
+   "top": [
+    [
+     "first-aid-basics#burns",
+     6.827562,
+     1
+    ],
+    [
+     "hotlines#other-towns-and-barangays",
+     3.148514,
+     1
+    ],
+    [
+     "first-aid-basics#before-helping-anyone",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#bleeding",
+     0.0,
+     0
+    ]
+   ]
+  },
+  {
+   "q": "Can I run a generator inside the house?",
+   "evidence": [
+    "power-outage#generators-and-carbon-monoxide"
+   ],
+   "top": [
+    [
+     "power-outage#generators-and-carbon-monoxide",
+     14.321215,
+     4
+    ],
+    [
+     "typhoon-prep#during-the-typhoon",
+     6.167146,
+     2
+    ],
+    [
+     "typhoon-prep#when-a-typhoon-is-approaching",
+     4.447478,
+     2
+    ],
+    [
+     "typhoon-prep#after-the-typhoon",
+     3.635549,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "What does typhoon signal number 3 mean?",
+   "evidence": [
+    "typhoon-prep#understanding-warnings"
+   ],
+   "top": [
+    [
+     "typhoon-prep#understanding-warnings",
+     9.659379,
+     5
+    ],
+    [
+     "flood-safety#if-you-are-trapped-by-rising-water",
+     3.869232,
+     1
+    ],
+    [
+     "go-bag#water-and-food",
+     3.856161,
+     1
+    ],
+    [
+     "typhoon-prep#during-the-typhoon",
+     3.039338,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "How long does food last in the fridge during a brownout?",
+   "evidence": [
+    "power-outage#food-safety-without-refrigeration"
+   ],
+   "top": [
+    [
+     "power-outage#food-safety-without-refrigeration",
+     10.291061,
+     3
+    ],
+    [
+     "power-outage#heat-during-outages",
+     5.843345,
+     2
+    ],
+    [
+     "power-outage#appliances-and-power-surges",
+     4.614808,
+     2
+    ],
+    [
+     "typhoon-prep#during-the-typhoon",
+     3.781018,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "What are the symptoms of leptospirosis?",
+   "evidence": [
+    "flood-safety#health-risks-after-floods"
+   ],
+   "top": [
+    [
+     "flood-safety#health-risks-after-floods",
+     6.237344,
+     2
+    ],
+    [
+     "flood-safety#warning-signs-of-flooding",
+     3.651225,
+     1
+    ],
+    [
+     "typhoon-prep#when-a-typhoon-is-approaching",
+     2.116578,
+     1
+    ],
+    [
+     "first-aid-basics#dehydration-and-heat-exhaustion",
+     2.075281,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "How do I stop bleeding?",
+   "evidence": [
+    "first-aid-basics#bleeding"
+   ],
+   "top": [
+    [
+     "first-aid-basics#bleeding",
+     9.231816,
+     2
+    ],
+    [
+     "first-aid-basics#before-helping-anyone",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#cuts-and-wounds",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#burns",
+     0.0,
+     0
+    ]
+   ]
+  },
+  {
+   "q": "When should we evacuate before a typhoon?",
+   "evidence": [
+    "typhoon-prep#before-typhoon-season",
+    "typhoon-prep#when-to-evacuate",
+    "typhoon-prep#after-the-typhoon"
+   ],
+   "top": [
+    [
+     "typhoon-prep#before-typhoon-season",
+     7.752305,
+     3
+    ],
+    [
+     "typhoon-prep#when-to-evacuate",
+     6.971074,
+     2
+    ],
+    [
+     "typhoon-prep#after-the-typhoon",
+     5.649249,
+     2
+    ],
+    [
+     "first-aid-basics#before-helping-anyone",
+     3.132122,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "How can I save my phone battery?",
+   "evidence": [
+    "power-outage#saving-phone-battery",
+    "go-bag#documents-and-money",
+    "power-outage#preparing-for-brownouts"
+   ],
+   "top": [
+    [
+     "power-outage#saving-phone-battery",
+     5.569665,
+     2
+    ],
+    [
+     "go-bag#documents-and-money",
+     4.179583,
+     2
+    ],
+    [
+     "power-outage#preparing-for-brownouts",
+     4.12306,
+     2
+    ],
+    [
+     "go-bag#light-power-and-communication",
+     2.279982,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "paano maghanda ng go-bag",
+   "evidence": [
+    "go-bag#what-a-go-bag-is",
+    "typhoon-prep#before-typhoon-season"
+   ],
+   "top": [
+    [
+     "go-bag#what-a-go-bag-is",
+     6.245033,
+     3
+    ],
+    [
+     "power-outage#preparing-for-brownouts",
+     5.343864,
+     1
+    ],
+    [
+     "typhoon-prep#before-typhoon-season",
+     4.533387,
+     3
+    ],
+    [
+     "flood-safety#warning-signs-of-flooding",
+     2.51477,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "anong dapat dalhin para sa sanggol",
+   "evidence": [
+    "go-bag#infants-and-young-children"
+   ],
+   "top": [
+    [
+     "go-bag#infants-and-young-children",
+     7.099293,
+     2
+    ],
+    [
+     "power-outage#heat-during-outages",
+     3.15405,
+     1
+    ],
+    [
+     "go-bag#older-adults-persons-with-disabilities-and-pets",
+     2.423017,
+     1
+    ],
+    [
+     "go-bag#water-and-food",
+     2.389163,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "What should my kids bring?",
+   "evidence": [
+    "go-bag#infants-and-young-children"
+   ],
+   "top": [
+    [
+     "go-bag#infants-and-young-children",
+     5.664374,
+     2
+    ],
+    [
+     "power-outage#lighting-safely",
+     2.808877,
+     1
+    ],
+    [
+     "go-bag#older-adults-persons-with-disabilities-and-pets",
+     2.423017,
+     1
+    ],
+    [
+     "first-aid-basics#burns",
+     2.413679,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "ano ang gagawin habang may bagyo",
+   "evidence": [
+    "typhoon-prep#during-the-typhoon"
+   ],
+   "top": [
+    [
+     "typhoon-prep#during-the-typhoon",
+     6.864591,
+     2
+    ],
+    [
+     "power-outage#heat-during-outages",
+     3.346202,
+     1
+    ],
+    [
+     "typhoon-prep#after-the-typhoon",
+     3.021437,
+     1
+    ],
+    [
+     "typhoon-prep#before-typhoon-season",
+     2.951893,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "ligtas bang lumusong sa baha",
+   "evidence": [
+    "flood-safety#walking-or-driving-through-floodwater",
+    "flood-safety#health-risks-after-floods",
+    "typhoon-prep#after-the-typhoon"
+   ],
+   "top": [
+    [
+     "flood-safety#walking-or-driving-through-floodwater",
+     7.193591,
+     2
+    ],
+    [
+     "flood-safety#health-risks-after-floods",
+     5.894844,
+     2
+    ],
+    [
+     "typhoon-prep#after-the-typhoon",
+     4.452336,
+     2
+    ],
+    [
+     "flood-safety#clean-drinking-water",
+     3.064673,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "What do elderly people need to pack?",
+   "evidence": [
+    "power-outage#heat-during-outages",
+    "go-bag#water-and-food",
+    "go-bag#older-adults-persons-with-disabilities-and-pets",
+    "typhoon-prep#when-a-typhoon-is-approaching"
+   ],
+   "top": [
+    [
+     "power-outage#heat-during-outages",
+     6.914239,
+     2
+    ],
+    [
+     "go-bag#water-and-food",
+     6.849817,
+     3
+    ],
+    [
+     "go-bag#older-adults-persons-with-disabilities-and-pets",
+     6.408518,
+     2
+    ],
+    [
+     "typhoon-prep#when-a-typhoon-is-approaching",
+     4.009341,
+     2
+    ]
+   ]
+  },
+  {
+   "q": "paano patigilin ang dugo sa sugat",
+   "evidence": [
+    "first-aid-basics#bleeding"
+   ],
+   "top": [
+    [
+     "first-aid-basics#bleeding",
+     13.377598,
+     3
+    ],
+    [
+     "first-aid-basics#cuts-and-wounds",
+     4.905559,
+     1
+    ],
+    [
+     "first-aid-basics#before-helping-anyone",
+     2.842116,
+     1
+    ],
+    [
+     "hotlines#philippine-red-cross-national-hotline",
+     2.6537,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "napaso ako ng mainit na tubig",
+   "evidence": [
+    "first-aid-basics#burns",
+    "power-outage#heat-during-outages",
+    "first-aid-basics#dehydration-and-heat-exhaustion"
+   ],
+   "top": [
+    [
+     "first-aid-basics#burns",
+     7.107322,
+     2
+    ],
+    [
+     "power-outage#heat-during-outages",
+     5.282508,
+     2
+    ],
+    [
+     "first-aid-basics#dehydration-and-heat-exhaustion",
+     4.946426,
+     2
+    ],
+    [
+     "flood-safety#clean-drinking-water",
+     0.572634,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "What number do I call for an emergency?",
+   "evidence": [
+    "hotlines#national-emergency-hotline-911",
+    "hotlines#philippine-red-cross-national-hotline",
+    "hotlines#batangas-city-emergency-hotlines",
+    "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa"
+   ],
+   "top": [
+    [
+     "hotlines#national-emergency-hotline-911",
+     6.066988,
+     3
+    ],
+    [
+     "hotlines#philippine-red-cross-national-hotline",
+     5.110346,
+     3
+    ],
+    [
+     "hotlines#batangas-city-emergency-hotlines",
+     4.750914,
+     3
+    ],
+    [
+     "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
+     4.400269,
+     3
+    ]
+   ]
+  },
+  {
+   "q": "Batangas City rescue hotline",
+   "evidence": [
+    "hotlines#batangas-city-emergency-hotlines",
+    "hotlines#lipa-city-emergency-hotlines"
+   ],
+   "top": [
+    [
+     "hotlines#batangas-city-emergency-hotlines",
+     12.87118,
+     4
+    ],
+    [
+     "hotlines#lipa-city-emergency-hotlines",
+     7.84164,
+     3
+    ],
+    [
+     "hotlines#power-and-water-utilities-in-lipa",
+     5.887555,
+     3
+    ],
+    [
+     "hotlines#national-emergency-hotline-911",
+     5.652968,
+     2
+    ]
+   ]
+  },
+  {
+   "q": "Lipa fire station number",
+   "evidence": [
+    "hotlines#lipa-city-emergency-hotlines",
+    "hotlines#power-and-water-utilities-in-lipa",
+    "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
+    "hotlines#national-emergency-hotline-911"
+   ],
+   "top": [
+    [
+     "hotlines#lipa-city-emergency-hotlines",
+     9.231453,
+     3
+    ],
+    [
+     "hotlines#power-and-water-utilities-in-lipa",
+     6.412552,
+     2
+    ],
+    [
+     "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
+     5.531489,
+     2
+    ],
+    [
+     "hotlines#national-emergency-hotline-911",
+     5.068897,
+     2
+    ]
+   ]
+  },
+  {
+   "q": "PDRRMO Batangas contact number",
+   "evidence": [
+    "hotlines#batangas-province-pdrrmo-and-provincial-offices",
+    "hotlines#other-towns-and-barangays",
+    "hotlines#batangas-city-emergency-hotlines"
+   ],
+   "top": [
+    [
+     "hotlines#batangas-province-pdrrmo-and-provincial-offices",
+     11.455321,
+     4
+    ],
+    [
+     "hotlines#other-towns-and-barangays",
+     8.747672,
+     4
+    ],
+    [
+     "hotlines#batangas-city-emergency-hotlines",
+     8.562844,
+     3
+    ],
+    [
+     "hotlines#national-emergency-hotline-911",
+     5.688182,
+     2
+    ]
+   ]
+  },
+  {
+   "q": "numero ng pulis sa Lipa",
+   "evidence": [
+    "hotlines#lipa-city-emergency-hotlines",
+    "hotlines#power-and-water-utilities-in-lipa",
+    "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
+    "hotlines#national-emergency-hotline-911"
+   ],
+   "top": [
+    [
+     "hotlines#lipa-city-emergency-hotlines",
+     9.635818,
+     3
+    ],
+    [
+     "hotlines#power-and-water-utilities-in-lipa",
+     6.412552,
+     2
+    ],
+    [
+     "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
+     5.691144,
+     2
+    ],
+    [
+     "hotlines#national-emergency-hotline-911",
+     5.652968,
+     2
+    ]
+   ]
+  },
+  {
+   "q": "Who do I call about a brownout in Lipa?",
+   "evidence": [
+    "hotlines#power-and-water-utilities-in-lipa",
+    "hotlines#lipa-city-emergency-hotlines"
+   ],
+   "top": [
+    [
+     "hotlines#power-and-water-utilities-in-lipa",
+     7.793865,
+     3
+    ],
+    [
+     "hotlines#lipa-city-emergency-hotlines",
+     7.691173,
+     2
+    ],
+    [
+     "hotlines#national-emergency-hotline-911",
+     2.844091,
+     1
+    ],
+    [
+     "power-outage#heat-during-outages",
+     2.497143,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "Red Cross hotline",
+   "evidence": [
+    "hotlines#philippine-red-cross-national-hotline",
+    "hotlines#lipa-city-emergency-hotlines",
+    "hotlines#batangas-city-emergency-hotlines"
+   ],
+   "top": [
+    [
+     "hotlines#philippine-red-cross-national-hotline",
+     10.455481,
+     3
+    ],
+    [
+     "hotlines#lipa-city-emergency-hotlines",
+     5.720891,
+     3
+    ],
+    [
+     "hotlines#batangas-city-emergency-hotlines",
+     5.228046,
+     3
+    ],
+    [
+     "hotlines#national-emergency-hotline-911",
+     2.844091,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "Is the bridge on Rizal Street flooded right now?",
+   "evidence": [],
+   "top": [
+    [
+     "flood-safety#warning-signs-of-flooding",
+     6.380221,
+     2
+    ],
+    [
+     "go-bag#clothes-and-protection",
+     3.305133,
+     1
+    ],
+    [
+     "flood-safety#clean-drinking-water",
+     3.266021,
+     1
+    ],
+    [
+     "flood-safety#electrical-safety-in-floods",
+     3.039338,
+     1
+    ]
+   ]
+  },
+  {
+   "q": "What is the capital of France?",
+   "evidence": [],
+   "top": [
+    [
+     "first-aid-basics#before-helping-anyone",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#bleeding",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#cuts-and-wounds",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#burns",
+     0.0,
+     0
+    ]
+   ]
+  },
+  {
+   "q": "Who won the basketball game last night?",
+   "evidence": [],
+   "top": [
+    [
+     "first-aid-basics#before-helping-anyone",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#bleeding",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#cuts-and-wounds",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#burns",
+     0.0,
+     0
+    ]
+   ]
+  },
+  {
+   "q": "Is Sample Hospital A open now?",
+   "evidence": [],
+   "top": [
+    [
+     "flood-safety#walking-or-driving-through-floodwater",
+     3.118672,
+     1
+    ],
+    [
+     "hotlines#batangas-city-emergency-hotlines",
+     2.171781,
+     1
+    ],
+    [
+     "first-aid-basics#before-helping-anyone",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#bleeding",
+     0.0,
+     0
+    ]
+   ]
+  },
+  {
+   "q": "How do I bake a chocolate cake?",
+   "evidence": [],
+   "top": [
+    [
+     "first-aid-basics#before-helping-anyone",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#bleeding",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#cuts-and-wounds",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#burns",
+     0.0,
+     0
+    ]
+   ]
+  },
+  {
+   "q": "earthquake drill procedure",
+   "evidence": [],
+   "top": [
+    [
+     "first-aid-basics#before-helping-anyone",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#bleeding",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#cuts-and-wounds",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#burns",
+     0.0,
+     0
+    ]
+   ]
+  },
+  {
+   "q": "Where can I buy rice cheaply?",
+   "evidence": [],
+   "top": [
+    [
+     "first-aid-basics#before-helping-anyone",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#bleeding",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#cuts-and-wounds",
+     0.0,
+     0
+    ],
+    [
+     "first-aid-basics#burns",
+     0.0,
+     0
+    ]
+   ]
+  }
+ ],
+ "routes": [
+  {
+   "from": [
+    13.7672,
+    121.066
+   ],
+   "to": [
+    13.754146,
+    121.053128
+   ],
+   "mode": "walk",
+   "distance_m": 2484,
+   "duration_min": 33,
+   "steps": [
+    "Head south on Roxas Road",
+    "Continue on the service road",
+    "Turn right onto the footpath",
+    "Turn left onto Tolentino Road",
+    "Continue on P. Herrera Street",
+    "Turn right onto C. Tirona Street",
+    "Turn left onto D. Silang Street",
+    "Bear right onto Rizal Avenue",
+    "Continue on the footpath",
+    "Turn left onto Galauran Drive",
+    "Arrive at X"
+   ],
+   "step_m": [
+    132,
+    60,
+    116,
+    155,
+    546,
+    704,
+    262,
+    271,
+    113,
+    106,
+    0
+   ]
+  },
+  {
+   "from": [
+    13.7672,
+    121.066
+   ],
+   "to": [
+    13.754146,
+    121.053128
+   ],
+   "mode": "walk",
+   "avoid": [
+    9957
+   ],
+   "distance_m": 2508,
+   "duration_min": 33,
+   "steps": [
+    "Head south on Roxas Road",
+    "Continue on the service road",
+    "Turn right onto the footpath",
+    "Turn left onto Tolentino Road",
+    "Continue on P. Herrera Street",
+    "Turn right onto D. Silang Street",
+    "Bear right onto Rizal Avenue",
+    "Continue on the footpath",
+    "Turn left onto Galauran Drive",
+    "Arrive at X"
+   ],
+   "step_m": [
+    132,
+    60,
+    116,
+    155,
+    526,
+    1011,
+    271,
+    113,
+    106,
+    0
+   ],
+   "edges": [
+    9767,
+    9768,
+    9769,
+    9770,
+    9771,
+    9772,
+    9773,
+    9774,
+    9775,
+    9950,
+    9951,
+    9952,
+    9953,
+    9954,
+    9955,
+    9956,
+    35234,
+    35235,
+    35236,
+    35237,
+    46489,
+    46490,
+    54080,
+    67884,
+    67885,
+    67886,
+    67887,
+    67888,
+    68187,
+    68188,
+    68189,
+    68192,
+    68196,
+    68211,
+    68212,
+    68213,
+    68214,
+    68215,
+    71070,
+    71071,
+    71074,
+    71075,
+    75038,
+    75039,
+    75184,
+    75185,
+    80330,
+    80339,
+    80340,
+    80343,
+    112143,
+    112231,
+    117181,
+    139557,
+    141753,
+    141771,
+    141772,
+    155720,
+    156406,
+    159008,
+    159009,
+    159011,
+    160245,
+    160246,
+    180561,
+    180562
+   ]
+  },
+  {
+   "from": [
+    13.7672,
+    121.066
+   ],
+   "to": [
+    13.754146,
+    121.053128
+   ],
+   "mode": "drive",
+   "distance_m": 3221,
+   "duration_min": 7,
+   "steps": [
+    "Head north on Roxas Road",
+    "Continue on Roxas Road Extension",
+    "Turn left onto the service road",
+    "Turn right onto Tolentino Road",
+    "Turn left onto National Highway 4",
+    "Bear left onto P. Burgos Street",
+    "Turn right onto C. Tirona Street",
+    "Turn left onto P. Zamora Street",
+    "Turn right onto Rizal Avenue",
+    "Continue on Galauran Drive",
+    "Arrive at X"
+   ],
+   "step_m": [
+    256,
+    39,
+    98,
+    88,
+    1333,
+    423,
+    101,
+    223,
+    524,
+    116,
+    0
+   ]
+  },
+  {
+   "from": [
+    13.7672,
+    121.066
+   ],
+   "to": [
+    13.754146,
+    121.053128
+   ],
+   "mode": "drive",
+   "avoid": [
+    68179
+   ],
+   "distance_m": 3231,
+   "duration_min": 9,
+   "steps": [
+    "Head north on Roxas Road",
+    "Turn right onto the service road",
+    "Turn right onto the local road",
+    "Bear left onto Ebora Road",
+    "Turn right onto Gamboa Road",
+    "Turn right onto Ferry Road",
+    "Turn left onto P. Herrera Street",
+    "Turn right onto C. Tirona Street",
+    "Turn left onto P. Dandan Street",
+    "Turn right onto Rizal Avenue",
+    "Continue on Galauran Drive",
+    "Arrive at X"
+   ],
+   "step_m": [
+    77,
+    277,
+    170,
+    43,
+    475,
+    308,
+    327,
+    402,
+    243,
+    773,
+    116,
+    0
+   ],
+   "edges": [
+    9950,
+    9951,
+    9952,
+    9953,
+    9954,
+    9955,
+    9956,
+    9957,
+    13424,
+    13425,
+    13426,
+    13427,
+    13778,
+    14427,
+    14956,
+    14957,
+    14958,
+    14959,
+    14960,
+    23627,
+    23628,
+    23629,
+    31899,
+    46490,
+    46491,
+    54081,
+    54119,
+    54122,
+    54123,
+    67876,
+    67877,
+    67878,
+    67879,
+    67880,
+    67881,
+    67882,
+    68142,
+    68143,
+    68180,
+    68181,
+    68210,
+    68211,
+    68212,
+    68213,
+    68214,
+    68215,
+    68232,
+    71198,
+    75008,
+    75038,
+    75039,
+    75181,
+    75182,
+    75183,
+    80325,
+    80326,
+    101914,
+    105857,
+    112143,
+    112231,
+    117181,
+    141456,
+    141768,
+    156467,
+    158560,
+    158561,
+    160247,
+    160248
+   ]
+  },
+  {
+   "from": [
+    13.754146,
+    121.053128
+   ],
+   "to": [
+    13.767024,
+    121.066773
+   ],
+   "mode": "walk",
+   "distance_m": 2611,
+   "duration_min": 35,
+   "steps": [
+    "Head north on Galauran Drive",
+    "Turn left onto the footpath",
+    "Continue on Rizal Avenue",
+    "Bear left onto D. Silang Street",
+    "Turn right onto C. Tirona Street",
+    "Turn left onto P. Herrera Street",
+    "Continue on Tolentino Road",
+    "Turn right onto the footpath",
+    "Turn left onto the service road",
+    "Turn right onto Ebora Road",
+    "Turn left onto the local road",
+    "Leave the road to reach X",
+    "Arrive at X"
+   ],
+   "step_m": [
+    128,
+    91,
+    271,
+    262,
+    704,
+    546,
+    155,
+    116,
+    60,
+    106,
+    130,
+    37,
+    0
+   ]
+  },
+  {
+   "from": [
+    13.754146,
+    121.053128
+   ],
+   "to": [
+    13.767024,
+    121.066773
+   ],
+   "mode": "walk",
+   "avoid": [
+    9957
+   ],
+   "distance_m": 2635,
+   "duration_min": 35,
+   "steps": [
+    "Head north on Galauran Drive",
+    "Turn left onto the footpath",
+    "Continue on Rizal Avenue",
+    "Bear left onto D. Silang Street",
+    "Turn left onto P. Herrera Street",
+    "Continue on Tolentino Road",
+    "Turn right onto the footpath",
+    "Turn left onto the service road",
+    "Turn right onto Ebora Road",
+    "Turn left onto the local road",
+    "Leave the road to reach X",
+    "Arrive at X"
+   ],
+   "step_m": [
+    128,
+    91,
+    271,
+    1011,
+    526,
+    155,
+    116,
+    60,
+    106,
+    130,
+    37,
+    0
+   ],
+   "edges": [
+    9767,
+    9768,
+    9769,
+    9770,
+    9771,
+    9772,
+    9773,
+    9774,
+    9775,
+    9950,
+    9951,
+    9952,
+    9953,
+    9954,
+    9955,
+    9956,
+    13199,
+    13425,
+    13426,
+    13427,
+    35234,
+    35235,
+    35236,
+    35237,
+    54080,
+    67884,
+    67885,
+    67886,
+    67887,
+    67888,
+    68187,
+    68188,
+    68189,
+    68192,
+    68196,
+    68211,
+    68212,
+    68213,
+    68214,
+    68215,
+    71070,
+    71071,
+    71074,
+    71075,
+    75038,
+    75039,
+    75184,
+    75185,
+    80330,
+    80339,
+    80340,
+    80343,
+    112143,
+    112231,
+    117181,
+    139557,
+    141753,
+    141771,
+    141772,
+    155720,
+    156406,
+    156467,
+    159008,
+    159009,
+    159011,
+    160245,
+    160246,
+    180561,
+    180562
+   ]
+  },
+  {
+   "from": [
+    13.9411,
+    121.1631
+   ],
+   "to": [
+    13.827,
+    121.396
+   ],
+   "mode": "drive",
+   "distance_m": 32650,
+   "duration_min": 55,
+   "steps": [
+    "Head east on the service road",
+    "Turn right onto G. A. Solis Street",
+    "Turn left onto E. Mayo Street",
+    "Turn left onto Obispo Obviar Street",
+    "Turn right onto P. Torres Street",
+    "Continue on Lipa-Rosario Road",
+    "Turn left onto J. P. Rizal Street",
+    "Turn right onto Rosario Bypass Road",
+    "Continue on Rosario-San Juan Road",
+    "Turn left onto the road",
+    "Turn left onto Rosario-San Juan Road",
+    "Continue on General Luna Street",
+    "Turn left onto Kalayaan Street",
+    "Turn right onto De Villa Street",
+    "Turn left onto Mojica Street",
+    "Turn right onto Perez Street",
+    "Arrive at X"
+   ],
+   "step_m": [
+    204,
+    138,
+    133,
+    65,
+    258,
+    8430,
+    358,
+    4526,
+    710,
+    3743,
+    13296,
+    285,
+    65,
+    75,
+    80,
+    258,
+    0
+   ]
+  },
+  {
+   "from": [
+    13.9411,
+    121.1631
+   ],
+   "to": [
+    13.827,
+    121.396
+   ],
+   "mode": "drive",
+   "avoid": [
+    77490
+   ],
+   "distance_m": 35090,
+   "duration_min": 62,
+   "steps": [
+    "Head east on the service road",
+    "Turn right onto G. A. Solis Street",
+    "Turn left onto E. Mayo Street",
+    "Turn left onto Obispo Obviar Street",
+    "Turn right onto P. Torres Street",
+    "Continue on Lipa-Rosario Road",
+    "Turn left onto J. P. Rizal Street",
+    "Turn right onto Rosario Bypass Road",
+    "Continue on Rosario-San Juan Road",
+    "Turn left onto the road",
+    "Turn left onto Rosario-San Juan Road",
+    "Turn right onto the road",
+    "Turn left onto the local road",
+    "Turn left onto the road",
+    "Turn right onto Rosario-San Juan Road",
+    "Continue on General Luna Street",
+    "Turn left onto Kalayaan Street",
+    "Turn right onto De Villa Street",
+    "Turn left onto Mojica Street",
+    "Turn right onto Perez Street",
+    "Arrive at X"
+   ],
+   "step_m": [
+    204,
+    138,
+    133,
+    65,
+    258,
+    8430,
+    358,
+    4526,
+    710,
+    3743,
+    9009,
+    963,
+    3015,
+    879,
+    1870,
+    285,
+    65,
+    75,
+    80,
+    258,
+    0
+   ],
+   "edges": [
+    2660,
+    2661,
+    2662,
+    2663,
+    2664,
+    2665,
+    2666,
+    2667,
+    2668,
+    2669,
+    2670,
+    2671,
+    2672,
+    2673,
+    2674,
+    2675,
+    2676,
+    2677,
+    2678,
+    2679,
+    2680,
+    2681,
+    2682,
+    2683,
+    2684,
+    2685,
+    2686,
+    2687,
+    2688,
+    2689,
+    2690,
+    2691,
+    2692,
+    2693,
+    2694,
+    2695,
+    2696,
+    2697,
+    2698,
+    2699,
+    2700,
+    2701,
+    2702,
+    2703,
+    2704,
+    2705,
+    2706,
+    2707,
+    2708,
+    2709,
+    2710,
+    2711,
+    2712,
+    2713,
+    2714,
+    2715,
+    2716,
+    2717,
+    2718,
+    2719,
+    2720,
+    2721,
+    2722,
+    2723,
+    2724,
+    2725,
+    2726,
+    2727,
+    2728,
+    2729,
+    2730,
+    2731,
+    2732,
+    2733,
+    2734,
+    2735,
+    2736,
+    2737,
+    2738,
+    2739,
+    2740,
+    2741,
+    2742,
+    2743,
+    2744,
+    2745,
+    2964,
+    7316,
+    7317,
+    7318,
+    7319,
+    7320,
+    13587,
+    14542,
+    14543,
+    14544,
+    37042,
+    37043,
+    37044,
+    37045,
+    37046,
+    37047,
+    37048,
+    37049,
+    37050,
+    37051,
+    37052,
+    37053,
+    37054,
+    37055,
+    37056,
+    37057,
+    37058,
+    37059,
+    37060,
+    37061,
+    37062,
+    37063,
+    37064,
+    37065,
+    37066,
+    37067,
+    37068,
+    37069,
+    37070,
+    37071,
+    37072,
+    37073,
+    37074,
+    37075,
+    37076,
+    37077,
+    37078,
+    37379,
+    37395,
+    39049,
+    39050,
+    39051,
+    39052,
+    42083,
+    42094,
+    42095,
+    42096,
+    42110,
+    42111,
+    42112,
+    42113,
+    42114,
+    42115,
+    44536,
+    44568,
+    65721,
+    65722,
+    65723,
+    65724,
+    65725,
+    65726,
+    65727,
+    65728,
+    65729,
+    67229,
+    77478,
+    77479,
+    77480,
+    77481,
+    77482,
+    77483,
+    77484,
+    77485,
+    77502,
+    77503,
+    103892,
+    103893,
+    103894,
+    103895,
+    103936,
+    103945,
+    103946,
+    103947,
+    105744,
+    105745,
+    105746,
+    105747,
+    105748,
+    105749,
+    105755,
+    105756,
+    105799,
+    105800,
+    105801,
+    105802,
+    105803,
+    105804,
+    105805,
+    105806,
+    105807,
+    105808,
+    105809,
+    105810,
+    105811,
+    105812,
+    105813,
+    105814,
+    105815,
+    105816,
+    105817,
+    105818,
+    105819,
+    105859,
+    105860,
+    105861,
+    105862,
+    105863,
+    105864,
+    105865,
+    105866,
+    105867,
+    105868,
+    105869,
+    105870,
+    105871,
+    105872,
+    105873,
+    105874,
+    105875,
+    105876,
+    105877,
+    105878,
+    105879,
+    105880,
+    105881,
+    105882,
+    105883,
+    105884,
+    105885,
+    106329,
+    106330,
+    106331,
+    106332,
+    106333,
+    106334,
+    106335,
+    106336,
+    106337,
+    106338,
+    106339,
+    106340,
+    108145,
+    108146,
+    108147,
+    108148,
+    108149,
+    108150,
+    111141,
+    111146,
+    111147,
+    111148,
+    111149,
+    111150,
+    111156,
+    113222,
+    113223,
+    113885,
+    113886,
+    113887,
+    113888,
+    113889,
+    113890,
+    113891,
+    113892,
+    113893,
+    113894,
+    113996,
+    113997,
+    113998,
+    113999,
+    114000,
+    114001,
+    114002,
+    114003,
+    115688,
+    115689,
+    115690,
+    115691,
+    115692,
+    115693,
+    115694,
+    115695,
+    115696,
+    115697,
+    115699,
+    115700,
+    115701,
+    115702,
+    115705,
+    115706,
+    133377,
+    140399,
+    140408,
+    140646,
+    140647,
+    140648,
+    140649,
+    140761,
+    148939,
+    148940,
+    148941,
+    148942,
+    148943,
+    148945,
+    148962,
+    148963,
+    148964,
+    148965,
+    148966,
+    148967,
+    148968,
+    148969,
+    148970,
+    148971,
+    148972,
+    148973,
+    148974,
+    148975,
+    148976,
+    148977,
+    148978,
+    148979,
+    148980,
+    148981,
+    148982,
+    148983,
+    148984,
+    156131,
+    160875,
+    160876,
+    160877,
+    160878,
+    160879,
+    160880,
+    160881,
+    160882,
+    160883,
+    160884,
+    160885,
+    171023,
+    171024,
+    171027,
+    171028,
+    171029,
+    171030,
+    171031,
+    171032,
+    171037,
+    171038,
+    171042,
+    171043,
+    172347,
+    173152,
+    173153,
+    173606,
+    173607,
+    173608,
+    173609,
+    173615,
+    173621,
+    173622,
+    173623,
+    173625,
+    175767,
+    175768,
+    175769,
+    175770,
+    175771,
+    175772,
+    175773,
+    175774,
+    175775,
+    175776,
+    175777,
+    175778,
+    175779,
+    175780,
+    175781,
+    175782,
+    175783,
+    175784,
+    175785,
+    175786,
+    175787,
+    175788,
+    175789,
+    175790,
+    175791,
+    175792,
+    175793,
+    175794,
+    175795,
+    175796,
+    175797,
+    175798,
+    175799,
+    175800,
+    175801,
+    175802,
+    175803,
+    175804,
+    175805,
+    175806,
+    175807,
+    175808,
+    175809,
+    175810,
+    175811,
+    175812,
+    175813,
+    175814,
+    175815,
+    175816,
+    175817,
+    175818,
+    175819,
+    175820,
+    175821,
+    175822,
+    175823,
+    175824,
+    175825,
+    175826,
+    175827,
+    175828,
+    175829,
+    175830,
+    175831,
+    177697,
+    177698,
+    177699,
+    178899,
+    178900,
+    178901,
+    178902,
+    178903,
+    178904,
+    178905,
+    178906,
+    187937,
+    187938,
+    187939,
+    187946,
+    187947,
+    187948,
+    187949
+   ]
+  },
+  {
+   "from": [
+    14.07,
+    120.633
+   ],
+   "to": [
+    14.08,
+    120.64
+   ],
+   "mode": "walk",
+   "distance_m": 1881,
+   "duration_min": 25,
+   "steps": [
+    "Go to the nearest road",
+    "Head north on J. P. Laurel Street",
+    "Turn right onto Mulingbayan Street",
+    "Turn left onto A. Oriondo Street",
+    "Turn right onto F. Alix Street",
+    "Continue on Looc Road",
+    "Turn left onto the local road",
+    "Leave the road to reach X",
+    "Arrive at X"
+   ],
+   "step_m": [
+    30,
+    33,
+    597,
+    66,
+    78,
+    27,
+    1012,
+    39,
+    0
+   ]
+  },
+  {
+   "from": [
+    14.07,
+    120.633
+   ],
+   "to": [
+    14.08,
+    120.64
+   ],
+   "mode": "walk",
+   "avoid": [
+    53490
+   ],
+   "distance_m": 5859,
+   "duration_min": 78,
+   "steps": [
+    "Go to the nearest road",
+    "Head north on J. P. Laurel Street",
+    "Turn right onto Mulingbayan Street",
+    "Turn left onto A. Oriondo Street",
+    "Turn right onto F. Alix Street",
+    "Continue on Looc Road",
+    "Turn left onto the local road",
+    "Leave the road to reach X",
+    "Arrive at X"
+   ],
+   "step_m": [
+    30,
+    33,
+    597,
+    66,
+    78,
+    2572,
+    2407,
+    77,
+    0
+   ],
+   "edges": [
+    42427,
+    42441,
+    42463,
+    42464,
+    42465,
+    42466,
+    42467,
+    42468,
+    42469,
+    42470,
+    42471,
+    43456,
+    43457,
+    43458,
+    53488,
+    53489,
+    53491,
+    110558,
+    117837,
+    155865,
+    155866,
+    155867,
+    155871
+   ]
+  },
+  {
+   "from": [
+    13.7672,
+    121.066
+   ],
+   "to": [
+    13.767024,
+    121.066773
+   ],
+   "mode": "drive",
+   "distance_m": 446,
+   "duration_min": 2,
+   "steps": [
+    "Head north on Roxas Road",
+    "Turn right onto the service road",
+    "Turn right onto the local road",
+    "Leave the road to reach X",
+    "Arrive at X"
+   ],
+   "step_m": [
+    77,
+    277,
+    40,
+    37,
+    0
+   ]
+  },
+  {
+   "from": [
+    13.7672,
+    121.066
+   ],
+   "to": [
+    13.767024,
+    121.066773
+   ],
+   "mode": "drive",
+   "avoid": [
+    13778
+   ],
+   "distance_m": 1506,
+   "duration_min": 4,
+   "steps": [
+    "Head north on Roxas Road",
+    "Continue on Roxas Road Extension",
+    "Turn left onto the service road",
+    "Turn right onto Tolentino Road",
+    "Turn left onto National Highway 4",
+    "Turn left onto Telecom Road",
+    "Continue on Ebora Road",
+    "Bear left onto the local road",
+    "Leave the road to reach X",
+    "Arrive at X"
+   ],
+   "step_m": [
+    256,
+    39,
+    98,
+    88,
+    382,
+    266,
+    188,
+    136,
+    37,
+    0
+   ],
+   "edges": [
+    4676,
+    4677,
+    4678,
+    4679,
+    4680,
+    4681,
+    4682,
+    13199,
+    13423,
+    13424,
+    13425,
+    35245,
+    35246,
+    46490,
+    46491,
+    46492,
+    46493,
+    46494,
+    46495,
+    71194,
+    71195,
+    71196,
+    71197,
+    72248,
+    76949,
+    115545,
+    115546,
+    115547,
+    115548,
+    123527,
+    123528,
+    123529,
+    141784,
+    156467
+   ]
+  }
+ ],
+ "asks": [
+  {
+   "body": {
+    "question": "nearest hospital",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "travel_mode": "drive"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Nearest hospitals from your location:\n1. Batangas Medical Center: 446 m by road (about 2 min drive)\n2. Philippine Red Cross: 716 m by road (about 3 min drive)\n3. Batangas Healthcare Hospital Jesus of Nazareth: 2.3 km by road (about 5 min drive)\n\nTap a result to see it or get directions. Roads may be flooded or blocked; facility details come from OpenStreetMap and are not an official list."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-way-508042958",
+       "name": "Batangas Medical Center",
+       "type": "evacuation_center",
+       "distance_m": 446,
+       "duration_min": 2,
+       "by_road": true,
+       "mode": "drive"
+      },
+      {
+       "id": "osm-way-653867138",
+       "name": "Philippine Red Cross",
+       "type": "hospital",
+       "distance_m": 716,
+       "duration_min": 3,
+       "by_road": true,
+       "mode": "drive"
+      },
+      {
+       "id": "osm-way-352486844",
+       "name": "Batangas Healthcare Hospital Jesus of Nazareth",
+       "type": "hospital",
+       "distance_m": 2273,
+       "duration_min": 5,
+       "by_road": true,
+       "mode": "drive"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "pinakamalapit na evacuation center",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    }
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Nearest evacuation centers from your location:\n1. Kumintang Ibaba Covered Court: 351 m by road (about 5 min walk)\n2. Batangas Medical Center: 420 m by road (about 6 min walk)\n3. Girl Scouts of the Philippines - Batangas City Council: 642 m by road (about 9 min walk)\n\nTap a result to see it or get directions. Roads may be flooded or blocked; facility details come from OpenStreetMap and are not an official list."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-way-462913743",
+       "name": "Kumintang Ibaba Covered Court",
+       "type": "evacuation_center",
+       "distance_m": 351,
+       "duration_min": 5,
+       "by_road": true,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-508042958",
+       "name": "Batangas Medical Center",
+       "type": "evacuation_center",
+       "distance_m": 420,
+       "duration_min": 6,
+       "by_road": true,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-465152078",
+       "name": "Girl Scouts of the Philippines - Batangas City Council",
+       "type": "evacuation_center",
+       "distance_m": 642,
+       "duration_min": 9,
+       "by_road": true,
+       "mode": "walk"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "nearest hospital",
+    "from_pos": {
+     "lat": 14.07,
+     "lng": 120.633
+    },
+    "travel_mode": "drive"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Nearest hospitals from your location:\n1. Ospital Ng Nasugbu: 620 m by road (about 2 min drive)\n2. Apacible Memorial District Hospital: 3.4 km by road (about 6 min drive)\n3. Tuy Health Center: 13.7 km by road (about 22 min drive)\n\nTap a result to see it or get directions. Roads may be flooded or blocked; facility details come from OpenStreetMap and are not an official list."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-node-9921619318",
+       "name": "Ospital Ng Nasugbu",
+       "type": "hospital",
+       "distance_m": 620,
+       "duration_min": 2,
+       "by_road": true,
+       "mode": "drive"
+      },
+      {
+       "id": "osm-way-458228120",
+       "name": "Apacible Memorial District Hospital",
+       "type": "hospital",
+       "distance_m": 3402,
+       "duration_min": 6,
+       "by_road": true,
+       "mode": "drive"
+      },
+      {
+       "id": "osm-way-865193308",
+       "name": "Tuy Health Center",
+       "type": "hospital",
+       "distance_m": 13703,
+       "duration_min": 22,
+       "by_road": true,
+       "mode": "drive"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "Where's the nearest place to go?",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    }
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Nearest evacuation center: Kumintang Ibaba Covered Court, 351 m by road (about 5 min)\nNearest hospital: Philippine Red Cross, 271 m by road (about 4 min)\nNearest police station: Batangas City Police Station, 1.9 km by road (about 25 min)\n\nTap a result to see it or get directions. Roads may be flooded or blocked; facility details come from OpenStreetMap and are not an official list."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-way-462913743",
+       "name": "Kumintang Ibaba Covered Court",
+       "type": "evacuation_center",
+       "distance_m": 351,
+       "duration_min": 5,
+       "by_road": true,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-653867138",
+       "name": "Philippine Red Cross",
+       "type": "hospital",
+       "distance_m": 271,
+       "duration_min": 4,
+       "by_road": true,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-node-1428621064",
+       "name": "Batangas City Police Station",
+       "type": "police",
+       "distance_m": 1907,
+       "duration_min": 25,
+       "by_road": true,
+       "mode": "walk"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "What's near me?",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    }
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Within 2.0 km of your location (straight-line distance):\n- 10 evacuation centers: closest is Batangas Medical Center, 86 m\n- 6 hospitals: closest is Philippine Red Cross, 172 m\n- 61 clinics / health centers: closest is CityLab 2, 103 m\n- 2 fire stations: closest is Batangas Filipino Chinese Volunteer Fire Brigade, 1.6 km\n- 3 police stations: closest is Batangas City Police Station, 1.5 km\n- 43 pharmacies: closest is Green Pharmacy, 65 m\n- 1 town / city hall: closest is Bahay Pamahalaan Lungsod ng Batangas, 1.5 km\n- 27 barangay halls: closest is Barangay 6 Hall, 724 m\n- 10 markets / groceries: closest is Pic N' Save, 710 m\n\nAsk for a type (e.g. \"nearest hospital\") to get road distances and directions."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-way-508042958",
+       "name": "Batangas Medical Center",
+       "type": "evacuation_center",
+       "distance_m": 86,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-653867138",
+       "name": "Philippine Red Cross",
+       "type": "hospital",
+       "distance_m": 172,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-node-8401415815",
+       "name": "CityLab 2",
+       "type": "health_center",
+       "distance_m": 103,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-813702444",
+       "name": "Batangas Filipino Chinese Volunteer Fire Brigade",
+       "type": "fire_station",
+       "distance_m": 1598,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-node-1428621064",
+       "name": "Batangas City Police Station",
+       "type": "police",
+       "distance_m": 1549,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-node-8692564306",
+       "name": "Green Pharmacy",
+       "type": "pharmacy",
+       "distance_m": 65,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-131893368",
+       "name": "Bahay Pamahalaan Lungsod ng Batangas",
+       "type": "town_hall",
+       "distance_m": 1532,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-468989126",
+       "name": "Barangay 6 Hall",
+       "type": "barangay_hall",
+       "distance_m": 724,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-366313802",
+       "name": "Pic N' Save",
+       "type": "market",
+       "distance_m": 710,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How far is it?",
+    "location_id": "osm-way-129493352",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    }
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Batangas State University is 2.5 km on foot (about 33 min) or 3.2 km by car (about 7 min) from your location. Straight-line distance: 2.0 km.\n\nThe walking route is shown on the map. Route uses saved OpenStreetMap road data and steers around roads people reported flooded or blocked, but reports can be missing or wrong. It does not know about other floods, landslides, closures, or damage. Follow official instructions and never walk or drive through floodwater."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "status": "route",
+     "route": {
+      "mode": "walk",
+      "distance_m": 2484,
+      "duration_min": 33,
+      "straight_line_m": 2005,
+      "coords": [
+       [
+        121.066,
+        13.7672
+       ],
+       [
+        121.06587,
+        13.767222
+       ],
+       [
+        121.06583,
+        13.767
+       ],
+       [
+        121.065781,
+        13.766699
+       ],
+       [
+        121.065661,
+        13.766043
+       ],
+       [
+        121.065661,
+        13.766043
+       ],
+       [
+        121.065542,
+        13.765518
+       ],
+       [
+        121.065542,
+        13.765518
+       ],
+       [
+        121.065488,
+        13.765533
+       ],
+       [
+        121.065418,
+        13.765549
+       ],
+       [
+        121.065126,
+        13.765601
+       ],
+       [
+        121.065042,
+        13.765572
+       ],
+       [
+        121.064992,
+        13.765263
+       ],
+       [
+        121.064906,
+        13.765276
+       ],
+       [
+        121.064891,
+        13.765279
+       ],
+       [
+        121.064756,
+        13.765291
+       ],
+       [
+        121.064756,
+        13.765291
+       ],
+       [
+        121.06469,
+        13.764927
+       ],
+       [
+        121.064681,
+        13.764871
+       ],
+       [
+        121.064638,
+        13.764605
+       ],
+       [
+        121.064626,
+        13.764525
+       ],
+       [
+        121.064617,
+        13.764469
+       ],
+       [
+        121.064567,
+        13.764187
+       ],
+       [
+        121.064515,
+        13.763909
+       ],
+       [
+        121.064515,
+        13.763909
+       ],
+       [
+        121.064416,
+        13.76353
+       ],
+       [
+        121.064309,
+        13.763144
+       ],
+       [
+        121.064165,
+        13.762647
+       ],
+       [
+        121.064115,
+        13.762448
+       ],
+       [
+        121.06397,
+        13.761998
+       ],
+       [
+        121.063919,
+        13.761849
+       ],
+       [
+        121.063844,
+        13.761635
+       ],
+       [
+        121.063828,
+        13.761592
+       ],
+       [
+        121.063753,
+        13.761364
+       ],
+       [
+        121.063559,
+        13.760799
+       ],
+       [
+        121.063527,
+        13.760709
+       ],
+       [
+        121.063458,
+        13.760506
+       ],
+       [
+        121.063447,
+        13.760474
+       ],
+       [
+        121.063395,
+        13.760324
+       ],
+       [
+        121.063372,
+        13.760259
+       ],
+       [
+        121.063347,
+        13.760188
+       ],
+       [
+        121.063271,
+        13.759977
+       ],
+       [
+        121.063185,
+        13.759722
+       ],
+       [
+        121.063077,
+        13.759368
+       ],
+       [
+        121.063045,
+        13.759187
+       ],
+       [
+        121.063045,
+        13.759187
+       ],
+       [
+        121.061584,
+        13.758964
+       ],
+       [
+        121.06131,
+        13.758924
+       ],
+       [
+        121.060657,
+        13.758832
+       ],
+       [
+        121.059374,
+        13.758623
+       ],
+       [
+        121.059247,
+        13.758604
+       ],
+       [
+        121.058955,
+        13.758565
+       ],
+       [
+        121.058012,
+        13.758417
+       ],
+       [
+        121.057905,
+        13.758402
+       ],
+       [
+        121.057584,
+        13.758347
+       ],
+       [
+        121.056984,
+        13.758232
+       ],
+       [
+        121.056854,
+        13.758215
+       ],
+       [
+        121.056788,
+        13.758221
+       ],
+       [
+        121.056712,
+        13.75824
+       ],
+       [
+        121.05663,
+        13.758281
+       ],
+       [
+        121.05663,
+        13.758281
+       ],
+       [
+        121.056516,
+        13.758123
+       ],
+       [
+        121.056362,
+        13.75789
+       ],
+       [
+        121.056225,
+        13.75768
+       ],
+       [
+        121.05616,
+        13.757569
+       ],
+       [
+        121.056113,
+        13.75747
+       ],
+       [
+        121.056078,
+        13.757402
+       ],
+       [
+        121.056049,
+        13.757312
+       ],
+       [
+        121.056018,
+        13.75715
+       ],
+       [
+        121.055999,
+        13.757
+       ],
+       [
+        121.055993,
+        13.756941
+       ],
+       [
+        121.055988,
+        13.756868
+       ],
+       [
+        121.055985,
+        13.75678
+       ],
+       [
+        121.055988,
+        13.75667
+       ],
+       [
+        121.055988,
+        13.756581
+       ],
+       [
+        121.055997,
+        13.756267
+       ],
+       [
+        121.056,
+        13.756183
+       ],
+       [
+        121.056004,
+        13.756069
+       ],
+       [
+        121.056004,
+        13.756069
+       ],
+       [
+        121.055935,
+        13.756004
+       ],
+       [
+        121.055837,
+        13.755966
+       ],
+       [
+        121.055417,
+        13.755889
+       ],
+       [
+        121.055395,
+        13.755886
+       ],
+       [
+        121.055343,
+        13.755877
+       ],
+       [
+        121.055205,
+        13.755852
+       ],
+       [
+        121.055006,
+        13.755816
+       ],
+       [
+        121.054847,
+        13.755788
+       ],
+       [
+        121.054704,
+        13.755759
+       ],
+       [
+        121.054564,
+        13.755731
+       ],
+       [
+        121.054297,
+        13.755678
+       ],
+       [
+        121.053985,
+        13.755616
+       ],
+       [
+        121.05371,
+        13.755566
+       ],
+       [
+        121.053619,
+        13.755548
+       ],
+       [
+        121.053577,
+        13.755541
+       ],
+       [
+        121.053577,
+        13.755541
+       ],
+       [
+        121.053593,
+        13.755483
+       ],
+       [
+        121.053526,
+        13.75546
+       ],
+       [
+        121.053082,
+        13.755368
+       ],
+       [
+        121.053082,
+        13.75534
+       ],
+       [
+        121.053081,
+        13.75528
+       ],
+       [
+        121.053071,
+        13.755187
+       ],
+       [
+        121.053071,
+        13.755117
+       ],
+       [
+        121.052873,
+        13.755074
+       ],
+       [
+        121.052873,
+        13.755074
+       ],
+       [
+        121.052884,
+        13.754985
+       ],
+       [
+        121.053,
+        13.754494
+       ],
+       [
+        121.05301,
+        13.754452
+       ],
+       [
+        121.053039,
+        13.754341
+       ],
+       [
+        121.053054,
+        13.754278
+       ],
+       [
+        121.053072,
+        13.754185
+       ],
+       [
+        121.053082,
+        13.754137
+       ],
+       [
+        121.053128,
+        13.754146
+       ]
+      ],
+      "steps": [
+       {
+        "instruction": "Head south on Roxas Road",
+        "distance_m": 132,
+        "lat": 13.767222,
+        "lng": 121.06587,
+        "road": "Roxas Road"
+       },
+       {
+        "instruction": "Continue on the service road",
+        "distance_m": 60,
+        "lat": 13.766043,
+        "lng": 121.065661,
+        "road": "service road"
+       },
+       {
+        "instruction": "Turn right onto the footpath",
+        "distance_m": 116,
+        "lat": 13.765518,
+        "lng": 121.065542,
+        "road": "footpath"
+       },
+       {
+        "instruction": "Turn left onto Tolentino Road",
+        "distance_m": 155,
+        "lat": 13.765291,
+        "lng": 121.064756,
+        "road": "Tolentino Road"
+       },
+       {
+        "instruction": "Continue on P. Herrera Street",
+        "distance_m": 546,
+        "lat": 13.763909,
+        "lng": 121.064515,
+        "road": "P. Herrera Street"
+       },
+       {
+        "instruction": "Turn right onto C. Tirona Street",
+        "distance_m": 704,
+        "lat": 13.759187,
+        "lng": 121.063045,
+        "road": "C. Tirona Street"
+       },
+       {
+        "instruction": "Turn left onto D. Silang Street",
+        "distance_m": 262,
+        "lat": 13.758281,
+        "lng": 121.05663,
+        "road": "D. Silang Street"
+       },
+       {
+        "instruction": "Bear right onto Rizal Avenue",
+        "distance_m": 271,
+        "lat": 13.756069,
+        "lng": 121.056004,
+        "road": "Rizal Avenue"
+       },
+       {
+        "instruction": "Continue on the footpath",
+        "distance_m": 113,
+        "lat": 13.755541,
+        "lng": 121.053577,
+        "road": "footpath"
+       },
+       {
+        "instruction": "Turn left onto Galauran Drive",
+        "distance_m": 106,
+        "lat": 13.755074,
+        "lng": 121.052873,
+        "road": "Galauran Drive"
+       },
+       {
+        "instruction": "Arrive at Batangas State University",
+        "distance_m": 0,
+        "lat": 13.754146,
+        "lng": 121.053128,
+        "road": null
+       }
+      ],
+      "data_date": "2026-10-09",
+      "edges": [
+       9770,
+       9771,
+       9772,
+       9773,
+       9774,
+       9775,
+       9950,
+       9951,
+       9952,
+       9953,
+       9954,
+       9955,
+       9956,
+       9957,
+       35234,
+       35235,
+       35236,
+       35237,
+       46489,
+       46490,
+       54080,
+       54081,
+       67884,
+       67885,
+       67886,
+       67887,
+       67888,
+       68139,
+       68140,
+       68141,
+       68142,
+       68143,
+       68187,
+       68188,
+       68189,
+       68192,
+       68211,
+       68212,
+       68213,
+       68214,
+       68215,
+       71070,
+       71071,
+       75008,
+       75038,
+       75039,
+       75184,
+       75185,
+       75378,
+       75379,
+       80330,
+       80339,
+       80340,
+       80343,
+       112143,
+       112231,
+       117181,
+       139557,
+       155720,
+       156406,
+       159008,
+       159009,
+       159011,
+       160245,
+       160246,
+       180561,
+       180562
+      ],
+      "avoided_reports": [],
+      "through_reports": [],
+      "to_id": "osm-way-129493352",
+      "to_name": "Batangas State University",
+      "warning": "Route uses saved OpenStreetMap road data and steers around roads people reported flooded or blocked, but reports can be missing or wrong. It does not know about other floods, landslides, closures, or damage. Follow official instructions and never walk or drive through floodwater."
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "Contact number?",
+    "location_id": "osm-way-129493352"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Phone for Batangas State University (saved from OpenStreetMap, may be outdated): +63 43 980 0385 ext. 1136.\nFor emergencies, call 911."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "status": "info",
+     "phone": "+63 43 980 0385 ext. 1136"
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "Is it open?",
+    "location_id": "osm-way-129493352"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "No opening hours are saved for Batangas State University. The app cannot tell whether it is open right now. Call ahead if a number is available, or ask your barangay."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "status": "info"
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How do I get there?",
+    "location_id": "osm-way-129493352",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "travel_mode": "drive"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Driving route to Batangas State University: 3.2 km, about 7 min.\n1. Head north on Roxas Road (256 m)\n2. Continue on Roxas Road Extension (39 m)\n3. Turn left onto the service road (98 m)\n4. Turn right onto Tolentino Road (88 m)\n5. Turn left onto National Highway 4 (1333 m)\n6. Bear left onto P. Burgos Street (423 m)\n7. Turn right onto C. Tirona Street (101 m)\n8. Turn left onto P. Zamora Street (223 m)\n9. Turn right onto Rizal Avenue (524 m)\n10. Continue on Galauran Drive (116 m)\n11. Arrive at Batangas State University\n\nRoute uses saved OpenStreetMap road data and steers around roads people reported flooded or blocked, but reports can be missing or wrong. It does not know about other floods, landslides, closures, or damage. Follow official instructions and never walk or drive through floodwater."
+    },
+    {
+     "type": "done",
+     "status": "route",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "route": {
+      "mode": "drive",
+      "distance_m": 3221,
+      "duration_min": 7,
+      "straight_line_m": 2005,
+      "coords": [
+       [
+        121.066,
+        13.7672
+       ],
+       [
+        121.06587,
+        13.767222
+       ],
+       [
+        121.06593,
+        13.767555
+       ],
+       [
+        121.065996,
+        13.767911
+       ],
+       [
+        121.066,
+        13.767936
+       ],
+       [
+        121.066074,
+        13.768293
+       ],
+       [
+        121.066215,
+        13.769072
+       ],
+       [
+        121.066299,
+        13.769501
+       ],
+       [
+        121.066299,
+        13.769501
+       ],
+       [
+        121.066366,
+        13.769848
+       ],
+       [
+        121.066366,
+        13.769848
+       ],
+       [
+        121.066198,
+        13.76987
+       ],
+       [
+        121.065495,
+        13.770096
+       ],
+       [
+        121.065495,
+        13.770096
+       ],
+       [
+        121.065527,
+        13.770625
+       ],
+       [
+        121.065532,
+        13.77069
+       ],
+       [
+        121.06554,
+        13.770759
+       ],
+       [
+        121.065478,
+        13.770774
+       ],
+       [
+        121.065406,
+        13.77079
+       ],
+       [
+        121.065406,
+        13.77079
+       ],
+       [
+        121.065228,
+        13.77047
+       ],
+       [
+        121.065192,
+        13.770408
+       ],
+       [
+        121.065094,
+        13.770217
+       ],
+       [
+        121.064806,
+        13.769759
+       ],
+       [
+        121.064666,
+        13.769554
+       ],
+       [
+        121.064524,
+        13.769335
+       ],
+       [
+        121.0643,
+        13.768993
+       ],
+       [
+        121.064107,
+        13.768692
+       ],
+       [
+        121.064067,
+        13.768635
+       ],
+       [
+        121.063938,
+        13.768453
+       ],
+       [
+        121.063784,
+        13.768224
+       ],
+       [
+        121.06362,
+        13.767992
+       ],
+       [
+        121.063527,
+        13.767861
+       ],
+       [
+        121.063429,
+        13.767725
+       ],
+       [
+        121.06335,
+        13.767632
+       ],
+       [
+        121.063203,
+        13.767464
+       ],
+       [
+        121.063086,
+        13.767324
+       ],
+       [
+        121.062896,
+        13.767106
+       ],
+       [
+        121.062635,
+        13.766832
+       ],
+       [
+        121.062594,
+        13.76679
+       ],
+       [
+        121.062563,
+        13.766762
+       ],
+       [
+        121.062519,
+        13.766723
+       ],
+       [
+        121.062477,
+        13.766681
+       ],
+       [
+        121.062456,
+        13.766659
+       ],
+       [
+        121.062332,
+        13.766536
+       ],
+       [
+        121.062167,
+        13.76637
+       ],
+       [
+        121.061986,
+        13.766189
+       ],
+       [
+        121.061705,
+        13.765922
+       ],
+       [
+        121.061532,
+        13.765754
+       ],
+       [
+        121.061329,
+        13.765562
+       ],
+       [
+        121.06122,
+        13.765479
+       ],
+       [
+        121.061118,
+        13.765409
+       ],
+       [
+        121.060715,
+        13.765166
+       ],
+       [
+        121.060434,
+        13.765006
+       ],
+       [
+        121.060202,
+        13.76487
+       ],
+       [
+        121.060057,
+        13.764781
+       ],
+       [
+        121.059872,
+        13.764668
+       ],
+       [
+        121.059389,
+        13.764378
+       ],
+       [
+        121.059077,
+        13.764192
+       ],
+       [
+        121.058835,
+        13.764047
+       ],
+       [
+        121.058716,
+        13.763972
+       ],
+       [
+        121.058596,
+        13.763889
+       ],
+       [
+        121.05847,
+        13.763801
+       ],
+       [
+        121.058309,
+        13.763673
+       ],
+       [
+        121.0582,
+        13.76358
+       ],
+       [
+        121.058091,
+        13.763479
+       ],
+       [
+        121.057992,
+        13.763373
+       ],
+       [
+        121.057911,
+        13.763278
+       ],
+       [
+        121.057857,
+        13.76321
+       ],
+       [
+        121.057742,
+        13.763056
+       ],
+       [
+        121.057663,
+        13.762941
+       ],
+       [
+        121.057635,
+        13.762895
+       ],
+       [
+        121.057618,
+        13.762867
+       ],
+       [
+        121.057483,
+        13.762643
+       ],
+       [
+        121.05744,
+        13.762582
+       ],
+       [
+        121.057223,
+        13.762271
+       ],
+       [
+        121.057114,
+        13.762146
+       ],
+       [
+        121.057114,
+        13.762146
+       ],
+       [
+        121.057201,
+        13.761695
+       ],
+       [
+        121.057259,
+        13.761426
+       ],
+       [
+        121.057305,
+        13.761213
+       ],
+       [
+        121.057316,
+        13.761163
+       ],
+       [
+        121.057413,
+        13.760732
+       ],
+       [
+        121.057475,
+        13.760436
+       ],
+       [
+        121.057513,
+        13.760244
+       ],
+       [
+        121.057522,
+        13.760202
+       ],
+       [
+        121.057534,
+        13.760153
+       ],
+       [
+        121.057571,
+        13.759991
+       ],
+       [
+        121.057611,
+        13.759811
+       ],
+       [
+        121.057635,
+        13.759707
+       ],
+       [
+        121.057704,
+        13.759405
+       ],
+       [
+        121.057717,
+        13.759348
+       ],
+       [
+        121.057738,
+        13.759254
+       ],
+       [
+        121.057764,
+        13.759141
+       ],
+       [
+        121.057804,
+        13.758945
+       ],
+       [
+        121.057892,
+        13.758474
+       ],
+       [
+        121.057905,
+        13.758402
+       ],
+       [
+        121.057905,
+        13.758402
+       ],
+       [
+        121.057584,
+        13.758347
+       ],
+       [
+        121.056984,
+        13.758232
+       ],
+       [
+        121.056984,
+        13.758232
+       ],
+       [
+        121.057043,
+        13.757723
+       ],
+       [
+        121.057058,
+        13.757601
+       ],
+       [
+        121.057068,
+        13.757543
+       ],
+       [
+        121.057251,
+        13.75623
+       ],
+       [
+        121.057251,
+        13.75623
+       ],
+       [
+        121.056972,
+        13.756203
+       ],
+       [
+        121.056632,
+        13.756164
+       ],
+       [
+        121.056569,
+        13.756158
+       ],
+       [
+        121.056359,
+        13.756125
+       ],
+       [
+        121.056102,
+        13.756085
+       ],
+       [
+        121.056004,
+        13.756069
+       ],
+       [
+        121.055938,
+        13.756055
+       ],
+       [
+        121.055827,
+        13.756034
+       ],
+       [
+        121.055408,
+        13.755957
+       ],
+       [
+        121.055228,
+        13.755924
+       ],
+       [
+        121.054997,
+        13.755882
+       ],
+       [
+        121.054837,
+        13.755852
+       ],
+       [
+        121.054278,
+        13.755742
+       ],
+       [
+        121.053967,
+        13.755681
+       ],
+       [
+        121.053697,
+        13.755626
+       ],
+       [
+        121.053292,
+        13.755552
+       ],
+       [
+        121.05283,
+        13.755466
+       ],
+       [
+        121.052791,
+        13.755459
+       ],
+       [
+        121.052805,
+        13.755398
+       ],
+       [
+        121.052857,
+        13.755264
+       ],
+       [
+        121.052858,
+        13.755257
+       ],
+       [
+        121.052876,
+        13.755178
+       ],
+       [
+        121.052879,
+        13.755159
+       ],
+       [
+        121.052879,
+        13.755159
+       ],
+       [
+        121.052873,
+        13.755074
+       ],
+       [
+        121.052884,
+        13.754985
+       ],
+       [
+        121.053,
+        13.754494
+       ],
+       [
+        121.05301,
+        13.754452
+       ],
+       [
+        121.053039,
+        13.754341
+       ],
+       [
+        121.053054,
+        13.754278
+       ],
+       [
+        121.053072,
+        13.754185
+       ],
+       [
+        121.053082,
+        13.754137
+       ],
+       [
+        121.053128,
+        13.754146
+       ]
+      ],
+      "steps": [
+       {
+        "instruction": "Head north on Roxas Road",
+        "distance_m": 256,
+        "lat": 13.767222,
+        "lng": 121.06587,
+        "road": "Roxas Road"
+       },
+       {
+        "instruction": "Continue on Roxas Road Extension",
+        "distance_m": 39,
+        "lat": 13.769501,
+        "lng": 121.066299,
+        "road": "Roxas Road Extension"
+       },
+       {
+        "instruction": "Turn left onto the service road",
+        "distance_m": 98,
+        "lat": 13.769848,
+        "lng": 121.066366,
+        "road": "service road"
+       },
+       {
+        "instruction": "Turn right onto Tolentino Road",
+        "distance_m": 88,
+        "lat": 13.770096,
+        "lng": 121.065495,
+        "road": "Tolentino Road"
+       },
+       {
+        "instruction": "Turn left onto National Highway 4",
+        "distance_m": 1333,
+        "lat": 13.77079,
+        "lng": 121.065406,
+        "road": "National Highway 4"
+       },
+       {
+        "instruction": "Bear left onto P. Burgos Street",
+        "distance_m": 423,
+        "lat": 13.762146,
+        "lng": 121.057114,
+        "road": "P. Burgos Street"
+       },
+       {
+        "instruction": "Turn right onto C. Tirona Street",
+        "distance_m": 101,
+        "lat": 13.758402,
+        "lng": 121.057905,
+        "road": "C. Tirona Street"
+       },
+       {
+        "instruction": "Turn left onto P. Zamora Street",
+        "distance_m": 223,
+        "lat": 13.758232,
+        "lng": 121.056984,
+        "road": "P. Zamora Street"
+       },
+       {
+        "instruction": "Turn right onto Rizal Avenue",
+        "distance_m": 524,
+        "lat": 13.75623,
+        "lng": 121.057251,
+        "road": "Rizal Avenue"
+       },
+       {
+        "instruction": "Continue on Galauran Drive",
+        "distance_m": 116,
+        "lat": 13.755159,
+        "lng": 121.052879,
+        "road": "Galauran Drive"
+       },
+       {
+        "instruction": "Arrive at Batangas State University",
+        "distance_m": 0,
+        "lat": 13.754146,
+        "lng": 121.053128,
+        "road": null
+       }
+      ],
+      "data_date": "2026-10-09",
+      "edges": [
+       2750,
+       4676,
+       4677,
+       34440,
+       46490,
+       46491,
+       46492,
+       46493,
+       46494,
+       46495,
+       54119,
+       67876,
+       67877,
+       67878,
+       67879,
+       67880,
+       67881,
+       67882,
+       67902,
+       67903,
+       68133,
+       68134,
+       68135,
+       68136,
+       68137,
+       68138,
+       68139,
+       68179,
+       68181,
+       68210,
+       68211,
+       68212,
+       68213,
+       68214,
+       68215,
+       68460,
+       68461,
+       68462,
+       68463,
+       68464,
+       68465,
+       68466,
+       68467,
+       68468,
+       68469,
+       68470,
+       68471,
+       68472,
+       68473,
+       71194,
+       71195,
+       71196,
+       71197,
+       72248,
+       75380,
+       75381,
+       75382,
+       76949,
+       80325,
+       80326,
+       113378,
+       113379,
+       113380,
+       115545,
+       115546,
+       115547,
+       115548,
+       115549,
+       115550,
+       115551,
+       141456,
+       141760,
+       141765,
+       141784,
+       158560,
+       158561,
+       160247,
+       160248
+      ],
+      "avoided_reports": [],
+      "through_reports": [],
+      "to_id": "osm-way-129493352",
+      "to_name": "Batangas State University",
+      "warning": "Route uses saved OpenStreetMap road data and steers around roads people reported flooded or blocked, but reports can be missing or wrong. It does not know about other floods, landslides, closures, or damage. Follow official instructions and never walk or drive through floodwater."
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How do I get there?",
+    "location_id": "osm-way-129493352"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "To get directions, set your location with the \"Set my location\" button on the map. Then ask again or press Directions."
+    },
+    {
+     "type": "done",
+     "status": "needs_input",
+     "sources": [],
+     "location_used": null
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "nearest hospital"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "To answer that, set your location with the \"Set my location\" button on the map, then ask again."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "needs_input"
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How do I stop bleeding?"
+   },
+   "events": [
+    {
+     "type": "passages",
+     "passages": [
+      {
+       "doc": "first-aid-basics.md",
+       "chunk_id": "first-aid-basics#bleeding",
+       "doc_title": "Basic First Aid",
+       "title": "Bleeding",
+       "text": "Press firmly on the wound with a clean cloth or bandage and keep pressing. If blood soaks through, add more cloth on top without removing the first layer. Raise the injured arm or leg above heart level if it does not cause more pain. Seek medical help for deep wounds or bleeding that does not stop."
+      }
+     ]
+    },
+    {
+     "type": "done",
+     "status": "grounded",
+     "sources": [
+      {
+       "doc": "first-aid-basics.md",
+       "chunk_id": "first-aid-basics#bleeding",
+       "title": "Bleeding",
+       "excerpt": "Press firmly on the wound with a clean cloth or bandage and keep pressing. If blood soaks through, add more cloth on top without removing the first layer. Raise the injured arm or leg above heart level if it does not cause more pain. Seek medical help for deep wounds or..."
+      }
+     ],
+     "location_used": null,
+     "summary": "unavailable",
+     "summary_error": "no AI",
+     "timing": {
+      "total_ms": 1
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "What number do I call for an emergency in Batangas City?"
+   },
+   "events": [
+    {
+     "type": "passages",
+     "passages": [
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#batangas-city-emergency-hotlines",
+       "doc_title": "Emergency Hotlines",
+       "title": "Batangas City emergency hotlines",
+       "text": "Batangas City CDRRMO (disaster and rescue): (043) 702-3902. 24/7 Mayor's Action Center hotline: 0999-222-6626; Mayor's Action Center: (043) 786-1920. BFP Batangas City (fire): (043) 425-7163. PNP Batangas City (police): (043) 702-1974. Batangas Medical Center: (043) 723-0911. Nazareth Hospital: (043) 723-4144. City Health Office: (043) 723-8890. City Social Welfare and Development: (043) 723-2357. Philippine Red Cross (Batangas City listing): 0951-282-0000. VAWC Batangas City: 0956-826-7017. Source: Batangas City Government official website, Emergency Hotlines box."
+      },
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#lipa-city-emergency-hotlines",
+       "doc_title": "Emergency Hotlines",
+       "title": "Lipa City emergency hotlines",
+       "text": "Lipa CDRRMO (Lipa Rescue): 0915-463-5005, (043) 756-0127, (043) 757-5164. Lipa Bureau of Fire Protection: 0927-575-8065, (043) 757-4618. Lipa PNP (police): 0977-744-9692, (043) 702-3832. Lipa Traffic Management Division: (043) 702-6454, (043) 404-9152. Red Cross Lipa: 0998-957-0443, (043) 740-0768. Source: City Government of Lipa official website, For Residents page."
+      }
+     ]
+    },
+    {
+     "type": "done",
+     "status": "grounded",
+     "sources": [
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#batangas-city-emergency-hotlines",
+       "title": "Batangas City emergency hotlines",
+       "excerpt": "Batangas City CDRRMO (disaster and rescue): (043) 702-3902. 24/7 Mayor's Action Center hotline: 0999-222-6626; Mayor's Action Center: (043) 786-1920. BFP Batangas City (fire): (043) 425-7163. PNP Batangas City (police): (043) 702-1974. Batangas Medical Center: (043) 723-0911...."
+      },
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#lipa-city-emergency-hotlines",
+       "title": "Lipa City emergency hotlines",
+       "excerpt": "Lipa CDRRMO (Lipa Rescue): 0915-463-5005, (043) 756-0127, (043) 757-5164. Lipa Bureau of Fire Protection: 0927-575-8065, (043) 757-4618. Lipa PNP (police): 0977-744-9692, (043) 702-3832. Lipa Traffic Management Division: (043) 702-6454, (043) 404-9152. Red Cross Lipa:..."
+      },
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#national-emergency-hotline-911",
+       "title": "National emergency hotline 911",
+       "excerpt": "For any emergency anywhere in the Philippines (police, fire, medical, rescue), call 911. It is the national emergency hotline. Source: DZRH News national hotline list, 7 January 2026."
+      }
+     ],
+     "location_used": null,
+     "summary": "unavailable",
+     "summary_error": "no AI",
+     "timing": {
+      "total_ms": 0
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "What is the capital of France?"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "I can't find this in the saved emergency information on this device, so I can't answer it reliably. For current conditions or anything urgent, follow official announcements and local authorities, or call 911."
+    },
+    {
+     "type": "done",
+     "status": "uncertain",
+     "sources": [],
+     "location_used": null
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "What is the capital of France?",
+    "previous": {
+     "question": "How do I stop bleeding?",
+     "answer": "Press firmly."
+    }
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "I can't find this in the saved emergency information on this device, so I can't answer it reliably. For current conditions or anything urgent, follow official announcements and local authorities, or call 911."
+    },
+    {
+     "type": "done",
+     "status": "uncertain",
+     "sources": [],
+     "location_used": null
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "para sa matanda?",
+    "previous": {
+     "question": "What should I pack in my go-bag?",
+     "answer": "Water and food."
+    }
+   },
+   "events": [
+    {
+     "type": "passages",
+     "passages": [
+      {
+       "doc": "go-bag.md",
+       "chunk_id": "go-bag#older-adults-persons-with-disabilities-and-pets",
+       "doc_title": "Emergency Go-Bag Checklist",
+       "title": "Older adults, persons with disabilities, and pets",
+       "text": "Pack extra maintenance medicine, eyeglasses, hearing-aid batteries, mobility aids, and adult diapers if needed. Write down medical conditions and doctor contacts. For pets, pack food, water, a leash or carrier, and vaccination records; ask in advance whether your evacuation site accepts pets."
+      },
+      {
+       "doc": "power-outage.md",
+       "chunk_id": "power-outage#heat-during-outages",
+       "doc_title": "Brownout and Power Outage Safety",
+       "title": "Heat during outages",
+       "text": "Without fans or air conditioning, drink water often, wear light clothing, and rest in the coolest shaded part of the house. Check on older adults, infants, and sick people, who are more affected by heat."
+      }
+     ]
+    },
+    {
+     "type": "done",
+     "status": "grounded",
+     "sources": [
+      {
+       "doc": "go-bag.md",
+       "chunk_id": "go-bag#older-adults-persons-with-disabilities-and-pets",
+       "title": "Older adults, persons with disabilities, and pets",
+       "excerpt": "Pack extra maintenance medicine, eyeglasses, hearing-aid batteries, mobility aids, and adult diapers if needed. Write down medical conditions and doctor contacts. For pets, pack food, water, a leash or carrier, and vaccination records; ask in advance whether your evacuation..."
+      },
+      {
+       "doc": "power-outage.md",
+       "chunk_id": "power-outage#heat-during-outages",
+       "title": "Heat during outages",
+       "excerpt": "Without fans or air conditioning, drink water often, wear light clothing, and rest in the coolest shaded part of the house. Check on older adults, infants, and sick people, who are more affected by heat."
+      }
+     ],
+     "location_used": null,
+     "summary": "unavailable",
+     "summary_error": "no AI",
+     "timing": {
+      "total_ms": 0
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "what about for elderly people?",
+    "previous": {
+     "question": "What should I pack in my go-bag?",
+     "answer": "Water and food."
+    }
+   },
+   "events": [
+    {
+     "type": "passages",
+     "passages": [
+      {
+       "doc": "power-outage.md",
+       "chunk_id": "power-outage#heat-during-outages",
+       "doc_title": "Brownout and Power Outage Safety",
+       "title": "Heat during outages",
+       "text": "Without fans or air conditioning, drink water often, wear light clothing, and rest in the coolest shaded part of the house. Check on older adults, infants, and sick people, who are more affected by heat."
+      },
+      {
+       "doc": "go-bag.md",
+       "chunk_id": "go-bag#older-adults-persons-with-disabilities-and-pets",
+       "doc_title": "Emergency Go-Bag Checklist",
+       "title": "Older adults, persons with disabilities, and pets",
+       "text": "Pack extra maintenance medicine, eyeglasses, hearing-aid batteries, mobility aids, and adult diapers if needed. Write down medical conditions and doctor contacts. For pets, pack food, water, a leash or carrier, and vaccination records; ask in advance whether your evacuation site accepts pets."
+      }
+     ]
+    },
+    {
+     "type": "done",
+     "status": "grounded",
+     "sources": [
+      {
+       "doc": "power-outage.md",
+       "chunk_id": "power-outage#heat-during-outages",
+       "title": "Heat during outages",
+       "excerpt": "Without fans or air conditioning, drink water often, wear light clothing, and rest in the coolest shaded part of the house. Check on older adults, infants, and sick people, who are more affected by heat."
+      },
+      {
+       "doc": "go-bag.md",
+       "chunk_id": "go-bag#older-adults-persons-with-disabilities-and-pets",
+       "title": "Older adults, persons with disabilities, and pets",
+       "excerpt": "Pack extra maintenance medicine, eyeglasses, hearing-aid batteries, mobility aids, and adult diapers if needed. Write down medical conditions and doctor contacts. For pets, pack food, water, a leash or carrier, and vaccination records; ask in advance whether your evacuation..."
+      }
+     ],
+     "location_used": null,
+     "summary": "unavailable",
+     "summary_error": "no AI",
+     "timing": {
+      "total_ms": 0
+     }
+    }
+   ]
+  }
+ ],
+ "normalize": [
+  [
+   "Where is the nearest evacuation center?",
+   "where is the nearest evacuation center?"
+  ],
+  [
+   "Saan ang pinakamalapit na evacuation center?",
+   "saan ang pinakamalapit na evacuation center?"
+  ],
+  [
+   "nearest evac center",
+   "nearest evacuation center"
+  ],
+  [
+   "neerest evacuaton center",
+   "nearest evacuation center"
+  ],
+  [
+   "were is the nearest evacuation centre",
+   "where is the nearest evacuation center"
+  ],
+  [
+   "evacuation center nearest",
+   "evacuation center nearest"
+  ],
+  [
+   "pinaka-malapit na evacuation center",
+   "pinakamalapit na evacuation center"
+  ],
+  [
+   "NEAREST EVACUATION CENTER PLS",
+   "nearest evacuation center please"
+  ],
+  [
+   "san ang pinakamalapit na evacuation center",
+   "saan ang pinakamalapit na evacuation center"
+  ],
+  [
+   "closest shelter",
+   "closest shelter"
+  ],
+  [
+   "saan pwede lumikas",
+   "saan pwede lumikas"
+  ],
+  [
+   "where can we evacuate near me",
+   "where can we evacuate near me"
+  ],
+  [
+   "Nearest hospital?",
+   "nearest hospital?"
+  ],
+  [
+   "Pinakamalapit na ospital?",
+   "pinakamalapit na ospital?"
+  ],
+  [
+   "neerest hospitl",
+   "nearest hospital"
+  ],
+  [
+   "nearst hosptal",
+   "nearest hospital"
+  ],
+  [
+   "hospital near me",
+   "hospital near me"
+  ],
+  [
+   "where's the nearest hospital",
+   "where's the nearest hospital"
+  ],
+  [
+   "saan may ospital na malapit",
+   "saan may ospital na malapit"
+  ],
+  [
+   "closest hospital pls",
+   "closest hospital please"
+  ],
+  [
+   "I need a hospital near me",
+   "i need a hospital near me"
+  ],
+  [
+   "wer is the hospital",
+   "where is the hospital"
+  ],
+  [
+   "saan ang pinakamalapit na ospitl?",
+   "saan ang pinakamalapit na ospital?"
+  ],
+  [
+   "Nearest clinic?",
+   "nearest clinic?"
+  ],
+  [
+   "Saan may klinika?",
+   "saan may klinika?"
+  ],
+  [
+   "nearest health center",
+   "nearest health center"
+  ],
+  [
+   "nearest clinik",
+   "nearest clinic"
+  ],
+  [
+   "where can i see a doctor near me",
+   "where can i see a doctor near me"
+  ],
+  [
+   "Where can I buy medicine?",
+   "where can i buy medicine?"
+  ],
+  [
+   "Saan may botika?",
+   "saan may botika?"
+  ],
+  [
+   "saan makakabili ng gamot",
+   "saan makakabili ng gamot"
+  ],
+  [
+   "nearest pharmcy",
+   "nearest pharmacy"
+  ],
+  [
+   "where can i by medicin",
+   "where can i by medicine"
+  ],
+  [
+   "drugstore near me",
+   "drugstore near me"
+  ],
+  [
+   "Nearest police station?",
+   "nearest police station?"
+  ],
+  [
+   "Saan ang presinto?",
+   "saan ang presinto?"
+  ],
+  [
+   "saan may pulis",
+   "saan may pulis"
+  ],
+  [
+   "neareset polic station",
+   "nearest police station"
+  ],
+  [
+   "closest police",
+   "closest police"
+  ],
+  [
+   "Nearest fire station?",
+   "nearest fire station?"
+  ],
+  [
+   "Saan ang bumbero?",
+   "saan ang bumbero?"
+  ],
+  [
+   "nearest fire stasion",
+   "nearest fire station"
+  ],
+  [
+   "Nearest rescue?",
+   "nearest rescue?"
+  ],
+  [
+   "Saan may ambulansya?",
+   "saan may ambulansya?"
+  ],
+  [
+   "nearest ambulance pls",
+   "nearest ambulance please"
+  ],
+  [
+   "nearest ambulans",
+   "nearest ambulance"
+  ],
+  [
+   "Where is the town hall?",
+   "where is the town hall?"
+  ],
+  [
+   "Saan ang munisipyo?",
+   "saan ang munisipyo?"
+  ],
+  [
+   "where is the municipal hall",
+   "where is the municipal hall"
+  ],
+  [
+   "were is the city hall",
+   "where is the city hall"
+  ],
+  [
+   "Where is the barangay hall?",
+   "where is the barangay hall?"
+  ],
+  [
+   "saan ang brgy hall",
+   "saan ang barangay hall"
+  ],
+  [
+   "Where can I buy rice?",
+   "where can i buy rice?"
+  ],
+  [
+   "Saan may palengke?",
+   "saan may palengke?"
+  ],
+  [
+   "nearest grocery",
+   "nearest grocery"
+  ],
+  [
+   "saan may grocery",
+   "saan may grocery"
+  ],
+  [
+   "nearest supermarkt",
+   "nearest supermarket"
+  ],
+  [
+   "What's near me?",
+   "what's near me?"
+  ],
+  [
+   "Anong malapit sa akin?",
+   "anong malapit sa akin?"
+  ],
+  [
+   "whats near me",
+   "what's near me"
+  ],
+  [
+   "wat is near me",
+   "what is near me"
+  ],
+  [
+   "what is around here",
+   "what is around here"
+  ],
+  [
+   "Where's the nearest place to go?",
+   "where's the nearest place to go?"
+  ],
+  [
+   "where is the nearest place to go",
+   "where is the nearest place to go"
+  ],
+  [
+   "How far is it from my current location?",
+   "how far is it from my current location?"
+  ],
+  [
+   "Gaano kalayo ito?",
+   "gaano kalayo ito?"
+  ],
+  [
+   "Ilang km papunta dito?",
+   "ilang km papunta dito?"
+  ],
+  [
+   "hw far is it",
+   "how far is it"
+  ],
+  [
+   "how far is it from here",
+   "how far is it from here"
+  ],
+  [
+   "gaano kalyo ito",
+   "gaano kalayo ito"
+  ],
+  [
+   "How long does it take to walk there?",
+   "how long does it take to walk there?"
+  ],
+  [
+   "How do I get there?",
+   "how do i get there?"
+  ],
+  [
+   "Paano pumunta dito?",
+   "paano pumunta dito?"
+  ],
+  [
+   "pano pumunta dito",
+   "paano pumunta dito"
+  ],
+  [
+   "how do i get ther",
+   "how do i get there"
+  ],
+  [
+   "directions please",
+   "directions please"
+  ],
+  [
+   "ano ang daan papunta dito",
+   "ano ang daan papunta dito"
+  ],
+  [
+   "how to go there",
+   "how to go there"
+  ],
+  [
+   "how 2 get there",
+   "how to get there"
+  ],
+  [
+   "Contact number?",
+   "contact number?"
+  ],
+  [
+   "Paano sila tawagan?",
+   "paano sila tawagan?"
+  ],
+  [
+   "whats the phone number of this place",
+   "what's the phone number of this place"
+  ],
+  [
+   "contact numbr?",
+   "contact number?"
+  ],
+  [
+   "Is it open?",
+   "is it open?"
+  ],
+  [
+   "What time does it open?",
+   "what time does it open?"
+  ],
+  [
+   "bukas ba sila ngayon?",
+   "bukas ba sila ngayon?"
+  ],
+  [
+   "wat time does it open",
+   "what time does it open"
+  ],
+  [
+   "Is the road flooded?",
+   "is the road flooded?"
+  ],
+  [
+   "baha ba sa Kumintang?",
+   "baha ba sa kumintang?"
+  ],
+  [
+   "may baha ba dito?",
+   "may baha ba dito?"
+  ],
+  [
+   "is the road flodded",
+   "is the road flooded"
+  ],
+  [
+   "is the rode flooded",
+   "is the rode flooded"
+  ],
+  [
+   "sarado ba ang tulay?",
+   "sarado ba ang tulay?"
+  ],
+  [
+   "is the bridge open",
+   "is the bridge open"
+  ],
+  [
+   "IS P. BURGOS FLOODED",
+   "is p. burgos flooded"
+  ],
+  [
+   "Is it full?",
+   "is it full?"
+  ],
+  [
+   "may bakante pa ba?",
+   "may bakante pa ba?"
+  ],
+  [
+   "is the evacuation center full?",
+   "is the evacuation center full?"
+  ],
+  [
+   "puno na ba ang evacuation center",
+   "puno na ba ang evacuation center"
+  ],
+  [
+   "Is there power in Lipa?",
+   "is there power in lipa?"
+  ],
+  [
+   "brownout ba sa Batangas City?",
+   "brownout ba sa batangas city?"
+  ],
+  [
+   "may kuryente na ba?",
+   "may kuryente na ba?"
+  ],
+  [
+   "is ther power in lipa",
+   "is there power in lipa"
+  ],
+  [
+   "Where can I get drinking water?",
+   "where can i get drinking water?"
+  ],
+  [
+   "saan may tubig?",
+   "saan may tubig?"
+  ],
+  [
+   "Any reports near me?",
+   "any reports near me?"
+  ],
+  [
+   "ano ang balita?",
+   "ano ang balita?"
+  ],
+  [
+   "any updates?",
+   "any updates?"
+  ],
+  [
+   "What does signal no. 3 mean?",
+   "what does signal no. 3 mean?"
+  ],
+  [
+   "ano ang ibig sabihin ng signal no 3",
+   "ano ang ibig sabihin ng signal no 3"
+  ],
+  [
+   "wat does signal number 3 mean",
+   "what does signal number 3 mean"
+  ],
+  [
+   "signal #4 meaning",
+   "signal #4 meaning"
+  ],
+  [
+   "tropical cyclone wind signal",
+   "tropical cyclone wind signal"
+  ],
+  [
+   "When should we evacuate?",
+   "when should we evacuate?"
+  ],
+  [
+   "kailan dapat lumikas?",
+   "kailan dapat lumikas?"
+  ],
+  [
+   "when shud we evacuate",
+   "when should we evacuate"
+  ],
+  [
+   "What should we do during the typhoon?",
+   "what should we do during the typhoon?"
+  ],
+  [
+   "Ano ang gagawin habang may bagyo?",
+   "ano ang gagawin habang may bagyo?"
+  ],
+  [
+   "wat to do durng typhoon",
+   "what to do during typhoon"
+  ],
+  [
+   "What should we prepare before the typhoon arrives?",
+   "what should we prepare before the typhoon arrives?"
+  ],
+  [
+   "how to prepare for a bagyo",
+   "how to prepare for a bagyo"
+  ],
+  [
+   "typhoon is coming what to do",
+   "typhoon is coming what to do"
+  ],
+  [
+   "Is it safe to go home after the typhoon?",
+   "is it safe to go home after the typhoon?"
+  ],
+  [
+   "what to do aftr the typhoon",
+   "what to do after the typhoon"
+  ],
+  [
+   "Is it safe to walk through floodwater?",
+   "is it safe to walk through floodwater?"
+  ],
+  [
+   "Ligtas bang lumusong sa baha?",
+   "ligtas bang lumusong sa baha?"
+  ],
+  [
+   "is it safe to wlak thru floodwater",
+   "is it safe to walk thru floodwater"
+  ],
+  [
+   "can i drive through flood water",
+   "can i drive through flood water"
+  ],
+  [
+   "pwede ba lumusong sa baha",
+   "pwede ba lumusong sa baha"
+  ],
+  [
+   "is it safe to wlak thru flood water?",
+   "is it safe to walk thru flood water?"
+  ],
+  [
+   "What if we're trapped by rising water?",
+   "what if we're trapped by rising water?"
+  ],
+  [
+   "we are traped by rising water",
+   "we are trapped by rising water"
+  ],
+  [
+   "Is the water safe to drink after a flood?",
+   "is the water safe to drink after a flood?"
+  ],
+  [
+   "is tap water safe to drink after baha",
+   "is tap water safe to drink after baha"
+  ],
+  [
+   "What are the symptoms of leptospirosis?",
+   "what are the symptoms of leptospirosis?"
+  ],
+  [
+   "leptospirosis symptons",
+   "leptospirosis symptoms"
+  ],
+  [
+   "sintomas ng leptospirosis",
+   "sintomas ng leptospirosis"
+  ],
+  [
+   "Should I turn off the electricity during a flood?",
+   "should i turn off the electricity during a flood?"
+  ],
+  [
+   "shud i turn off the electrisity when theres flood",
+   "should i turn off the electricity when theres flood"
+  ],
+  [
+   "What are the warning signs of flooding?",
+   "what are the warning signs of flooding?"
+  ],
+  [
+   "signs that a flood is coming",
+   "signs that a flood is coming"
+  ],
+  [
+   "Who do I call about a brownout in Lipa?",
+   "who do i call about a brownout in lipa?"
+  ],
+  [
+   "batelec hotline lipa",
+   "batelec hotline lipa"
+  ],
+  [
+   "Can I run a generator inside the house?",
+   "can i run a generator inside the house?"
+  ],
+  [
+   "can i use generater inside the house",
+   "can i use generator inside the house"
+  ],
+  [
+   "pwede ba generator sa loob ng bahay",
+   "pwede ba generator sa loob ng bahay"
+  ],
+  [
+   "How long is fridge food safe without power?",
+   "how long is fridge food safe without power?"
+  ],
+  [
+   "how long does food last in the fridge during a brownout",
+   "how long does food last in the fridge during a brownout"
+  ],
+  [
+   "How do I save phone battery?",
+   "how do i save phone battery?"
+  ],
+  [
+   "how to save phone batery",
+   "how to save phone battery"
+  ],
+  [
+   "paano makatipid ng baterya ng cellphone",
+   "paano makatipid ng baterya ng cellphone"
+  ],
+  [
+   "Is it safe to use candles?",
+   "is it safe to use candles?"
+  ],
+  [
+   "pwede ba gumamit ng kandila",
+   "pwede ba gumamit ng kandila"
+  ],
+  [
+   "How do we stay cool without electricity?",
+   "how do we stay cool without electricity?"
+  ],
+  [
+   "too hot during brownout",
+   "too hot during brownout"
+  ],
+  [
+   "How do I prepare for a brownout?",
+   "how do i prepare for a brownout?"
+  ],
+  [
+   "What should I put in my go-bag?",
+   "what should i put in my go-bag?"
+  ],
+  [
+   "wat shuld i pack in my gobag",
+   "what should i pack in my go bag"
+  ],
+  [
+   "ano ang laman ng go bag",
+   "ano ang laman ng go bag"
+  ],
+  [
+   "How much water should I pack?",
+   "how much water should i pack?"
+  ],
+  [
+   "how much water per person",
+   "how much water per person"
+  ],
+  [
+   "What should I bring for my baby?",
+   "what should i bring for my baby?"
+  ],
+  [
+   "Anong dapat dalhin para sa sanggol?",
+   "anong dapat dalhin para sa sanggol?"
+  ],
+  [
+   "wat to pack for my baby",
+   "what to pack for my baby"
+  ],
+  [
+   "what should i pack for my lola",
+   "what should i pack for my lola"
+  ],
+  [
+   "go bag for elderly",
+   "go bag for elderly"
+  ],
+  [
+   "what to bring for my dog",
+   "what to bring for my dog"
+  ],
+  [
+   "What documents should I bring?",
+   "what documents should i bring?"
+  ],
+  [
+   "anong dokumento ang dadalhin",
+   "anong documents ang dalhin"
+  ],
+  [
+   "what medicine should i pack in my go bag",
+   "what medicine should i pack in my go bag"
+  ],
+  [
+   "first aid kit for go bag",
+   "first aid kit for go bag"
+  ],
+  [
+   "How do I stop bleeding?",
+   "how do i stop bleeding?"
+  ],
+  [
+   "Paano patigilin ang dugo?",
+   "paano patigilin ang dugo?"
+  ],
+  [
+   "how do i stop bleding",
+   "how do i stop bleeding"
+  ],
+  [
+   "HOW TO STOP BLEEDING PLS HELP",
+   "how to stop bleeding please help"
+  ],
+  [
+   "How do I treat a burn?",
+   "how do i treat a burn?"
+  ],
+  [
+   "Napaso ako",
+   "napaso ako"
+  ],
+  [
+   "how to treat burn",
+   "how to treat burn"
+  ],
+  [
+   "What do I do if someone is not breathing?",
+   "what do i do if someone is not breathing?"
+  ],
+  [
+   "my lola is unconcious",
+   "my lola is unconscious"
+  ],
+  [
+   "nahimatay siya",
+   "nahimatay siya"
+  ],
+  [
+   "Signs of heat exhaustion?",
+   "signs of heat exhaustion?"
+  ],
+  [
+   "sintomas ng heat stroke",
+   "sintomas ng heat stroke"
+  ],
+  [
+   "Possible broken bone, what do I do?",
+   "possible broken bone, what do i do?"
+  ],
+  [
+   "i think my arm is broken",
+   "i think my arm is broken"
+  ],
+  [
+   "bali ang buto",
+   "bali ang buto"
+  ],
+  [
+   "how to clean a wound",
+   "how to clean a wound"
+  ],
+  [
+   "may sugat ako",
+   "may sugat ako"
+  ],
+  [
+   "What number do I call for an emergency?",
+   "what number do i call for an emergency?"
+  ],
+  [
+   "emergency hotline",
+   "emergency hotline"
+  ],
+  [
+   "emergancy number",
+   "emergency number"
+  ],
+  [
+   "Batangas City rescue hotline?",
+   "batangas city rescue hotline?"
+  ],
+  [
+   "batangas city cdrrmo number",
+   "batangas city cdrrmo number"
+  ],
+  [
+   "Lipa police number?",
+   "lipa police number?"
+  ],
+  [
+   "Numero ng pulis sa Lipa?",
+   "numero ng pulis sa lipa?"
+  ],
+  [
+   "lipa fire hotline",
+   "lipa fire hotline"
+  ],
+  [
+   "Batangas PDRRMO contact?",
+   "batangas pdrrmo contact?"
+  ],
+  [
+   "provincial disaster office number",
+   "provincial disaster office number"
+  ],
+  [
+   "Red Cross hotline?",
+   "red cross hotline?"
+  ],
+  [
+   "red cros number",
+   "red cross number"
+  ],
+  [
+   "What is the capital of France?",
+   "what is the capital of france?"
+  ],
+  [
+   "wat is the capitl of frnce",
+   "what is the capitol of frnce"
+  ],
+  [
+   "recipe for adobo",
+   "recipe for adobo"
+  ],
+  [
+   "recipy for adobo",
+   "recipy for adobo"
+  ],
+  [
+   "who won the basketbal game",
+   "who won the basketbal game"
+  ],
+  [
+   "how do i fix my car engine",
+   "how do i fix my car engine"
+  ],
+  [
+   "how to fix my car engin",
+   "how to fix my car engin"
+  ],
+  [
+   "tell me a joke",
+   "tell me a joke"
+  ],
+  [
+   "tel me a jok",
+   "telephone me a jok"
+  ],
+  [
+   "how to cook rice",
+   "how to cook rice"
+  ],
+  [
+   "best phone to buy",
+   "best phone to buy"
+  ],
+  [
+   "how to lose weight",
+   "how to lose weight"
+  ],
+  [
+   "translate hello to spanish",
+   "translate hello to spanish"
+  ],
+  [
+   "kumusta ka",
+   "kumusta ka"
+  ],
+  [
+   "sino ang presidente",
+   "sino ang residents"
+  ],
+  [
+   "how old are you",
+   "how old are you"
+  ],
+  [
+   "write me a poem",
+   "write me a poem"
+  ],
+  [
+   "what is bitcoin",
+   "what is bitcoin"
+  ],
+  [
+   "how to make money online",
+   "how to make money online"
+  ],
+  [
+   "who is the president of the philippines",
+   "who is the president of the philippines"
+  ],
+  [
+   "San Jose evacuation center",
+   "san jose evacuation center"
+  ],
+  [
+   "signal no. 2",
+   "signal no. 2"
+  ],
+  [
+   "were is it",
+   "where is it"
+  ],
+  [
+   "buto",
+   "buto"
+  ],
+  [
+   "HELPPPP",
+   "help"
+  ],
+  [
+   "pinaka-malapit",
+   "pinakamalapit"
+  ],
+  [
+   "‘nearest’ hospitl",
+   "'nearest' hospital"
+  ],
+  [
+   "Parañaque",
+   "parañaque"
+  ],
+  [
+   "how 2 get there",
+   "how to get there"
+  ],
+  [
+   "ther",
+   "there"
+  ],
+  [
+   "",
+   ""
+  ]
+ ],
+ "report_answers": {
+  "reports": [
+   {
+    "id": "r-power",
+    "kind": "power_out",
+    "label": "Power out",
+    "lat": 13.768,
+    "lng": 121.065,
+    "location_id": null,
+    "location_name": null,
+    "road_name": null,
+    "edge_id": null,
+    "age_min": 5,
+    "expires_in_min": 355,
+    "ttl_min": 360,
+    "confirms": 0,
+    "disputes": 0,
+    "reports": 1,
+    "trust": "unverified"
+   },
+   {
+    "id": "r-flood",
+    "kind": "road_flooded",
+    "label": "Road flooded",
+    "lat": 13.7565,
+    "lng": 121.0583,
+    "location_id": null,
+    "location_name": null,
+    "road_name": "P. Burgos Street",
+    "edge_id": null,
+    "age_min": 25,
+    "expires_in_min": 95,
+    "ttl_min": 120,
+    "confirms": 0,
+    "disputes": 0,
+    "reports": 1,
+    "trust": "unverified"
+   },
+   {
+    "id": "r-center",
+    "kind": "center_full",
+    "label": "Evacuation center full",
+    "lat": 13.793841,
+    "lng": 121.039351,
+    "location_id": "osm-way-1415839221",
+    "location_name": "Balimbing Elementary School",
+    "road_name": null,
+    "edge_id": null,
+    "age_min": 40,
+    "expires_in_min": 320,
+    "ttl_min": 360,
+    "confirms": 0,
+    "disputes": 0,
+    "reports": 1,
+    "trust": "verified"
+   },
+   {
+    "id": "r-block",
+    "kind": "road_blocked",
+    "label": "Road blocked",
+    "lat": 13.76,
+    "lng": 121.059,
+    "location_id": null,
+    "location_name": null,
+    "road_name": "Rizal Avenue",
+    "edge_id": null,
+    "age_min": 70,
+    "expires_in_min": 50,
+    "ttl_min": 120,
+    "confirms": 2,
+    "disputes": 1,
+    "reports": 3,
+    "trust": "confirmed"
+   },
+   {
+    "id": "r-water",
+    "kind": "water_available",
+    "label": "Drinking water available",
+    "lat": 13.94,
+    "lng": 121.163,
+    "location_id": null,
+    "location_name": null,
+    "road_name": null,
+    "edge_id": null,
+    "age_min": 200,
+    "expires_in_min": 160,
+    "ttl_min": 360,
+    "confirms": 0,
+    "disputes": 0,
+    "reports": 1,
+    "trust": "unverified"
+   }
+  ],
+  "cases": [
+   {
+    "body": {
+     "question": "Is P. Burgos flooded?"
+    },
+    "kinds": [
+     "road_flooded",
+     "road_blocked"
+    ],
+    "text": "1 report on P. Burgos Street:\n- Road flooded: unverified, 25 min old, 1 report.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [
+     "r-flood"
+    ],
+    "location_used": null
+   },
+   {
+    "body": {
+     "question": "Is the road flooded?",
+     "from_pos": {
+      "lat": 13.7672,
+      "lng": 121.066
+     }
+    },
+    "kinds": [
+     "road_flooded",
+     "road_blocked"
+    ],
+    "text": "2 reports within 3 km of you:\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [
+     "r-flood",
+     "r-block"
+    ],
+    "location_used": null
+   },
+   {
+    "body": {
+     "question": "Is the road flooded?"
+    },
+    "kinds": [
+     "road_flooded",
+     "road_blocked"
+    ],
+    "text": "2 reports in the area:\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [
+     "r-flood",
+     "r-block"
+    ],
+    "location_used": null
+   },
+   {
+    "body": {
+     "question": "baha ba sa Rizal Avenue?"
+    },
+    "kinds": [
+     "road_flooded",
+     "road_blocked"
+    ],
+    "text": "1 report on Rizal Avenue:\n- Road blocked: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [
+     "r-block"
+    ],
+    "location_used": null
+   },
+   {
+    "body": {
+     "question": "Is it full?",
+     "location_id": "osm-way-1415839221"
+    },
+    "kinds": [
+     "center_full",
+     "center_open"
+    ],
+    "text": "1 report near Balimbing Elementary School:\n- Evacuation center full: verified by a responder, 40 min old, 1 report.\n\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [
+     "r-center"
+    ],
+    "location_used": "osm-way-1415839221"
+   },
+   {
+    "body": {
+     "question": "Is the road to Lipa open?",
+     "location_id": "osm-way-1415839221"
+    },
+    "kinds": [
+     "road_flooded",
+     "road_blocked"
+    ],
+    "text": "No road reports near Balimbing Elementary School in the last 2 hours. That does not mean the roads are safe.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [],
+    "location_used": "osm-way-1415839221"
+   },
+   {
+    "body": {
+     "question": "may kuryente ba?",
+     "from_pos": {
+      "lat": 13.7672,
+      "lng": 121.066
+     }
+    },
+    "kinds": [
+     "power_out"
+    ],
+    "text": "1 report within 3 km of you:\n- Power out, 140 m from you: unverified, 5 min old, 1 report.\n\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [
+     "r-power"
+    ],
+    "location_used": null
+   },
+   {
+    "body": {
+     "question": "Where can I get drinking water?",
+     "from_pos": {
+      "lat": 13.7672,
+      "lng": 121.066
+     }
+    },
+    "kinds": [
+     "water_available"
+    ],
+    "text": "No drinking water reports within 3 km of you in the last 6 hours.\n\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [],
+    "location_used": null
+   },
+   {
+    "body": {
+     "question": "Any reports near me?",
+     "from_pos": {
+      "lat": 13.7672,
+      "lng": 121.066
+     }
+    },
+    "kinds": [
+     "road_flooded",
+     "road_blocked",
+     "center_full",
+     "center_open",
+     "water_available",
+     "power_out",
+     "medical_need"
+    ],
+    "text": "3 reports within 3 km of you:\n- Power out, 140 m from you: unverified, 5 min old, 1 report.\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [
+     "r-power",
+     "r-flood",
+     "r-block"
+    ],
+    "location_used": null
+   },
+   {
+    "body": {
+     "question": "Any reports near me?",
+     "from_pos": {
+      "lat": 14.07,
+      "lng": 120.633
+     }
+    },
+    "kinds": [
+     "road_flooded",
+     "road_blocked",
+     "center_full",
+     "center_open",
+     "water_available",
+     "power_out",
+     "medical_need"
+    ],
+    "text": "No reports within 3 km of you in the last 6 hours. That does not mean the roads are safe.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "ids": [],
+    "location_used": null
+   }
+  ]
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "about": "The 1-minute demo video: what each scene says and shows. narration is spoken by the Windows voice ('Off Grid' is spelled for the voice); captions are shown on screen. Typos in the typed questions are deliberate and captioned as such.",
+ "voice": "Microsoft Zira Desktop",
+ "scenes": [
+  {
+   "id": "intro",
+   "title": "",
+   "narration": "A typhoon hits Batangas. The power is out, and there is no internet. Most AI apps stop working here. Off Grid does not.",
+   "caption": "OFFGRID: an offline emergency map and assistant for Batangas"
+  },
+  {
+   "id": "local-ai",
+   "title": "1 · Local AI on the laptop",
+   "narration": "The AI runs right on this laptop: a small, three-billion-parameter model, with no cloud. It answers from saved official guides, it understands typos, and code checks every fact before you see it.",
+   "caption": "Typo on purpose: “wlak thru” is read as “walk through”"
+  },
+  {
+   "id": "report",
+   "title": "2 · Phones share reports through the laptop",
+   "narration": "Neighbors' phones connect to the laptop over local Wi-Fi. One phone reports a flooded road, and the laptop shows it within seconds.",
+   "caption": "A flooded-road report from the phone appears on the laptop map"
+  },
+  {
+   "id": "offline-phone",
+   "title": "3 · Hub off: the phone keeps working",
+   "narration": "Now the laptop hub is switched off. The phone still answers, even in Filipino, and gives turn-by-turn directions from its saved copy.",
+   "caption": "Typo on purpose: “ospitl” is read as “ospital” (hospital)"
+  },
+  {
+   "id": "outro",
+   "title": "",
+   "narration": "Off Grid. AI that works when the cloud doesn't. Ready beyond the grid.",
+   "caption": "Local AI: Qwen 2.5 (3B) on the laptop · Phones: offline map, guides and routing (about 46 MB)"
+  }
+ ],
+ "footer": "Real app, recorded with the internet blocked. The phone is shown in an iPhone-sized browser window on the same laptop."
+}
