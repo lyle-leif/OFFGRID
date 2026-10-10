@@ -28,7 +28,6 @@ OFFGRID keeps working when the power and the internet are gone. A laptop runs a 
   - [F. Check that the phone works without the hub](#f-check-that-the-phone-works-without-the-hub)
   - [G. Troubleshooting](#g-troubleshooting)
 - [Using OFFGRID](#using-offgrid)
-- [Live demo](#live-demo)
 - [For developers](#for-developers)
 - [Data and sources](#data-and-sources)
 - [Known limits](#known-limits)
