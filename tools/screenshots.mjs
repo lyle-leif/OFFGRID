@@ -194,6 +194,15 @@ try {
     await laptop.evaluate("document.getElementById('route-summary').textContent"));
   await shot(laptop, "laptop-light.png");
 
+  // ---- the launch screen (scripts off, so it stays up for the photo) ----
+  const launch = await open("about:blank", PHONE, IPHONE_UA);
+  await launch.send("Emulation.setScriptExecutionDisabled", { value: true });
+  await launch.send("Page.navigate", { url: `${BASE}/` });
+  await waitFor(() => launch.evaluate("!!document.getElementById('splash') && document.readyState === 'complete'"), 30000, "launch screen");
+  await sleep(500);
+  check("launch screen shows the tern", await launch.evaluate("!!document.querySelector('#splash svg') && document.querySelector('.splash-name').textContent === 'OFFGRID'"));
+  await shot(launch, "phone-launch.png");
+
   // ---- the hub's setup page, as a phone sees it ----
   const setup = await open(`${BASE}/setup`, PHONE, IPHONE_UA);
   // (A new tab is "complete" on its blank page first, so wait for the setup page's own text.)

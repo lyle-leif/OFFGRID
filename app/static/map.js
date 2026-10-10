@@ -71,6 +71,8 @@ const EMPTY = { type: "FeatureCollection", features: [] };
 // The area covered by the offline map tiles, roads and facilities: all of Batangas.
 // Must match BBOX in tools/overpass.py and the --bbox used for area.pmtiles.
 const BOUNDS = [[120.55, 13.45], [121.5, 14.2]]; // [[west, south], [east, north]]
+// Is this position inside the area the map covers?
+export const inBounds = ({ lat, lng }) => lng >= BOUNDS[0][0] && lng <= BOUNDS[1][0] && lat >= BOUNDS[0][1] && lat <= BOUNDS[1][1];
 
 // Web Mercator x/y in "world units" (0..1) for a lng/lat.
 const mercX = (lng) => (lng + 180) / 360;
