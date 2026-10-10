@@ -1,0 +1,881 @@
+{
+ "about": "Questions people ask OFFGRID, with typos, text-speak, Filipino/Taglish and odd word order. Checked against the hub (tests/test_question_bank.py) and the phone engine (tests/js/parity.test.mjs). ctx.pos = a position near Batangas Medical Center; ctx.place = a selected place. expect: intent (location question), route, reports (report kinds), chunks (any of these guide sections is shown first or second), uncovered (must say 'not covered'). A chunk id ending in '#' means any section of that guide.",
+ "places": {
+  "bsu": "osm-way-129493352"
+ },
+ "groups": [
+  {
+   "name": "Nearest evacuation center",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "evacuation_center"
+   },
+   "qs": [
+    "Where is the nearest evacuation center?",
+    "Saan ang pinakamalapit na evacuation center?",
+    "nearest evac center",
+    "neerest evacuaton center",
+    "were is the nearest evacuation centre",
+    "evacuation center nearest",
+    "pinaka-malapit na evacuation center",
+    "NEAREST EVACUATION CENTER PLS",
+    "san ang pinakamalapit na evacuation center",
+    "closest shelter",
+    "saan pwede lumikas",
+    "where can we evacuate near me"
+   ]
+  },
+  {
+   "name": "Nearest hospital",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "hospital"
+   },
+   "qs": [
+    "Nearest hospital?",
+    "Pinakamalapit na ospital?",
+    "neerest hospitl",
+    "nearst hosptal",
+    "hospital near me",
+    "where's the nearest hospital",
+    "saan may ospital na malapit",
+    "closest hospital pls",
+    "I need a hospital near me",
+    "wer is the hospital",
+    "saan ang pinakamalapit na ospitl?"
+   ]
+  },
+  {
+   "name": "Nearest clinic",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "health_center"
+   },
+   "qs": [
+    "Nearest clinic?",
+    "Saan may klinika?",
+    "nearest health center",
+    "nearest clinik",
+    "where can i see a doctor near me"
+   ]
+  },
+  {
+   "name": "Nearest pharmacy",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "pharmacy"
+   },
+   "qs": [
+    "Where can I buy medicine?",
+    "Saan may botika?",
+    "saan makakabili ng gamot",
+    "nearest pharmcy",
+    "where can i by medicin",
+    "drugstore near me"
+   ]
+  },
+  {
+   "name": "Nearest police",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "police"
+   },
+   "qs": [
+    "Nearest police station?",
+    "Saan ang presinto?",
+    "saan may pulis",
+    "neareset polic station",
+    "closest police"
+   ]
+  },
+  {
+   "name": "Nearest fire station",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "fire_station"
+   },
+   "qs": [
+    "Nearest fire station?",
+    "Saan ang bumbero?",
+    "nearest fire stasion"
+   ]
+  },
+  {
+   "name": "Nearest rescue",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "rescue"
+   },
+   "qs": [
+    "Nearest rescue?",
+    "Saan may ambulansya?",
+    "nearest ambulance pls",
+    "nearest ambulans"
+   ]
+  },
+  {
+   "name": "Town hall",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "town_hall"
+   },
+   "qs": [
+    "Where is the town hall?",
+    "Saan ang munisipyo?",
+    "where is the municipal hall",
+    "were is the city hall"
+   ]
+  },
+  {
+   "name": "Barangay hall",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "barangay_hall"
+   },
+   "qs": [
+    "Where is the barangay hall?",
+    "saan ang brgy hall"
+   ]
+  },
+  {
+   "name": "Market",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest",
+    "ftype": "market"
+   },
+   "qs": [
+    "Where can I buy rice?",
+    "Saan may palengke?",
+    "nearest grocery",
+    "saan may grocery",
+    "nearest supermarkt"
+   ]
+  },
+  {
+   "name": "What's near me",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearby"
+   },
+   "qs": [
+    "What's near me?",
+    "Anong malapit sa akin?",
+    "whats near me",
+    "wat is near me",
+    "what is around here"
+   ]
+  },
+  {
+   "name": "Nearest place to go",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "intent": "nearest"
+   },
+   "qs": [
+    "Where's the nearest place to go?",
+    "where is the nearest place to go"
+   ]
+  },
+  {
+   "name": "How far (selected place)",
+   "ctx": {
+    "pos": true,
+    "place": "bsu"
+   },
+   "expect": {
+    "intent": "distance"
+   },
+   "qs": [
+    "How far is it from my current location?",
+    "Gaano kalayo ito?",
+    "Ilang km papunta dito?",
+    "hw far is it",
+    "how far is it from here",
+    "gaano kalyo ito",
+    "How long does it take to walk there?"
+   ]
+  },
+  {
+   "name": "Directions (selected place)",
+   "ctx": {
+    "pos": true,
+    "place": "bsu"
+   },
+   "expect": {
+    "route": true
+   },
+   "qs": [
+    "How do I get there?",
+    "Paano pumunta dito?",
+    "pano pumunta dito",
+    "how do i get ther",
+    "directions please",
+    "ano ang daan papunta dito",
+    "how to go there",
+    "how 2 get there"
+   ]
+  },
+  {
+   "name": "Contact number (selected place)",
+   "ctx": {
+    "place": "bsu"
+   },
+   "expect": {
+    "intent": "contact"
+   },
+   "qs": [
+    "Contact number?",
+    "Paano sila tawagan?",
+    "whats the phone number of this place",
+    "contact numbr?"
+   ]
+  },
+  {
+   "name": "Opening hours (selected place)",
+   "ctx": {
+    "place": "bsu"
+   },
+   "expect": {
+    "intent": "hours"
+   },
+   "qs": [
+    "Is it open?",
+    "What time does it open?",
+    "bukas ba sila ngayon?",
+    "wat time does it open"
+   ]
+  },
+  {
+   "name": "Flooded or blocked road (reports)",
+   "ctx": {},
+   "expect": {
+    "reports": [
+     "road_flooded",
+     "road_blocked"
+    ]
+   },
+   "qs": [
+    "Is the road flooded?",
+    "baha ba sa Kumintang?",
+    "may baha ba dito?",
+    "is the road flodded",
+    "is the rode flooded",
+    "sarado ba ang tulay?",
+    "is the bridge open",
+    "IS P. BURGOS FLOODED"
+   ]
+  },
+  {
+   "name": "Evacuation center full (reports)",
+   "ctx": {
+    "place": "bsu"
+   },
+   "expect": {
+    "reports": [
+     "center_full",
+     "center_open"
+    ]
+   },
+   "qs": [
+    "Is it full?",
+    "may bakante pa ba?",
+    "is the evacuation center full?",
+    "puno na ba ang evacuation center"
+   ]
+  },
+  {
+   "name": "Power (reports)",
+   "ctx": {},
+   "expect": {
+    "reports": [
+     "power_out"
+    ]
+   },
+   "qs": [
+    "Is there power in Lipa?",
+    "brownout ba sa Batangas City?",
+    "may kuryente na ba?",
+    "is ther power in lipa"
+   ]
+  },
+  {
+   "name": "Drinking water (reports)",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "reports": [
+     "water_available"
+    ]
+   },
+   "qs": [
+    "Where can I get drinking water?",
+    "saan may tubig?"
+   ]
+  },
+  {
+   "name": "Any reports",
+   "ctx": {
+    "pos": true
+   },
+   "expect": {
+    "reports": [
+     "road_flooded",
+     "road_blocked",
+     "center_full",
+     "center_open",
+     "water_available",
+     "power_out",
+     "medical_need"
+    ]
+   },
+   "qs": [
+    "Any reports near me?",
+    "ano ang balita?",
+    "any updates?"
+   ]
+  },
+  {
+   "name": "Typhoon signals",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "typhoon-prep#understanding-warnings"
+    ]
+   },
+   "qs": [
+    "What does signal no. 3 mean?",
+    "ano ang ibig sabihin ng signal no 3",
+    "wat does signal number 3 mean",
+    "signal #4 meaning",
+    "tropical cyclone wind signal"
+   ]
+  },
+  {
+   "name": "When to evacuate",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "typhoon-prep#when-to-evacuate"
+    ]
+   },
+   "qs": [
+    "When should we evacuate?",
+    "kailan dapat lumikas?",
+    "when shud we evacuate"
+   ]
+  },
+  {
+   "name": "During a typhoon",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "typhoon-prep#during-the-typhoon"
+    ]
+   },
+   "qs": [
+    "What should we do during the typhoon?",
+    "Ano ang gagawin habang may bagyo?",
+    "wat to do durng typhoon"
+   ]
+  },
+  {
+   "name": "Before a typhoon",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "typhoon-prep#when-a-typhoon-is-approaching",
+     "typhoon-prep#before-typhoon-season"
+    ]
+   },
+   "qs": [
+    "What should we prepare before the typhoon arrives?",
+    "how to prepare for a bagyo",
+    "typhoon is coming what to do"
+   ]
+  },
+  {
+   "name": "After a typhoon",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "typhoon-prep#after-the-typhoon"
+    ]
+   },
+   "qs": [
+    "Is it safe to go home after the typhoon?",
+    "what to do aftr the typhoon"
+   ]
+  },
+  {
+   "name": "Walking through floodwater",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "flood-safety#walking-or-driving-through-floodwater"
+    ]
+   },
+   "qs": [
+    "Is it safe to walk through floodwater?",
+    "Ligtas bang lumusong sa baha?",
+    "is it safe to wlak thru floodwater",
+    "can i drive through flood water",
+    "pwede ba lumusong sa baha",
+    "is it safe to wlak thru flood water?"
+   ]
+  },
+  {
+   "name": "Trapped by rising water",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "flood-safety#if-you-are-trapped-by-rising-water"
+    ]
+   },
+   "qs": [
+    "What if we're trapped by rising water?",
+    "we are traped by rising water"
+   ]
+  },
+  {
+   "name": "Drinking water after a flood",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "flood-safety#clean-drinking-water",
+     "typhoon-prep#after-the-typhoon"
+    ]
+   },
+   "qs": [
+    "Is the water safe to drink after a flood?",
+    "is tap water safe to drink after baha"
+   ]
+  },
+  {
+   "name": "Leptospirosis",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "flood-safety#health-risks-after-floods"
+    ]
+   },
+   "qs": [
+    "What are the symptoms of leptospirosis?",
+    "leptospirosis symptons",
+    "sintomas ng leptospirosis"
+   ]
+  },
+  {
+   "name": "Electricity in a flood",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "flood-safety#electrical-safety-in-floods"
+    ]
+   },
+   "qs": [
+    "Should I turn off the electricity during a flood?",
+    "shud i turn off the electrisity when theres flood"
+   ]
+  },
+  {
+   "name": "Flood warning signs",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "flood-safety#warning-signs-of-flooding"
+    ]
+   },
+   "qs": [
+    "What are the warning signs of flooding?",
+    "signs that a flood is coming"
+   ]
+  },
+  {
+   "name": "Brownout hotline (Lipa)",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#power-and-water-utilities-in-lipa"
+    ]
+   },
+   "qs": [
+    "Who do I call about a brownout in Lipa?",
+    "batelec hotline lipa"
+   ]
+  },
+  {
+   "name": "Generators",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "power-outage#generators-and-carbon-monoxide"
+    ]
+   },
+   "qs": [
+    "Can I run a generator inside the house?",
+    "can i use generater inside the house",
+    "pwede ba generator sa loob ng bahay"
+   ]
+  },
+  {
+   "name": "Fridge food",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "power-outage#food-safety-without-refrigeration"
+    ]
+   },
+   "qs": [
+    "How long is fridge food safe without power?",
+    "how long does food last in the fridge during a brownout"
+   ]
+  },
+  {
+   "name": "Phone battery",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "power-outage#saving-phone-battery"
+    ]
+   },
+   "qs": [
+    "How do I save phone battery?",
+    "how to save phone batery",
+    "paano makatipid ng baterya ng cellphone"
+   ]
+  },
+  {
+   "name": "Candles",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "power-outage#lighting-safely"
+    ]
+   },
+   "qs": [
+    "Is it safe to use candles?",
+    "pwede ba gumamit ng kandila"
+   ]
+  },
+  {
+   "name": "Heat in a brownout",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "power-outage#heat-during-outages"
+    ]
+   },
+   "qs": [
+    "How do we stay cool without electricity?",
+    "too hot during brownout"
+   ]
+  },
+  {
+   "name": "Preparing for brownouts",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "power-outage#preparing-for-brownouts"
+    ]
+   },
+   "qs": [
+    "How do I prepare for a brownout?"
+   ]
+  },
+  {
+   "name": "Go-bag",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "go-bag#"
+    ]
+   },
+   "qs": [
+    "What should I put in my go-bag?",
+    "wat shuld i pack in my gobag",
+    "ano ang laman ng go bag"
+   ]
+  },
+  {
+   "name": "Water to pack",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "go-bag#water-and-food"
+    ]
+   },
+   "qs": [
+    "How much water should I pack?",
+    "how much water per person"
+   ]
+  },
+  {
+   "name": "Baby",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "go-bag#infants-and-young-children"
+    ]
+   },
+   "qs": [
+    "What should I bring for my baby?",
+    "Anong dapat dalhin para sa sanggol?",
+    "wat to pack for my baby"
+   ]
+  },
+  {
+   "name": "Elderly and pets",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "go-bag#older-adults-persons-with-disabilities-and-pets"
+    ]
+   },
+   "qs": [
+    "what should i pack for my lola",
+    "go bag for elderly",
+    "what to bring for my dog"
+   ]
+  },
+  {
+   "name": "Documents",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "go-bag#documents-and-money"
+    ]
+   },
+   "qs": [
+    "What documents should I bring?",
+    "anong dokumento ang dadalhin"
+   ]
+  },
+  {
+   "name": "Medicine to pack",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "go-bag#medicine-and-first-aid"
+    ]
+   },
+   "qs": [
+    "what medicine should i pack in my go bag",
+    "first aid kit for go bag"
+   ]
+  },
+  {
+   "name": "Bleeding",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "first-aid-basics#bleeding"
+    ]
+   },
+   "qs": [
+    "How do I stop bleeding?",
+    "Paano patigilin ang dugo?",
+    "how do i stop bleding",
+    "HOW TO STOP BLEEDING PLS HELP"
+   ]
+  },
+  {
+   "name": "Burns",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "first-aid-basics#burns"
+    ]
+   },
+   "qs": [
+    "How do I treat a burn?",
+    "Napaso ako",
+    "how to treat burn"
+   ]
+  },
+  {
+   "name": "Not breathing / unconscious",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "first-aid-basics#unresponsive-person"
+    ]
+   },
+   "qs": [
+    "What do I do if someone is not breathing?",
+    "my lola is unconcious",
+    "nahimatay siya"
+   ]
+  },
+  {
+   "name": "Heat exhaustion",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "first-aid-basics#dehydration-and-heat-exhaustion"
+    ]
+   },
+   "qs": [
+    "Signs of heat exhaustion?",
+    "sintomas ng heat stroke"
+   ]
+  },
+  {
+   "name": "Broken bones",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "first-aid-basics#possible-broken-bones"
+    ]
+   },
+   "qs": [
+    "Possible broken bone, what do I do?",
+    "i think my arm is broken",
+    "bali ang buto"
+   ]
+  },
+  {
+   "name": "Cuts and wounds",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "first-aid-basics#cuts-and-wounds"
+    ]
+   },
+   "qs": [
+    "how to clean a wound",
+    "may sugat ako"
+   ]
+  },
+  {
+   "name": "Emergency number",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#national-emergency-hotline-911"
+    ]
+   },
+   "qs": [
+    "What number do I call for an emergency?",
+    "emergency hotline",
+    "emergancy number"
+   ]
+  },
+  {
+   "name": "Batangas City hotline",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#batangas-city-emergency-hotlines"
+    ]
+   },
+   "qs": [
+    "Batangas City rescue hotline?",
+    "batangas city cdrrmo number"
+   ]
+  },
+  {
+   "name": "Lipa hotlines",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#lipa-city-emergency-hotlines"
+    ]
+   },
+   "qs": [
+    "Lipa police number?",
+    "Numero ng pulis sa Lipa?",
+    "lipa fire hotline"
+   ]
+  },
+  {
+   "name": "Provincial PDRRMO",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#batangas-province-pdrrmo-and-provincial-offices"
+    ]
+   },
+   "qs": [
+    "Batangas PDRRMO contact?",
+    "provincial disaster office number"
+   ]
+  },
+  {
+   "name": "Red Cross",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#philippine-red-cross-national-hotline"
+    ]
+   },
+   "qs": [
+    "Red Cross hotline?",
+    "red cros number"
+   ]
+  },
+  {
+   "name": "Off-topic (must say not covered)",
+   "ctx": {},
+   "expect": {
+    "uncovered": true
+   },
+   "qs": [
+    "What is the capital of France?",
+    "wat is the capitl of frnce",
+    "recipe for adobo",
+    "recipy for adobo",
+    "who won the basketbal game",
+    "how do i fix my car engine",
+    "how to fix my car engin",
+    "tell me a joke",
+    "tel me a jok",
+    "how to cook rice",
+    "best phone to buy",
+    "how to lose weight",
+    "translate hello to spanish",
+    "kumusta ka",
+    "sino ang presidente",
+    "how old are you",
+    "write me a poem",
+    "what is bitcoin",
+    "how to make money online",
+    "who is the president of the philippines"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OFFGRID demo video composer</title>
+<style>html, body { margin: 0; background: #000; } canvas { display: block; }</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script type="module">
+// Builds the demo video in the browser: the recorded frames (record.mjs) at their real speed,
+// inside a laptop and a phone frame, with titles, captions, tap markers and the narration.
+// The canvas and the audio are recorded together with MediaRecorder and posted to /save.
+const W = 1920, H = 1080;
+const canvas = document.getElementById("c");
+const g = canvas.getContext("2d");
+const get = (u) => fetch(u).then((r) => (u.endsWith(".json") ? r.json() : r.arrayBuffer()));
+const [script, durations, timeline] = await Promise.all([get("/tool/script.json"), get("/out/durations.json"), get("/out/timeline.json")]);
+
+const LAPTOP = { x: 80, y: 150, w: 1280, h: 720, scale: 1 };
+const PHONE = { x: 1478, y: 146, w: 780 * 0.47, h: 1688 * 0.47, scale: 0.47 * 2 }; // css px -> canvas px
+const FONT = "Segoe UI, system-ui, sans-serif";
+const ORANGE = "#ff7a3d";
+
+// ---- images ----
+const load = (src) => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+const logo = await load("/logo.svg");
+const files = new Set();
+for (const s of Object.values(timeline.scenes)) for (const d of ["laptop", "phone"]) for (const f of s[d]) files.add(f.f);
+const img = {};
+await Promise.all([...files].map(async (f) => { img[f] = await load(`/out/${f}`); }));
+
+// ---- scene plan: real-time footage, never sped up ----
+const lead = { intro: 0, "local-ai": 0.5, report: 0.4, "offline-phone": 0.3, outro: 0 };
+const footageStart = { "offline-phone": Math.max(0, (timeline.scenes["offline-phone"]?.marks.hubOff ?? 0) - 0.4) };
+const plan = [];
+let at = 0.4;
+for (const sc of script.scenes) {
+  const tl = timeline.scenes[sc.id] ?? { laptop: [], phone: [], taps: [], marks: {} };
+  const end = Math.max(0, ...tl.laptop.map((f) => f.t), ...tl.phone.map((f) => f.t));
+  const start = footageStart[sc.id] ?? 0;
+  const footage = end > 0 ? end - start + lead[sc.id] + 0.3 : 0;
+  const len = Math.max(durations[sc.id] + (sc.id === "outro" ? 1.4 : 0.7), footage);
+  plan.push({ ...sc, tl, start, at, len });
+  at += len;
+}
+const TOTAL = at + 0.2;
+console.log("plan", plan.map((p) => `${p.id} ${p.at.toFixed(1)}+${p.len.toFixed(1)}`).join(", "), "total", TOTAL.toFixed(1));
+
+// Footage time for a moment in the scene; the latest frame at or before it.
+const frameAt = (list, t) => { let f = null; for (const x of list) { if (x.t <= t + 1e-6) f = x; else break; } return f ?? list[0]; };
+
+// ---- drawing helpers ----
+function rr(x, y, w, h, r) { g.beginPath(); g.roundRect(x, y, w, h, r); }
+function text(s, x, y, size, color = "#fff", weight = 600, align = "left") {
+  g.font = `${weight} ${size}px ${FONT}`; g.fillStyle = color; g.textAlign = align; g.textBaseline = "alphabetic"; g.fillText(s, x, y);
+}
+function wrapped(s, x, y, size, maxW, color, weight = 500, lineH = 1.3) {
+  g.font = `${weight} ${size}px ${FONT}`;
+  const words = s.split(" "); const lines = []; let cur = "";
+  for (const w of words) { const t = cur ? `${cur} ${w}` : w; if (g.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t; }
+  if (cur) lines.push(cur);
+  lines.forEach((l, i) => text(l, x, y + i * size * lineH, size, color, weight, "center"));
+  return lines.length;
+}
+function background() {
+  const grad = g.createRadialGradient(W * 0.4, H * 0.35, 100, W * 0.5, H * 0.5, 1200);
+  grad.addColorStop(0, "#14213b"); grad.addColorStop(1, "#070c16");
+  g.fillStyle = grad; g.fillRect(0, 0, W, H);
+}
+function laptopFrame(frame, dim = 0) {
+  const L = LAPTOP;
+  rr(L.x - 16, L.y - 16, L.w + 32, L.h + 32, 22); g.fillStyle = "#1c2433"; g.fill();
+  g.strokeStyle = "#2c374b"; g.lineWidth = 2; g.stroke();
+  g.beginPath(); g.moveTo(L.x - 70, L.y + L.h + 16); g.lineTo(L.x + L.w + 70, L.y + L.h + 16);
+  g.lineTo(L.x + L.w + 40, L.y + L.h + 40); g.lineTo(L.x - 40, L.y + L.h + 40); g.closePath(); g.fillStyle = "#2a3446"; g.fill();
+  if (frame) g.drawImage(img[frame.f], L.x, L.y, L.w, L.h);
+  if (dim) { g.fillStyle = `rgba(4,8,16,${dim})`; g.fillRect(L.x, L.y, L.w, L.h); }
+}
+function phoneFrame(frame) {
+  const P = PHONE;
+  rr(P.x - 14, P.y - 14, P.w + 28, P.h + 28, 54); g.fillStyle = "#0d1118"; g.fill();
+  g.strokeStyle = "#39445a"; g.lineWidth = 2.5; g.stroke();
+  g.save(); rr(P.x, P.y, P.w, P.h, 40); g.clip();
+  if (frame) g.drawImage(img[frame.f], P.x, P.y, P.w, P.h);
+  g.restore();
+}
+function devicePoint(dev, x, y) {
+  const D = dev === "laptop" ? LAPTOP : PHONE;
+  const s = dev === "laptop" ? 1 : PHONE.w / 390;
+  return [D.x + x * s, D.y + y * s];
+}
+function tapMark(dev, x, y, age) {
+  if (age < 0 || age > 0.7) return;
+  const [cx, cy] = devicePoint(dev, x, y);
+  const k = age / 0.7;
+  g.beginPath(); g.arc(cx, cy, 18 + 22 * k, 0, Math.PI * 2);
+  g.fillStyle = `rgba(255,255,255,${0.35 * (1 - k)})`; g.fill();
+  g.lineWidth = 4; g.strokeStyle = `rgba(255,255,255,${0.9 * (1 - k)})`; g.stroke();
+}
+function ring(dev, x, y, t) {
+  const [cx, cy] = devicePoint(dev, x, y);
+  const pulse = (t % 1.2) / 1.2;
+  g.beginPath(); g.arc(cx, cy - 10, 30 + 16 * pulse, 0, Math.PI * 2);
+  g.lineWidth = 5; g.strokeStyle = `rgba(255,122,61,${1 - pulse})`; g.stroke();
+  g.beginPath(); g.arc(cx, cy - 10, 30, 0, Math.PI * 2); g.lineWidth = 4; g.strokeStyle = ORANGE; g.stroke();
+}
+function caption(s) {
+  if (!s) return;
+  g.font = `500 30px ${FONT}`;
+  const w = Math.min(1760, g.measureText(s).width + 64);
+  rr(W / 2 - w / 2, 968, w, 58, 16); g.fillStyle = "rgba(10,16,28,0.88)"; g.fill();
+  g.strokeStyle = "rgba(255,255,255,0.12)"; g.lineWidth = 1.5; g.stroke();
+  text(s, W / 2, 1007, 30, "#f3f6fb", 500, "center");
+}
+function header(title) {
+  g.drawImage(logo, W - 300, 38, 56, 56);
+  text("OFFGRID", W - 230, 74, 30, "#fff", 800);
+  text("Ready beyond the grid", W - 230, 100, 18, "#9aa7bb", 500);
+  if (title) text(title, 80, 96, 44, "#fff", 700);
+}
+function footer() { text(script.footer, W / 2, 1062, 18, "#8190a6", 400, "center"); }
+function card(alpha, lines) {
+  g.globalAlpha = alpha;
+  g.fillStyle = "rgba(6,10,18,0.94)"; g.fillRect(0, 0, W, H);
+  g.drawImage(logo, W / 2 - 90, 250, 180, 180);
+  text("OFFGRID", W / 2, 560, 120, "#fff", 800, "center");
+  text("Ready beyond the grid", W / 2, 630, 46, ORANGE, 600, "center");
+  lines.forEach((l, i) => wrapped(l, W / 2, 730 + i * 56, 32, 1500, "#c9d3e2", 500));
+  g.globalAlpha = 1;
+}
+
+// ---- one frame of the video at time t ----
+function draw(t) {
+  background();
+  const sc = plan.find((p) => t >= p.at && t < p.at + p.len) ?? (t < plan[0].at ? plan[0] : plan[plan.length - 1]);
+  const st = t - sc.at; // seconds into the scene
+  const ft = sc.start + st - lead[sc.id]; // footage time
+  const tl = sc.tl;
+  const showL = pick(sc, "laptop", ft);
+  const showP = pick(sc, "phone", ft);
+  const hubOff = sc.id === "offline-phone" || sc.id === "outro";
+  laptopFrame(showL, hubOff ? 0.78 : 0);
+  phoneFrame(showP);
+  if (hubOff && sc.id === "offline-phone") {
+    text("Laptop hub switched off", LAPTOP.x + LAPTOP.w / 2, LAPTOP.y + LAPTOP.h / 2 + 8, 52, "#fff", 700, "center");
+    text("The phone keeps working on its own", LAPTOP.x + LAPTOP.w / 2, LAPTOP.y + LAPTOP.h / 2 + 64, 30, "#9aa7bb", 500, "center");
+  }
+  for (const tp of tl.taps) tapMark(tp.dev, tp.x, tp.y, ft - tp.t);
+  if (sc.id === "report" && tl.marks.flag && ft >= (tl.marks.flagSeenAt ?? 0)) ring("laptop", tl.marks.flag.x, tl.marks.flag.y, ft);
+  // Title cards open and close the video; the caption bar fades out under them (no faint copy).
+  const cardA = sc.id === "intro" ? (st < 5 ? 1 : Math.max(0, 1 - (st - 5) / 0.9)) : sc.id === "outro" ? Math.min(1, st / 0.6) : 0;
+  header(sc.title);
+  g.globalAlpha = 1 - cardA;
+  caption(sc.caption);
+  footer();
+  g.globalAlpha = 1;
+  if (sc.id === "intro" && cardA > 0) card(cardA, ["An offline emergency map and assistant for Batangas, Philippines"]);
+  if (sc.id === "outro") card(cardA, [sc.caption]);
+}
+// A device shows this scene's footage once it has started; before that (or if the scene has
+// none) it keeps the last frame it showed in an earlier scene.
+const prevScene = (sc) => plan[plan.indexOf(sc) - 1];
+function lastOf(sc, dev) {
+  for (let p = prevScene(sc); p; p = prevScene(p)) { const l = p.tl[dev]; if (l.length) return l[l.length - 1]; }
+  return null;
+}
+function pick(sc, dev, ft) {
+  const l = sc.tl[dev];
+  if (l.length && ft >= l[0].t) return frameAt(l, ft);
+  return lastOf(sc, dev) ?? l[0] ?? null;
+}
+
+// ---- audio + recording ----
+const ac = new AudioContext({ sampleRate: 48000 });
+if (ac.state === "suspended") await ac.resume();
+const dest = ac.createMediaStreamDestination();
+const buffers = {};
+for (const sc of plan) buffers[sc.id] = await ac.decodeAudioData(await get(`/out/${sc.id}.wav`));
+// Frames are pushed by hand (requestFrame) every tick: with an automatic rate, a canvas that
+// doesn't change between ticks records no new frame, and a still card would freeze on an old one.
+const vtrack = canvas.captureStream(0).getVideoTracks()[0];
+const stream = new MediaStream([vtrack, ...dest.stream.getAudioTracks()]);
+const types = ["video/mp4;codecs=avc1.640028,mp4a.40.2", "video/mp4;codecs=avc1,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9,opus", "video/webm"];
+const mime = types.find((m) => MediaRecorder.isTypeSupported(m));
+const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 160_000 });
+const chunks = [];
+rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+draw(0);
+const t0 = ac.currentTime + 0.25;
+for (const sc of plan) {
+  const src = ac.createBufferSource();
+  src.buffer = buffers[sc.id];
+  src.connect(dest);
+  src.start(t0 + sc.at + (sc.id === "outro" ? 0.6 : 0.25));
+}
+rec.start(1000);
+await new Promise((done) => {
+  const tick = setInterval(() => {
+    const t = ac.currentTime - t0;
+    draw(Math.max(0, Math.min(t, TOTAL - 0.01)));
+    vtrack.requestFrame();
+    if (t >= TOTAL) { clearInterval(tick); done(); }
+  }, 1000 / 30);
+});
+await new Promise((r) => { rec.onstop = r; rec.stop(); });
+const blob = new Blob(chunks, { type: mime });
+const ext = mime.startsWith("video/mp4") ? "mp4" : "webm";
+await fetch(`/save?ext=${ext}&seconds=${TOTAL.toFixed(1)}`, { method: "POST", body: blob });
+window.__done = { mime, seconds: TOTAL, bytes: blob.size };
+</script>
+</body>
+</html>

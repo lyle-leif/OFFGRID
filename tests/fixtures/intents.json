@@ -1,0 +1,448 @@
+{
+ "cases": [
+  {
+   "q": "How far is it from my current location?",
+   "has_place": true,
+   "kind": "distance",
+   "ftype": null
+  },
+  {
+   "q": "How far is it?",
+   "has_place": true,
+   "kind": "distance",
+   "ftype": null
+  },
+  {
+   "q": "gaano kalayo ito?",
+   "has_place": true,
+   "kind": "distance",
+   "ftype": null
+  },
+  {
+   "q": "Ilang km papunta dito?",
+   "has_place": true,
+   "kind": "distance",
+   "ftype": null
+  },
+  {
+   "q": "How long does it take to walk there?",
+   "has_place": true,
+   "kind": "distance",
+   "ftype": null
+  },
+  {
+   "q": "gaano katagal maglakad papunta doon?",
+   "has_place": true,
+   "kind": "distance",
+   "ftype": null
+  },
+  {
+   "q": "Where is the nearest evacuation center?",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "evacuation_center"
+  },
+  {
+   "q": "pinakamalapit na evacuation center",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "evacuation_center"
+  },
+  {
+   "q": "Nearest hospital?",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "hospital"
+  },
+  {
+   "q": "saan ang pinakamalapit na ospital",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "hospital"
+  },
+  {
+   "q": "Where can I buy medicine?",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "pharmacy"
+  },
+  {
+   "q": "saan may botika",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "pharmacy"
+  },
+  {
+   "q": "closest police station",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "police"
+  },
+  {
+   "q": "nearest fire station",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "fire_station"
+  },
+  {
+   "q": "saan may palengke",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "market"
+  },
+  {
+   "q": "where can I buy rice?",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "market"
+  },
+  {
+   "q": "nearest clinic for a check-up",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "health_center"
+  },
+  {
+   "q": "where is the town hall",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "town_hall"
+  },
+  {
+   "q": "nearest barangay hall",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "barangay_hall"
+  },
+  {
+   "q": "nearest ambulance",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "rescue"
+  },
+  {
+   "q": "How far is the nearest hospital?",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": "hospital"
+  },
+  {
+   "q": "Where's the nearest place to go?",
+   "has_place": false,
+   "kind": "nearest",
+   "ftype": null
+  },
+  {
+   "q": "What's near me?",
+   "has_place": false,
+   "kind": "nearby",
+   "ftype": null
+  },
+  {
+   "q": "anong malapit sa akin",
+   "has_place": false,
+   "kind": "nearby",
+   "ftype": null
+  },
+  {
+   "q": "Contact number?",
+   "has_place": true,
+   "kind": "contact",
+   "ftype": null
+  },
+  {
+   "q": "What's the phone number of this place?",
+   "has_place": true,
+   "kind": "contact",
+   "ftype": null
+  },
+  {
+   "q": "paano sila tawagan",
+   "has_place": true,
+   "kind": "contact",
+   "ftype": null
+  },
+  {
+   "q": "Is it open?",
+   "has_place": true,
+   "kind": "hours",
+   "ftype": null
+  },
+  {
+   "q": "What time does it open?",
+   "has_place": true,
+   "kind": "hours",
+   "ftype": null
+  },
+  {
+   "q": "bukas ba sila ngayon?",
+   "has_place": true,
+   "kind": "hours",
+   "ftype": null
+  }
+ ],
+ "none": [
+  {
+   "q": "Is the road there flooded?",
+   "has_place": true
+  },
+  {
+   "q": "Is it safe to walk through floodwater?",
+   "has_place": false
+  },
+  {
+   "q": "How do I treat a burn?",
+   "has_place": false
+  },
+  {
+   "q": "What should I pack for a baby?",
+   "has_place": false
+  },
+  {
+   "q": "Lipa fire station number",
+   "has_place": true
+  },
+  {
+   "q": "What number do I call for an emergency?",
+   "has_place": false
+  },
+  {
+   "q": "Is the evacuation center full?",
+   "has_place": true
+  },
+  {
+   "q": "How do I get there?",
+   "has_place": true
+  },
+  {
+   "q": "Any reports near me?",
+   "has_place": false
+  }
+ ],
+ "reports": [
+  {
+   "q": "Is the road flooded?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "Is P. Burgos Street flooded?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "Is P. Burgos flooded?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "Is the road to Lipa open?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "baha ba sa Kumintang?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "may baha ba dito?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "sarado ba ang tulay?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "Is the bridge on Rizal Street flooded right now?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "Is the evacuation center full?",
+   "place_is_center": false,
+   "kinds": [
+    "center_full",
+    "center_open"
+   ]
+  },
+  {
+   "q": "puno na ba ang evacuation center?",
+   "place_is_center": false,
+   "kinds": [
+    "center_full",
+    "center_open"
+   ]
+  },
+  {
+   "q": "Is it full?",
+   "place_is_center": true,
+   "kinds": [
+    "center_full",
+    "center_open"
+   ]
+  },
+  {
+   "q": "may bakante pa ba?",
+   "place_is_center": true,
+   "kinds": [
+    "center_full",
+    "center_open"
+   ]
+  },
+  {
+   "q": "Is the road to Lipa open?",
+   "place_is_center": true,
+   "kinds": [
+    "road_flooded",
+    "road_blocked"
+   ]
+  },
+  {
+   "q": "Is there power in Lipa?",
+   "place_is_center": false,
+   "kinds": [
+    "power_out"
+   ]
+  },
+  {
+   "q": "brownout ba sa Batangas City?",
+   "place_is_center": false,
+   "kinds": [
+    "power_out"
+   ]
+  },
+  {
+   "q": "may kuryente na ba?",
+   "place_is_center": false,
+   "kinds": [
+    "power_out"
+   ]
+  },
+  {
+   "q": "Where can I get drinking water?",
+   "place_is_center": false,
+   "kinds": [
+    "water_available"
+   ]
+  },
+  {
+   "q": "saan may tubig?",
+   "place_is_center": false,
+   "kinds": [
+    "water_available"
+   ]
+  },
+  {
+   "q": "Any reports near me?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked",
+    "center_full",
+    "center_open",
+    "water_available",
+    "power_out",
+    "medical_need"
+   ]
+  },
+  {
+   "q": "ano ang balita?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked",
+    "center_full",
+    "center_open",
+    "water_available",
+    "power_out",
+    "medical_need"
+   ]
+  },
+  {
+   "q": "Is the road flooded and is there power?",
+   "place_is_center": false,
+   "kinds": [
+    "road_flooded",
+    "road_blocked",
+    "power_out"
+   ]
+  },
+  {
+   "q": "Is it safe to walk through floodwater?",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "What should I do if the road is flooded?",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "ligtas bang lumusong sa baha",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "What should I do during a brownout?",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "How do I purify water?",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "How much water should I pack in my go-bag?",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "Who do I call about a brownout in Lipa?",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "Is it full?",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "What should I pack for a baby?",
+   "place_is_center": false,
+   "kinds": null
+  },
+  {
+   "q": "How do I stop bleeding?",
+   "place_is_center": false,
+   "kinds": null
+  }
+ ]
+}
