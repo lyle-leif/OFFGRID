@@ -11,8 +11,6 @@ OFFGRID keeps working when the power and the internet are gone. A laptop runs a 
 > **Information aid only.** OFFGRID does not replace official alerts, emergency services or local authorities. In an emergency, call **911**.
 > Facilities come from OpenStreetMap (community-mapped, **not an official government list**). Hotlines come from official sources. Some guide sections are still drafts (see [Data and sources](#data-and-sources)).
 
-**Watch the 1-minute demo:** [docs/demo_video.mp4](docs/demo_video.mp4) (55 s, recorded from the real app with the internet blocked).
-
 ---
 
 ## Contents
@@ -28,7 +26,6 @@ OFFGRID keeps working when the power and the internet are gone. A laptop runs a 
   - [F. Check that the phone works without the hub](#f-check-that-the-phone-works-without-the-hub)
   - [G. Troubleshooting](#g-troubleshooting)
 - [Using OFFGRID](#using-offgrid)
-- [Live demo](#live-demo)
 - [For developers](#for-developers)
 - [Data and sources](#data-and-sources)
 - [Known limits](#known-limits)
@@ -181,8 +178,6 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 
 ### E. iPhone (Safari)
 
-The steps are written but **not yet tested on a real iPhone.**
-
 1. Connect the iPhone to the same network as the laptop (step C).
 2. Open **Safari** (not Chrome) and type the setup address, for example `http://192.168.1.26:8080/setup`.
 3. Tap **Download certificate**, then **Allow**. Check that the code matches the laptop screen.
@@ -243,25 +238,6 @@ The steps are written but **not yet tested on a real iPhone.**
 The full question bank, with what answers each one, is in [data/suggested_questions.md](data/suggested_questions.md).
 
 **Report kinds and how long they last:** road flooded or blocked (2 h); evacuation center full or open (6 h); drinking water (6 h); power out (6 h); medical need (2 h). A confirmation restarts the clock, up to 3 lifetimes. A report gets the *confirmed* label after 2 confirmations, and is hidden when disputes reach confirmations + 2. Limits: 10 reports per phone and 30 per network address per hour.
-
----
-
-## Live demo
-
-- **Run-sheet:** [docs/demo_runsheet.md](docs/demo_runsheet.md), the 60-second script, setup the night before, and what to do if something goes wrong.
-- **10 minutes before,** with the hub running:
-  ```powershell
-  .venv\Scripts\python tools\demo_check.py --clear-reports
-  ```
-  It checks the hub, the phone address and the certificate, warms up the AI and clears old reports.
-- **Open the app with `?demo`** (for example `https://192.168.1.26:8443/?demo`). It checks the hub every 3 seconds instead of 15, so a report from a phone shows on the laptop within seconds.
-- **Rebuild the demo video** (Ollama running; takes a few minutes):
-  ```powershell
-  powershell -NoProfile -File tools\demo_video\narrate.ps1 $env:TEMP\offgrid-video
-  node tools\demo_video\record.mjs $env:TEMP\offgrid-video
-  node tools\demo_video\compose.mjs $env:TEMP\offgrid-video
-  ```
-  The narration and captions are in `tools/demo_video/script.json`. The video is written to `docs/demo_video.mp4`.
 
 ---
 
