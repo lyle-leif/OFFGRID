@@ -246,25 +246,6 @@ The full question bank, with what answers each one, is in [data/suggested_questi
 
 ---
 
-## Live demo
-
-- **Run-sheet:** [docs/demo_runsheet.md](docs/demo_runsheet.md), the 60-second script, setup the night before, and what to do if something goes wrong.
-- **10 minutes before,** with the hub running:
-  ```powershell
-  .venv\Scripts\python tools\demo_check.py --clear-reports
-  ```
-  It checks the hub, the phone address and the certificate, warms up the AI and clears old reports.
-- **Open the app with `?demo`** (for example `https://192.168.1.26:8443/?demo`). It checks the hub every 3 seconds instead of 15, so a report from a phone shows on the laptop within seconds.
-- **Rebuild the demo video** (Ollama running; takes a few minutes):
-  ```powershell
-  powershell -NoProfile -File tools\demo_video\narrate.ps1 $env:TEMP\offgrid-video
-  node tools\demo_video\record.mjs $env:TEMP\offgrid-video
-  node tools\demo_video\compose.mjs $env:TEMP\offgrid-video
-  ```
-  The narration and captions are in `tools/demo_video/script.json`. The video is written to `docs/demo_video.mp4`.
-
----
-
 ## For developers
 
 **Tests**
