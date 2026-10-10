@@ -1,4 +1,4 @@
-import { createMap, DEFAULT_OFF, TYPE_STYLE, typeStyle } from "./map.js";
+import { createMap, DEFAULT_OFF, inBounds, TYPE_STYLE, typeStyle } from "./map.js";
 import { createChat } from "./chat.js";
 import { createDirections } from "./directions.js";
 import { createBrain } from "./offline/brain.js";
@@ -587,6 +587,8 @@ function endPick() {
 
 function pickMyLocation(then) {
   if (!mapApi) return;
+  stopLocate();
+  showGpsMsg("");
   $("set-pos").setAttribute("aria-pressed", "true");
   $("pos-hint").textContent = isPhone() ? "Tap the map where you are." : "Click the map where you are.";
   $("pos-hint").hidden = false;
@@ -660,41 +662,91 @@ $("set-pos").addEventListener("click", () => {
   pickMyLocation(() => { if (!state.selected) showTab("list", { reveal: false }); });
 });
 
-// "Use GPS" (and the locate button on the map): one fix, then the map flies to you.
+// "Use GPS" (and the locate button on the map). It watches for up to 90 s: the first fix
+// shows right away (even a rough one), better fixes refine it, and it stops at ±30 m. With
+// Wi-Fi off a phone has only the satellites, and a first fix can take a minute or more.
 const gpsAvailable = "geolocation" in navigator && window.isSecureContext;
-let locating = false;
+const LOCATE_MAX_MS = 90_000;
+const LOCATE_GOOD_M = 30;
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const touchDevice = window.matchMedia("(pointer: coarse)").matches;
+const GPS_TEXT = {
+  waiting: touchDevice
+    ? "Waiting for a GPS signal… With Wi-Fi off this can take a minute. Step outside or near a window."
+    : "Waiting for your location… Laptops often need internet for this.",
+  none: touchDevice
+    ? "No GPS signal yet. Try again outside, or use “Move my location” and tap where you are."
+    : "Location unavailable (laptops often need internet for this). Use “Move my location” instead.",
+  denied: isIOS
+    ? "Location is off for OFFGRID. On iPhone: Settings → Privacy & Security → Location Services → Safari Websites → While Using the App, and turn on Precise Location. Then try again."
+    : touchDevice
+      ? "Location is blocked for OFFGRID. Allow Location for Chrome in the phone's Settings, and for this site in Chrome (Site settings → Location). Then try again."
+      : "Location permission was denied. Use “Move my location” instead.",
+  outside: "You seem to be outside the area this map covers (Batangas). Use “Move my location” to set a spot on the map.",
+};
+function showGpsMsg(text) {
+  $("gps-msg").querySelector("span").textContent = text || "";
+  $("gps-msg").hidden = !text;
+}
+$("gps-msg-close").addEventListener("click", () => showGpsMsg(""));
+
+let locating = null; // { watchId, best, gotFix, userMoved, timers }
+function stopLocate() {
+  if (!locating) return;
+  navigator.geolocation.clearWatch(locating.watchId);
+  clearTimeout(locating.slowTimer);
+  clearTimeout(locating.endTimer);
+  locating = null;
+  const btn = $("use-gps");
+  btn.classList.remove("busy");
+  iconLabel(btn, "gps", "Use GPS");
+  mapApi?.setLocateBusy(false);
+}
 function locateMe() {
-  if (locating) return;
-  locating = true;
+  if (locating) { stopLocate(); return; } // a second tap stops looking
+  showGpsMsg("");
   const btn = $("use-gps");
   btn.classList.add("busy");
   iconLabel(btn, "gps", "Locating…");
   mapApi?.setLocateBusy(true);
   startHeading({ autoStopMs: 60_000 }); // must start inside the tap (iOS asks permission)
-  const done = () => {
-    locating = false;
-    btn.classList.remove("busy");
-    iconLabel(btn, "gps", "Use GPS");
-    mapApi?.setLocateBusy(false);
-  };
-  navigator.geolocation.getCurrentPosition(
-    (p) => {
-      done();
-      const pos = { lat: p.coords.latitude, lng: p.coords.longitude };
-      setUserPos(pos);
-      mapApi?.setAccuracy({ ...pos, radius: p.coords.accuracy });
+  const session = { best: Infinity, gotFix: false, userMoved: false };
+  locating = session;
+  session.slowTimer = setTimeout(() => {
+    if (locating === session && !session.gotFix) showGpsMsg(GPS_TEXT.waiting);
+  }, 10_000);
+  session.endTimer = setTimeout(() => {
+    if (locating !== session) return;
+    stopLocate();
+    if (!session.gotFix) showGpsMsg(GPS_TEXT.none);
+  }, LOCATE_MAX_MS);
+  const onFix = (p) => {
+    if (locating !== session) return;
+    const pos = { lat: p.coords.latitude, lng: p.coords.longitude };
+    const accuracy = p.coords.accuracy;
+    if (!inBounds(pos)) { stopLocate(); showGpsMsg(GPS_TEXT.outside); return; }
+    if (accuracy >= session.best) return; // only better fixes from here on
+    const first = !session.gotFix;
+    session.gotFix = true;
+    session.best = accuracy;
+    showGpsMsg("");
+    setUserPos(pos);
+    mapApi?.setAccuracy({ ...pos, radius: accuracy });
+    if (first) {
       if (isPhone()) sheet.set("peek"); // show the map around you
-      mapApi?.zoomTo(pos, p.coords.accuracy);
       if (!state.selected) showTab("list", { reveal: false });
-    },
-    () => {
-      done();
-      $("pos-hint").hidden = false;
-      $("pos-hint").textContent = "Location unavailable (often needs internet on laptops). Use “Set my location” instead.";
-      setTimeout(() => { $("pos-hint").hidden = true; }, 5000);
-    },
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 },
-  );
+    }
+    if (first || !session.userMoved) mapApi?.zoomTo(pos, accuracy);
+    if (accuracy <= LOCATE_GOOD_M) stopLocate();
+  };
+  const onError = (err) => {
+    if (locating !== session) return;
+    if (err.code === err.PERMISSION_DENIED) { stopLocate(); showGpsMsg(GPS_TEXT.denied); }
+    // TIMEOUT / POSITION_UNAVAILABLE: keep waiting (the 90 s timer decides); phones often
+    // report "unavailable" for a while before the first satellite fix.
+  };
+  session.watchId = navigator.geolocation.watchPosition(onFix, onError,
+    { enableHighAccuracy: true, maximumAge: 30_000, timeout: LOCATE_MAX_MS });
 }
 if (gpsAvailable) {
   $("use-gps").hidden = false;
@@ -905,7 +957,7 @@ renderChips();
       onLoad: () => $("map-loading").classList.add("done"),
       onReady: hideSplash,
       onUserMove: (pos) => setUserPos(pos),
-      onManualMove: () => directions.manualMove(),
+      onManualMove: () => { directions.manualMove(); if (locating) locating.userMoved = true; },
       theme: currentTheme(),
     });
     mapApi.setLocations(state.locations);

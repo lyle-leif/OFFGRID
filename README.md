@@ -54,27 +54,71 @@ All screenshots come from the real app, taken by [`tools/screenshots.mjs`](tools
 
 **Laptop (the hub)**
 
-| Dark map: the local AI answers a typo'd question | Light map: walking directions to an evacuation center |
-|---|---|
-| <img src="docs/screenshots/laptop-dark.png" alt="Laptop, dark theme: guide text and a checked AI summary about walking through floodwater"> | <img src="docs/screenshots/laptop-light.png" alt="Laptop, light theme: a 2.5 km walking route to Batangas State University with turn-by-turn steps"> |
-| "is it safe to wlak thru flood water?": guide text first, then an **AI summary · checked against the guide**. | A 2.5 km walking route with turn-by-turn steps. The flood icon is a road report. |
+<table>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <img src="docs/screenshots/laptop-dark.png" width="100%" alt="Laptop, dark theme: guide text and a checked AI summary about walking through floodwater"><br>
+      <b>Local AI, dark map</b><br>
+      <sub>Guide text first, then a checked AI summary</sub>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <img src="docs/screenshots/laptop-light.png" width="100%" alt="Laptop, light theme: a 2.5 km walking route to Batangas State University with turn-by-turn steps"><br>
+      <b>Directions, light map</b><br>
+      <sub>A 2.5 km walk with turn-by-turn steps</sub>
+    </td>
+  </tr>
+</table>
 
 **Phone**
 
-| Home | Assistant (typo on purpose) | Nearest, in Filipino |
-|---|---|---|
-| <img src="docs/screenshots/phone-home.png" width="260" alt="Phone: full-screen map with the bottom sheet"> | <img src="docs/screenshots/phone-assistant.png" width="260" alt="Phone: the answer to 'how do i stop bleding'"> | <img src="docs/screenshots/phone-nearest.png" width="260" alt="Phone: nearest hospitals by road for 'saan ang pinakamalapit na ospital?'"> |
-| Full-screen map; the panel is a bottom sheet you drag up and down. | "how do i stop bleding" finds **Basic First Aid › Bleeding**. | "saan ang pinakamalapit na ospital?" lists hospitals by road distance, with Show and Route buttons. |
+<table>
+  <tr>
+    <td align="center" valign="top" width="25%">
+      <img src="docs/screenshots/phone-launch.png" width="190" alt="Phone: the OFFGRID launch screen with the tern logo"><br>
+      <b>Launch</b><br>
+      <sub>Opens on the tern, then the map</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="docs/screenshots/phone-home.png" width="190" alt="Phone: full-screen map with the bottom panel"><br>
+      <b>Home</b><br>
+      <sub>Full-screen map and a bottom panel</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="docs/screenshots/phone-assistant.png" width="190" alt="Phone: the answer to 'how do i stop bleding'"><br>
+      <b>Assistant</b><br>
+      <sub>“how do i stop bleding” (typo on purpose)</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="docs/screenshots/phone-nearest.png" width="190" alt="Phone: nearest hospitals by road for 'saan ang pinakamalapit na ospital?'"><br>
+      <b>Nearest, in Filipino</b><br>
+      <sub>Hospitals by road distance</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="25%">
+      <img src="docs/screenshots/phone-directions.png" width="190" alt="Phone: a walking route drawn on the map"><br>
+      <b>Directions</b><br>
+      <sub>Walking route worked out on the device</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="docs/screenshots/phone-reports.png" width="190" alt="Phone: Reports tab with a flooded-road report on P. Burgos Street"><br>
+      <b>Situation reports</b><br>
+      <sub>A flooded road reported by another phone</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="docs/screenshots/phone-offline.png" width="190" alt="Phone: answering with the hub off; the status pill says 'On this phone'"><br>
+      <b>Hub switched off</b><br>
+      <sub>Still answers: “On this phone”</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="docs/screenshots/phone-setup.png" width="190" alt="Phone: the hub's setup page with the certificate download and install steps"><br>
+      <b>Hub setup page</b><br>
+      <sub>Certificate and install steps</sub>
+    </td>
+  </tr>
+</table>
 
-| Directions | Situation reports | Hub switched off |
-|---|---|---|
-| <img src="docs/screenshots/phone-directions.png" width="260" alt="Phone: a walking route drawn on the map"> | <img src="docs/screenshots/phone-reports.png" width="260" alt="Phone: Reports tab with a flooded-road report on P. Burgos Street"> | <img src="docs/screenshots/phone-offline.png" width="260" alt="Phone: answering with the hub off; the status pill says 'On this phone'"> |
-| Walking route computed by the router. | Another phone reported **Road flooded · on P. Burgos Street**; it shows here as *unverified* until others confirm it. | The hub is off: the pill says **On this phone** and answers still come, from the phone's saved copy. |
-
-| Hub setup page (what a phone sees first) |
-|---|
-| <img src="docs/screenshots/phone-setup.png" width="260" alt="Phone: the hub's setup page with the certificate download and install steps"> |
-| The hub's `/setup` page: download the certificate, compare its code, install it, open OFFGRID. (Here the address is `127.0.0.1` because it was taken on the laptop; on a phone it shows the laptop's Wi-Fi address.) |
+The setup page shows `127.0.0.1` because the shot was taken on the laptop; on a phone it shows the laptop's Wi-Fi address.
 
 ---
 
@@ -206,6 +250,7 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 | **"Your connection is not private"** | The certificate isn't installed or trusted yet. Repeat step D4 (Android) or both settings in step E4 (iPhone). |
 | **No "Install app" in Chrome's menu** | Open the **https** address (port 8443), not the setup page. Reload once after the certificate is installed. |
 | **Stuck on "Saving…"** | Stay near the hub with the app open until it says "Saved on this phone". About 46 MB is downloaded. |
+| **"Use GPS" finds nothing** | With Wi-Fi off, the phone has only the satellites: the first fix can take a minute. Step outside or near a window and wait while it says "Locating…". If it says location is off: on iPhone, **Settings → Privacy & Security → Location Services → Safari Websites → While Using the App**, and turn on **Precise Location**; on Android, allow Location for Chrome. You can always tap **Move my location** and then the map instead. |
 | **The laptop's address changed** | Restart `start_hub.bat`. It renews the hub certificate for the new address and prints it. The phone keeps its certificate, but needs to open and install the app from the new address. |
 | **"AI offline" or no AI summary** | Start Ollama (the tray app, or `ollama serve`). Answers still work from the guide text. |
 | **"Model missing"** | While online: `ollama pull qwen2.5:3b`. |

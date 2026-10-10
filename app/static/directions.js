@@ -273,15 +273,17 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
   }
 
   function onGpsError(err) {
-    if (err.code === err.TIMEOUT) {
-      status = "Waiting for a GPS signal…"; // keep watching; it may come back outdoors
+    if (err.code !== err.PERMISSION_DENIED) {
+      // Timeout or no fix yet: keep watching. Phones without Wi-Fi need a while for the
+      // satellites, and the signal may come back outdoors.
+      status = lastFix ? "GPS signal lost. Waiting for it to come back…" : "Waiting for a GPS signal… (with Wi-Fi off this can take a minute)";
       renderTracking();
       return;
     }
     stopTracking();
-    $("route-tracking").textContent = err.code === err.PERMISSION_DENIED
-      ? "Location permission was denied. Drag the blue dot to update your position instead."
-      : "GPS is unavailable here (laptops often need internet for location). Drag the blue dot instead.";
+    $("route-tracking").textContent = /iPhone|iPad|iPod/.test(navigator.userAgent)
+      ? "Location is off for OFFGRID (Settings → Privacy & Security → Location Services → Safari Websites). Drag the blue dot instead."
+      : "Location permission was denied. Drag the blue dot to update your position instead.";
   }
 
   function startTracking() {
