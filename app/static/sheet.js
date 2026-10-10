@@ -10,8 +10,17 @@ const FLICK = 0.5; // px per ms
 const TAP_PX = 6; // a smaller move is a tap, not a drag
 
 export function createSheet({ el, container, dragAreas, onChange }) {
-  let state = "half";
-  try { state = ORDER.includes(localStorage.getItem("bb.sheet")) ? localStorage.getItem("bb.sheet") : "half"; } catch { /* no storage */ }
+  // The app always opens with the sheet down (the map first). Testing tools can pick another
+  // start with localStorage "bb.sheet.start"; the old saved height ("bb.sheet") is dropped.
+  let state = "peek";
+  try {
+    localStorage.removeItem("bb.sheet");
+    const start = localStorage.getItem("bb.sheet.start");
+    if (ORDER.includes(start)) state = start;
+  } catch { /* no storage */ }
+  // No height animation for the first layout: the sheet is simply there when the app shows.
+  el.classList.add("dragging");
+  setTimeout(() => { if (!drag) el.classList.remove("dragging"); }, 100);
 
   const heights = () => {
     const h = container.clientHeight || window.innerHeight;
@@ -25,10 +34,9 @@ export function createSheet({ el, container, dragAreas, onChange }) {
     onChange?.(state, px);
   }
 
-  function set(next, { save = true } = {}) {
+  function set(next) {
     if (!ORDER.includes(next)) return;
     state = next;
-    if (save) { try { localStorage.setItem("bb.sheet", state); } catch { /* no storage */ } }
     apply();
   }
 

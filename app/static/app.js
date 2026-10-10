@@ -12,6 +12,16 @@ hydrateIcons();
 
 const $ = (id) => document.getElementById(id);
 
+// Launch screen (index.html): fade it out once the map has drawn, so the app appears in one
+// piece. Never longer than 5 s, whatever happens to the map.
+function hideSplash() {
+  const el = $("splash");
+  if (!el || el.classList.contains("gone")) return;
+  el.classList.add("gone");
+  setTimeout(() => el.remove(), 400);
+}
+setTimeout(hideSplash, 5000);
+
 const state = {
   locations: [],
   selected: null,
@@ -118,12 +128,20 @@ async function checkHealth() {
 // The whole app, map and data are saved on the phone so it keeps working with no hub.
 // A new data pack on the hub changes the worker URL, so phones re-save when they reconnect.
 let hasOfflineCopy = Boolean(navigator.serviceWorker?.controller);
+let updateWaiting = false; // a newer version is saved; this page shows the old one
 function showOfflineCopy(msg) {
   const el = $("offline-copy");
   if (!el) return;
   el.hidden = false;
   el.replaceChildren();
-  if (msg.state === "saving") {
+  if (updateWaiting && msg.state !== "error") {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "link-btn";
+    btn.textContent = "Tap to restart";
+    btn.addEventListener("click", () => window.location.reload());
+    el.append(icon("check", 14), " Update saved on this phone. ", btn);
+  } else if (msg.state === "saving") {
     el.append(icon("signal", 14), ` Saving offline copy… ${Math.round((100 * msg.done) / msg.total)}% (keep this page open)`);
   } else if (msg.state === "saved" || msg.state === "ready") {
     hasOfflineCopy = true;
@@ -133,7 +151,40 @@ function showOfflineCopy(msg) {
     el.append(icon("warning", 14), ` ${msg.text}`);
   }
   el.title = el.textContent;
+  if (showDiagnostics) el.append(diagnostics());
 }
+
+// Tap the line at the bottom for a short readout (version, screen and page sizes, safe
+// areas): what a report about a phone needs, without any developer tools.
+let showDiagnostics = false;
+let hubPack = null; // the pack the hub has (this copy may be older)
+function diagnostics() {
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:fixed;visibility:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)";
+  document.body.append(probe);
+  const cs = getComputedStyle(probe);
+  const safe = `${parseFloat(cs.paddingTop)}/${parseFloat(cs.paddingBottom)}`;
+  probe.remove();
+  const root = document.documentElement;
+  const worker = navigator.serviceWorker?.controller?.scriptURL;
+  const running = worker ? new URL(worker).searchParams.get("v") : "none";
+  const span = document.createElement("span");
+  span.className = "diag";
+  span.textContent = [
+    `copy ${running}${hubPack && hubPack !== running ? ` (hub ${hubPack})` : ""}`,
+    navigator.standalone === true ? "home-screen app" : "browser",
+    `screen ${screen.width}×${screen.height}`, `window ${innerHeight}`, `page ${root.clientHeight}`,
+    `app-h ${root.style.getPropertyValue("--app-h") || "none"}`, `safe ${safe}`,
+  ].join(" · ");
+  return span;
+}
+$("offline-copy").addEventListener("click", (e) => {
+  if (e.target.closest("button")) return; // "Tap to restart"
+  showDiagnostics = !showDiagnostics;
+  const el = $("offline-copy");
+  if (showDiagnostics) el.append(diagnostics());
+  else el.querySelector(".diag")?.remove();
+});
 let packDates = null;
 function appendDates(el) {
   if (!packDates) return;
@@ -150,10 +201,23 @@ async function setUpOfflineCopy() {
     return;
   }
   navigator.serviceWorker.addEventListener("message", (e) => { if (e.data?.type === "offline-copy") showOfflineCopy(e.data); });
+  // A new version took over this page (it was saved while the app was open): show it.
+  // Restart right away unless the user is in the middle of something; then offer a button.
+  const hadCopy = Boolean(navigator.serviceWorker.controller);
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!hadCopy) return; // the first save: this page is already the current version
+    const busy = document.querySelector("#messages .msg.user")
+      || (state.selected && directions.isActiveFor(state.selected.id))
+      || !$("pos-hint").hidden;
+    if (!busy) { window.location.reload(); return; }
+    updateWaiting = true;
+    showOfflineCopy({ state: "ready" });
+  }, { once: true });
   try {
     // Fresh from the hub when reachable, else the saved copy (via the worker).
     const version = await (await fetch("/pack/version.json", { cache: "no-store" })).json();
     packDates = version.dates;
+    hubPack = version.pack;
     const reg = await navigator.serviceWorker.register(`/sw.js?v=${version.pack}`);
     if (navigator.serviceWorker.controller && reg.active && !reg.installing && !reg.waiting
         && new URL(reg.active.scriptURL).searchParams.get("v") === version.pack) {
@@ -219,8 +283,8 @@ const panel = {
   peekForPick() {
     if (!isPhone()) return () => {};
     const prev = sheet.get();
-    sheet.set("peek", { save: false });
-    return () => { if (sheet.get() === "peek") sheet.set(prev === "peek" ? "half" : prev, { save: false }); };
+    sheet.set("peek");
+    return () => { if (sheet.get() === "peek") sheet.set(prev === "peek" ? "half" : prev); };
   },
 };
 
@@ -232,7 +296,7 @@ for (const b of document.querySelectorAll(".rail-btn")) {
   });
 }
 // Typing on a phone: give the chat the whole sheet so the keyboard doesn't hide it.
-$("question").addEventListener("focus", () => { if (isPhone()) sheet.set("full", { save: false }); });
+$("question").addEventListener("focus", () => { if (isPhone()) sheet.set("full"); });
 function applyPanelMode() {
   let saved = null;
   try { saved = localStorage.getItem("bb.panel"); } catch { /* no storage */ }
@@ -619,7 +683,7 @@ function locateMe() {
       const pos = { lat: p.coords.latitude, lng: p.coords.longitude };
       setUserPos(pos);
       mapApi?.setAccuracy({ ...pos, radius: p.coords.accuracy });
-      if (isPhone()) sheet.set("peek", { save: false }); // show the map around you
+      if (isPhone()) sheet.set("peek"); // show the map around you
       mapApi?.zoomTo(pos, p.coords.accuracy);
       if (!state.selected) showTab("list", { reveal: false });
     },
@@ -696,7 +760,7 @@ setInterval(() => {
 
 // ---------- legend ----------
 function setLegend(open, { save = true } = {}) {
-  if (open && isPhone()) sheet.set("peek", { save: false }); // the legend sits over the map
+  if (open && isPhone()) sheet.set("peek"); // the legend sits over the map
   $("legend").hidden = !open;
   $("legend-toggle").setAttribute("aria-expanded", String(open));
   $("legend-toggle").classList.toggle("open", open);
@@ -839,6 +903,7 @@ renderChips();
       },
       onLocate: gpsAvailable ? locateMe : null,
       onLoad: () => $("map-loading").classList.add("done"),
+      onReady: hideSplash,
       onUserMove: (pos) => setUserPos(pos),
       onManualMove: () => directions.manualMove(),
       theme: currentTheme(),
@@ -852,6 +917,7 @@ renderChips();
     renderList();
   } catch (err) {
     console.error(err);
+    hideSplash();
     $("map-loading").classList.add("done");
     $("map-error").hidden = false;
     $("map-error").textContent = "The offline map failed to load. Location records and the assistant still work.";

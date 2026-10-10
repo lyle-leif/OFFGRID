@@ -27,6 +27,9 @@ Project folder: `C:\Users\Lyle Daniel\OneDrive\Desktop\brownout-brain` (the fold
   - **Service workers in the browser pane:** on `localhost` the pane *does* register `sw.js`, and it then serves the cached page. After code changes, unregister it and clear caches in the pane (or test with `tools/e2e_offline.mjs`).
   - **The browser pane pauses `requestAnimationFrame` when hidden.** Don't rely on rAF for logic.
   - **Windows Firewall must allow Python on Private networks** before phones can reach the hub on the LAN IP. This was still pending when this file was written.
+  - **iPhone home-screen app strip:** with `black-translucent` + `viewport-fit=cover`, iOS reports the height as screen minus status bar, leaving an empty strip at the bottom. The inline script in `index.html` sets `--app-h` to the full screen height (only when `navigator.standalone`), and `styles.css` sizes `html, body` with it. It compares against `documentElement.clientHeight` (the box `100%` uses; `innerHeight` can already read full) and re-checks after load and on resize.
+  - **Phone diagnostics:** tap the "Saved on this phone" line at the bottom of the panel (sheet at least half open) to show the running copy's pack id (and the hub's if newer), home-screen app or browser, screen/window/page heights, `--app-h` and safe areas. Ask for a screenshot of it in phone bug reports.
+  - **Updates:** inside the app, `fetch(..., { cache: "no-store" })` still goes through the service worker. `sw.js` fetches `pack/version.json` network-first, so phones notice a new pack. Install re-downloads only changed files (ETag → 304), and `app.js` reloads on `controllerchange` (or offers "Tap to restart" if the user is busy). A phone on an older copy needs two opens near the hub.
   - **Overpass API is often busy (504).** `tools/overpass.py` retries with a mirror.
 
 ## Architecture (key files)
@@ -66,7 +69,8 @@ Project folder: `C:\Users\Lyle Daniel\OneDrive\Desktop\brownout-brain` (the fold
     - **`fitBounds` adds the map's own padding** (left there by `easeTo`/`flyTo` with `padding`) to the padding it's given, and silently does nothing if the sum doesn't fit. `padBy` passes only what's missing. Before this fix, Directions on a phone never zoomed to the route.
   - **Layout (UI refresh):** the map is always full screen.
     - Laptop: the panel is a floating card that collapses to an icon rail.
-    - Phone (≤ 820 px): the panel is a bottom sheet (`sheet.js`: peek, half and full; drag or tap the handle).
+    - Phone (≤ 820 px): the panel is a bottom sheet (`sheet.js`: peek, half and full; drag or tap the handle). It **always opens at peek** (heights aren't saved); testing tools choose another start with `localStorage` `bb.sheet.start`.
+    - **Launch screen:** `#splash` in `index.html` (the tern on `#2b2b2b`, the icon's colour, styled inline so it paints on the first frame). `app.js` `hideSplash()` fades it out on `map.js` `onReady` (first `idle`, or 1.5 s after load), on map failure, or after 5 s at most.
     - Logo: the tern, inline SVG in `index.html`, with colours from CSS variables so it follows light and dark mode. `icons/logo.svg` is the dark version.
     - Tagline: "Ready beyond the grid".
   - `app.js`: UI wiring, theme, panel and legend toggles, heading cone, battery saver, service worker registration.
@@ -96,7 +100,8 @@ Project folder: `C:\Users\Lyle Daniel\OneDrive\Desktop\brownout-brain` (the fold
   - `build_phone_pack.py`: run after **any data or app code change**. It writes `app/static/pack/`; the pack id hashes the data and every app file, so phones re-save their offline copy.
   - `make_parity_fixtures.py`: run after answer-logic changes. It writes `tests/fixtures/*.json`.
   - `screenshots.mjs`: retakes the README screenshots (`docs/screenshots/*.png`: laptop dark and light, 7 phone shots including hub-off and `/setup`) from the real app in headless Edge, with the internet blocked. It prints a check per shot. It needs Ollama, and about 1 GB of free RAM (it starts its own server on 8766).
-  - Also: `make_certs.py`, `make_icons.py`, `measure_answers.py`, `check_questions.py`, `e2e_offline.mjs`.
+  - `make_icons.mjs`: renders the home-screen icons from the tern in `icons/logo.svg` with headless Edge: `apple-touch-icon.png` (180, iPhone), `icon-192/512.png`, and `icon-maskable-512.png` (tern inside Android's safe zone). Full-bleed `#2b2b2b` tiles, no transparency. iPhones keep the icon from when the app was added; to see a new one, delete it from the home screen and add it again.
+  - Also: `make_certs.py`, `measure_answers.py`, `check_questions.py`, `e2e_offline.mjs`.
 - **README.md:** the user-facing guide (features, screenshots, step-by-step setup for laptop, Android and iPhone, troubleshooting, developers, data and sources). Keep it in step when setup steps or features change.
 - `sw.js` lets navigations to `/setup` and `/offgrid-ca.crt` through to the hub (before, it served the saved app for every page).
 
@@ -125,7 +130,6 @@ Project folder: `C:\Users\Lyle Daniel\OneDrive\Desktop\brownout-brain` (the fold
 3. **Stray file to delete by hand:** `C:\LYLEDA~1\placeholder.txt` (created by mistake; a safety check blocked deleting it).
 4. **The side panel collapse/re-open** may not resize the map in a visible window; this is unverified.
 4b. **UI refresh is not fully finished:**
-    - The home-screen PNG icons are still the old orange pin; `make_icons.mjs` (render `icons/logo.svg` with headless Edge) isn't written yet.
     - The phone sheet's mouse/touch drag fix is untested on a real phone.
     - The old panel overflow is fixed by the floating card layout.
 4c. **Question understanding limits:**

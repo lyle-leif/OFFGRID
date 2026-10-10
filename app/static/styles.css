@@ -93,7 +93,9 @@
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html, body { height: 100%; margin: 0; }
+/* --app-h: the full screen height in an iPhone home-screen app (set in index.html). */
+html, body { height: var(--app-h, 100%); margin: 0; }
+html { background: var(--bg); }
 body { background: var(--bg); color: var(--ink); display: flex; flex-direction: column; overflow: hidden; }
 button, textarea, input { font: inherit; color: inherit; }
 a { color: var(--accent); }
@@ -264,6 +266,7 @@ a { color: var(--accent); }
   font-size: 11px; color: var(--muted); line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .offline-copy br { display: none; }
+.offline-copy .diag { display: block; white-space: normal; color: var(--ink); margin-top: 3px; }
 .offline-copy .ui-icon { vertical-align: -0.2em; }
 
 /* collapsed: a slim rail */
