@@ -16,10 +16,10 @@ OFFGRID keeps working when the power and the internet are gone. A laptop runs a 
 ## Watch
 
 <p align="center">
-  <a href="docs/showreel.mp4"><img src="docs/screenshots/showreel-poster.jpg" width="100%" alt="Play the 60-second OFFGRID showreel: the laptop hub and an iPhone showing the real app"></a>
+  <a href="https://youtu.be/O5-LdqrzRaw"><img src="docs/screenshots/showreel-poster.jpg" width="100%" alt="Play the 60-second OFFGRID showreel on YouTube: the laptop hub and an iPhone showing the real app"></a>
 </p>
 
-- **[Showreel (60 s, 1080p)](docs/showreel.mp4):** the idea in one minute. The cloud goes down; the laptop's local AI answers a typo'd question; the phone maps, routes and reports; the hub is switched off and the phone keeps going.
+- **[Showreel on YouTube (60 s, 1080p)](https://youtu.be/O5-LdqrzRaw):** the idea in one minute. The cloud goes down; the laptop's local AI answers a typo'd question; the phone maps, routes and reports; the hub is switched off and the phone keeps going. (Offline copy: [docs/showreel.mp4](docs/showreel.mp4).)
 - **[Demo walkthrough (55 s)](docs/demo_video.mp4):** a plain, narrated recording of the same flows, for judges and testers.
 
 Both are made from the real app, recorded with the internet blocked.
