@@ -13,7 +13,21 @@ OFFGRID keeps working when the power and the internet are gone. A laptop runs a 
 
 ---
 
+## Watch
+
+<p align="center">
+  <a href="docs/showreel.mp4"><img src="docs/screenshots/showreel-poster.jpg" width="100%" alt="Play the 60-second OFFGRID showreel: the laptop hub and an iPhone showing the real app"></a>
+</p>
+
+- **[Showreel (60 s, 1080p)](docs/showreel.mp4):** the idea in one minute. The cloud goes down; the laptop's local AI answers a typo'd question; the phone maps, routes and reports; the hub is switched off and the phone keeps going.
+- **[Demo walkthrough (55 s)](docs/demo_video.mp4):** a plain, narrated recording of the same flows, for judges and testers.
+
+Both are made from the real app, recorded with the internet blocked.
+
+---
+
 ## Contents
+- [Watch](#watch)
 - [What it does](#what-it-does)
 - [Screenshots](#screenshots)
 - [How it works](#how-it-works)
@@ -297,6 +311,12 @@ node tools\e2e_offline.mjs                 # headless Edge: save the copy, stop 
 node tools\screenshots.mjs                 # retake the README screenshots (Ollama running)
 ```
 
+**Showreel** (`tools/showreel/`, see `timeline.mjs` for every cut and cue)
+```powershell
+node tools\showreel\capture.mjs            # record real-app footage (Ollama running, internet blocked)
+node tools\showreel\build.mjs              # soundtrack -> 3,600 frames -> docs/showreel.mp4 (about 11 min)
+```
+
 **After changing data or app code,** rebuild the phone pack so phones download the new copy next time they reach the hub:
 ```powershell
 .venv\Scripts\python tools\build_phone_pack.py
@@ -313,7 +333,7 @@ After changing answer logic, also run `.venv\Scripts\python tools\make_parity_fi
 | `app/static/` | The web app (vanilla JS, MapLibre, PMTiles) and `sw.js`, the offline copy |
 | `app/static/offline/` | The phone engine: search, spelling fixer, answers, router, reports |
 | `data/` | Facilities, guides, roads, question bank |
-| `tools/` | Imports, phone pack, certificates, map styles, demo and screenshot tools |
+| `tools/` | Imports, phone pack, certificates, map styles, demo, showreel and screenshot tools |
 | `tests/` | pytest suite, question bank, JS parity tests |
 
 **API**
@@ -380,6 +400,9 @@ Six guides: typhoon preparation, flood safety, first aid, go bag, power outage, 
 | `app/static/vendor/` | MapLibre GL JS 5.6.0 (BSD-3), PMTiles JS (BSD-3) |
 
 Map data © OpenStreetMap contributors (ODbL), © Protomaps. Local AI: [Qwen 2.5 3B](https://ollama.com/library/qwen2.5) through Ollama.
+
+### Showreel audio
+The showreel's voice-over and sound effects were generated with [ElevenLabs](https://elevenlabs.io) (voice "K. V. Hagen", sound effects model v2) and are saved in `tools/showreel/assets/`. The music is an original score synthesized in code (`tools/showreel/audio.html`). The video is muxed with [mp4-muxer](https://github.com/Vanilagy/mp4-muxer) (MIT), vendored in `tools/showreel/vendor/`.
 
 ---
 

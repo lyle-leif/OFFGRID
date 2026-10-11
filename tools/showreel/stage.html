@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OFFGRID showreel stage</title>
+<link rel="stylesheet" href="stage.css">
+</head>
+<body>
+<!-- The whole film is one page: window.render(t) draws any moment exactly (see stage.js).
+     render.mjs films it frame by frame; ?scrub adds a scrubber and plays out/mix.wav. -->
+<div id="stage">
+  <div id="shake" class="layer">
+    <div id="bg" class="layer"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div id="dots"></div></div>
+
+    <div id="storm" class="layer">
+      <img id="stormMap" alt="">
+      <canvas id="rain" width="1920" height="1080"></canvas>
+      <canvas id="cloud" width="1920" height="1080"></canvas>
+      <div id="hud-left"><div class="kicker">Batangas · Philippines</div><div class="coords">13.76° N &nbsp; 121.06° E &nbsp; TYPHOON SIGNAL NO. 3</div></div>
+      <div id="hud-right"><div id="net">LTE</div><svg id="bars" width="92" height="56" viewBox="0 0 92 56"></svg><svg id="wifi" width="72" height="56" viewBox="0 0 72 56"></svg></div>
+      <div id="nosignal">NO SIGNAL<small>the cloud is gone</small></div>
+    </div>
+
+    <div id="logo" class="layer">
+      <div id="logoGlow" class="abs"></div>
+      <div id="logoTern" class="tern-wrap"></div>
+      <div id="logoWord" class="wordmark"></div>
+      <div id="logoTag" class="tagline">Ready beyond the grid</div>
+    </div>
+
+    <div id="topic" class="layer"></div>
+    <div id="diagram" class="layer"></div>
+
+    <div id="cam">
+      <div id="glow" class="abs"></div>
+      <div id="world"></div>
+    </div>
+
+    <div id="texts" class="layer"></div>
+
+    <div id="outro" class="layer">
+      <div id="outroTern" class="tern-wrap"></div>
+      <div id="outroWord" class="wordmark"></div>
+      <div id="outroTag" class="tagline">Ready beyond the grid</div>
+      <div id="outroSub" class="tagline"></div>
+      <div id="sweep" class="abs"></div>
+    </div>
+
+    <div id="footer"><i></i>Real app · recorded with the internet off</div>
+    <canvas id="fx" width="1920" height="1080"></canvas>
+  </div>
+  <div id="flash"></div>
+  <div id="vignette"></div>
+  <canvas id="grain" width="960" height="540"></canvas>
+  <div id="black"></div>
+</div>
+<script type="module" src="stage.js"></script>
+</body>
+</html>

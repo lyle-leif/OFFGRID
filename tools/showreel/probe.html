@@ -1,0 +1,36 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>showreel probe</title>
+<script type="module">
+// Measures the voice-over takes (speech segments split at pauses) and checks which
+// codecs this browser can encode. Results go to window.__probe.
+const ac = new OfflineAudioContext(1, 48000, 48000);
+const takes = {};
+for (const name of ["take1", "take2", "take3"]) {
+  const buf = await ac.decodeAudioData(await (await fetch(`/tool/assets/vo/${name}.mp3`)).arrayBuffer());
+  const d = buf.getChannelData(0), sr = buf.sampleRate, hop = Math.round(sr * 0.01);
+  const env = [];
+  for (let i = 0; i < d.length; i += hop) { let s = 0; for (let j = i; j < Math.min(i + hop, d.length); j++) s += d[j] * d[j]; env.push(Math.sqrt(s / hop)); }
+  const peak = Math.max(...env);
+  const on = env.map((v) => v > peak * 0.04);
+  // Speech runs, joined across gaps shorter than 0.28 s.
+  const segs = [];
+  let start = -1, lastOn = -1;
+  on.forEach((v, i) => {
+    if (v) { if (start < 0) start = i; else if (i - lastOn > 28) { segs.push([start, lastOn]); start = i; } lastOn = i; }
+  });
+  if (start >= 0) segs.push([start, lastOn]);
+  const gaps = segs.slice(1).map((s, i) => ({ i, gap: (s[0] - segs[i][1]) / 100 }));
+  takes[name] = { duration: buf.duration, segments: segs.map(([a, b]) => [a / 100, (b + 1) / 100]), gaps };
+}
+const enc = {};
+for (const codec of ["avc1.640028", "avc1.640032", "avc1.4d0028"]) {
+  try { enc[codec] = (await VideoEncoder.isConfigSupported({ codec, width: 1920, height: 1080, bitrate: 16e6, framerate: 60 })).supported; }
+  catch (e) { enc[codec] = String(e); }
+}
+for (const codec of ["mp4a.40.2", "opus"]) {
+  try { enc[codec] = (await AudioEncoder.isConfigSupported({ codec, sampleRate: 48000, numberOfChannels: 2, bitrate: 192000 })).supported; }
+  catch (e) { enc[codec] = String(e); }
+}
+window.__probe = { takes, enc, fonts: ["Segoe UI Variable Display", "Segoe UI Variable Text", "Segoe UI"].map((f) => [f, document.fonts.check(`800 40px "${f}"`)]) };
+</script>
