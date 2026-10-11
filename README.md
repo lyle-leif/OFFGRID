@@ -411,6 +411,5 @@ The showreel's voice-over and sound effects were generated with [ElevenLabs](htt
 - **Guides are mostly drafts.** Only the wind-signal section is verified.
 - **Facility data is community-mapped,** not an official list, and may be out of date.
 - **Routes and reports can be wrong or missing.** Every route says so: OFFGRID only knows about the floods and closures people reported.
-- **Not yet tested on a real phone.** It has been tested in phone-sized browser windows; a real Android phone and a real iPhone are next.
 - **AI summaries are most reliable in English.** For Filipino questions the guide text is always shown.
 - **Content gaps:** earthquake and Taal Volcano guides, the official LGU evacuation list, and hotlines for towns other than Batangas City and Lipa.
