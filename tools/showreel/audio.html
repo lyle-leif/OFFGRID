@@ -1,0 +1,280 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>showreel audio</title>
+<script type="module">
+// The showreel soundtrack, rendered offline (same result every run): an original score in
+// D minor at 120 BPM, the ElevenLabs voice-over and sound effects, all placed from
+// timeline.mjs. The music ducks under the voice; a limiter and a final gain keep the
+// peak at -1 dBFS. Posts out/mix.wav and a report (window.__audio).
+import { BAR, BEAT, DURATION, MUSIC, SFX, VO } from "./timeline.mjs";
+import { groupRuns, speechRuns } from "./vo.js";
+
+const SR = 48000;
+const ctx = new OfflineAudioContext(2, SR * DURATION, SR);
+const get = async (u) => ctx.decodeAudioData(await (await fetch(u)).arrayBuffer());
+
+// Seeded random numbers, so noise and reverb are identical on every render.
+let seed = 20261011;
+const rand = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+
+// ---- buses ----
+const master = ctx.createGain(); master.gain.value = 0.9;
+const limiter = ctx.createDynamicsCompressor();
+limiter.threshold.value = -9; limiter.knee.value = 3; limiter.ratio.value = 20; limiter.attack.value = 0.002; limiter.release.value = 0.12;
+master.connect(limiter).connect(ctx.destination);
+
+const music = ctx.createGain(); music.gain.value = 0.62;
+const duck = ctx.createGain();
+music.connect(duck).connect(master);
+const sfxBus = ctx.createGain(); sfxBus.gain.value = 0.8; sfxBus.connect(master);
+const voBus = ctx.createGain(); voBus.gain.value = 1.0;
+// Voice: a little low cut and presence, then gentle compression.
+const voHp = ctx.createBiquadFilter(); voHp.type = "highpass"; voHp.frequency.value = 70;
+const voPres = ctx.createBiquadFilter(); voPres.type = "peaking"; voPres.frequency.value = 3200; voPres.Q.value = 0.8; voPres.gain.value = 2.5;
+const voComp = ctx.createDynamicsCompressor(); voComp.threshold.value = -20; voComp.ratio.value = 3; voComp.attack.value = 0.005; voComp.release.value = 0.15;
+voBus.connect(voHp).connect(voPres).connect(voComp).connect(master);
+
+// Reverb (generated impulse), used by the music and the big hits.
+function impulse(seconds, decay) {
+  const len = Math.round(SR * seconds), b = ctx.createBuffer(2, len, SR);
+  for (let c = 0; c < 2; c++) { const d = b.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (rand() * 2 - 1) * Math.pow(1 - i / len, decay); }
+  return b;
+}
+const verb = ctx.createConvolver(); verb.buffer = impulse(3.2, 3);
+const verbOut = ctx.createGain(); verbOut.gain.value = 0.35;
+verb.connect(verbOut).connect(music);
+const sfxVerb = ctx.createConvolver(); sfxVerb.buffer = impulse(2.4, 3.5);
+const sfxVerbOut = ctx.createGain(); sfxVerbOut.gain.value = 0.25;
+sfxVerb.connect(sfxVerbOut).connect(sfxBus);
+
+// ---- music helpers ----
+const NOTE = (n) => 440 * Math.pow(2, (n - 69) / 12); // MIDI -> Hz
+const CHORDS = { Dm: [50, 53, 57], Bb: [46, 50, 53], F: [53, 57, 60], C: [48, 52, 55] }; // MIDI, 3rd octave
+const ROOT = { Dm: 38, Bb: 34, F: 41, C: 36 }; // bass roots, 2nd octave
+const chordAt = (t) => MUSIC.chords[Math.floor(t / BAR) % MUSIC.chords.length];
+const modeAt = (t) => (MUSIC.sections.find((s) => t >= s.from - 1e-6 && t < s.to - 1e-6) ?? { mode: "silence" }).mode;
+const has = (t, ...modes) => modes.includes(modeAt(t));
+
+const pumpNodes = [];
+function pumped(dest) { const g = ctx.createGain(); g.connect(dest); pumpNodes.push(g); return g; }
+const padBus = ctx.createGain(); padBus.gain.value = 0.16;
+const padFilter = ctx.createBiquadFilter(); padFilter.type = "lowpass"; padFilter.frequency.value = 1400; padFilter.Q.value = 0.5;
+padBus.connect(padFilter); padFilter.connect(pumped(music)); padFilter.connect(verb);
+const bassBus = ctx.createGain(); bassBus.gain.value = 0.32; bassBus.connect(pumped(music));
+const arpBus = ctx.createGain(); arpBus.gain.value = 0.085;
+const arpDelay = ctx.createDelay(1); arpDelay.delayTime.value = BEAT * 0.75;
+const arpFb = ctx.createGain(); arpFb.gain.value = 0.3;
+arpBus.connect(pumped(music)); arpBus.connect(arpDelay); arpDelay.connect(arpFb).connect(arpDelay); arpDelay.connect(verb);
+const drumBus = ctx.createGain(); drumBus.gain.value = 0.9; drumBus.connect(music);
+
+const noiseBuf = (() => { const b = ctx.createBuffer(1, SR * 2, SR), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = rand() * 2 - 1; return b; })();
+function noise(at, dur, dest, { type = "highpass", freq = 8000, q = 0.7, gain = 0.3, attack = 0.001, decay = dur } = {}) {
+  const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+  const f = ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q;
+  const g = ctx.createGain(); g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(gain, at + attack); g.gain.exponentialRampToValueAtTime(0.0008, at + decay);
+  src.connect(f).connect(g).connect(dest); src.start(at, rand()); src.stop(at + dur + 0.05);
+  return { f, g };
+}
+function kick(at, gain = 1) {
+  const o = ctx.createOscillator(); o.type = "sine";
+  o.frequency.setValueAtTime(160, at); o.frequency.exponentialRampToValueAtTime(42, at + 0.14);
+  const g = ctx.createGain(); g.gain.setValueAtTime(gain, at); g.gain.exponentialRampToValueAtTime(0.001, at + 0.45);
+  o.connect(g).connect(drumBus); o.start(at); o.stop(at + 0.5);
+  noise(at, 0.02, drumBus, { type: "highpass", freq: 3000, gain: 0.12 * gain });
+  for (const p of pumpNodes) { p.gain.setValueAtTime(0.28, at); p.gain.linearRampToValueAtTime(1, at + BEAT * 0.62); }
+}
+const hat = (at, gain = 0.09) => noise(at, 0.06, drumBus, { type: "highpass", freq: 9000, gain, decay: 0.05 });
+const clap = (at, gain = 0.32) => { noise(at, 0.22, drumBus, { type: "bandpass", freq: 1600, q: 1.2, gain, decay: 0.2 }); noise(at + 0.012, 0.18, verb, { type: "bandpass", freq: 1800, gain: gain * 0.6, decay: 0.16 }); };
+function pad(at, dur, notes, { attack = 0.5, release = 0.8, gain = 1, dest = padBus } = {}) {
+  for (const n of notes) for (const det of [-9, 0, 8]) {
+    const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = NOTE(n); o.detune.value = det;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(gain / 3, at + attack);
+    g.gain.setValueAtTime(gain / 3, at + dur); g.gain.linearRampToValueAtTime(0, at + dur + release);
+    o.connect(g).connect(dest); o.start(at); o.stop(at + dur + release + 0.05);
+  }
+}
+function bass(at, dur, n, gain = 1) {
+  const o = ctx.createOscillator(); o.type = "sawtooth"; o.frequency.value = NOTE(n);
+  const s = ctx.createOscillator(); s.type = "sine"; s.frequency.value = NOTE(n - 12);
+  const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 4;
+  f.frequency.setValueAtTime(900, at); f.frequency.exponentialRampToValueAtTime(180, at + dur);
+  const g = ctx.createGain(); g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(gain, at + 0.008); g.gain.exponentialRampToValueAtTime(0.01, at + dur);
+  const sg = ctx.createGain(); sg.gain.value = 0.7;
+  o.connect(f).connect(g).connect(bassBus); s.connect(sg).connect(g);
+  o.start(at); s.start(at); o.stop(at + dur + 0.02); s.stop(at + dur + 0.02);
+}
+function pluck(at, n, gain = 1, bright = 3200) {
+  const o = ctx.createOscillator(); o.type = "square"; o.frequency.value = NOTE(n);
+  const o2 = ctx.createOscillator(); o2.type = "triangle"; o2.frequency.value = NOTE(n + 12);
+  const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 3;
+  f.frequency.setValueAtTime(bright, at); f.frequency.exponentialRampToValueAtTime(400, at + 0.18);
+  const g = ctx.createGain(); g.gain.setValueAtTime(gain, at); g.gain.exponentialRampToValueAtTime(0.001, at + 0.28);
+  o.connect(f); o2.connect(f); f.connect(g).connect(arpBus);
+  o.start(at); o2.start(at); o.stop(at + 0.3); o2.stop(at + 0.3);
+}
+function riser(end, dur = 2) {
+  const at = end - dur;
+  const { f } = noise(at, dur, music, { type: "bandpass", freq: 400, q: 2, gain: 0.0001, attack: 0.001, decay: dur });
+  f.frequency.setValueAtTime(400, at); f.frequency.exponentialRampToValueAtTime(7000, end);
+  const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(0.25, end - 0.02); g.gain.linearRampToValueAtTime(0, end);
+  const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+  const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 3;
+  bp.frequency.setValueAtTime(500, at); bp.frequency.exponentialRampToValueAtTime(8000, end);
+  src.connect(bp).connect(g).connect(music); src.start(at); src.stop(end + 0.05);
+  // a rising tone under it
+  const o = ctx.createOscillator(); o.type = "sawtooth";
+  o.frequency.setValueAtTime(NOTE(50), at); o.frequency.exponentialRampToValueAtTime(NOTE(74), end);
+  const og = ctx.createGain(); og.gain.setValueAtTime(0.0001, at); og.gain.exponentialRampToValueAtTime(0.05, end - 0.02); og.gain.linearRampToValueAtTime(0, end);
+  const of = ctx.createBiquadFilter(); of.type = "lowpass"; of.frequency.value = 3000;
+  o.connect(of).connect(og).connect(music); o.start(at); o.stop(end + 0.05);
+}
+
+// ---- the score ----
+// Storm: a low drone, a slow heartbeat sub, filtered rain noise.
+const drone = ctx.createGain(); drone.gain.setValueAtTime(0, 0); drone.gain.linearRampToValueAtTime(0.5, 1.5);
+drone.gain.setValueAtTime(0.5, 5.35); drone.gain.linearRampToValueAtTime(0, 5.5);
+drone.connect(music);
+for (const [n, gn] of [[26, 0.5], [33, 0.25], [38, 0.12]]) {
+  const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = NOTE(n);
+  const lfo = ctx.createOscillator(); lfo.frequency.value = 0.15 + n / 400; const lg = ctx.createGain(); lg.gain.value = 3;
+  lfo.connect(lg).connect(o.detune);
+  const g = ctx.createGain(); g.gain.value = gn; o.connect(g).connect(drone); o.start(0); lfo.start(0); o.stop(5.6); lfo.stop(5.6);
+}
+pad(0.2, 5.0, [50, 57, 62], { attack: 2.5, release: 0.3, gain: 0.55 });
+for (let t = 1; t < 5.4; t += BAR) { kick(t, 0.55); kick(t + 0.32, 0.3); } // heartbeat
+const rainNoise = noise(0, 5.5, music, { type: "lowpass", freq: 2600, gain: 0.0001, decay: 5.5 });
+rainNoise.g.gain.cancelScheduledValues(0); rainNoise.g.gain.setValueAtTime(0, 0); rainNoise.g.gain.linearRampToValueAtTime(0.16, 1.2);
+rainNoise.g.gain.setValueAtTime(0.16, 5.4); rainNoise.g.gain.linearRampToValueAtTime(0, 5.5);
+
+// Pad, bass, arp and drums from the drop to the end, by section.
+for (let bar = 3; bar < DURATION / BAR; bar++) {
+  const t0 = bar * BAR, ch = chordAt(t0), m = modeAt(t0 + 0.01);
+  if (m === "silence") continue;
+  const notes = CHORDS[ch];
+  if (m !== "tail" || t0 < 58) pad(t0, BAR - 0.05, m === "full" || m === "drop" ? [...notes, notes[0] + 12] : notes,
+    { attack: m === "breakdown" ? 0.8 : 0.08, release: m === "tail" ? 3.5 : 0.25, gain: m === "breakdown" || m === "tail" ? 1.1 : 0.85 });
+  for (let b = 0; b < 4; b++) {
+    const t = t0 + b * BEAT;
+    if (has(t, "drop", "groove", "full", "build") && !(m === "build" && t < 48)) kick(t, m === "full" ? 1 : 0.85);
+    if (has(t, "groove", "full", "drop")) for (const e of [0, 0.5]) bass(t + e * BEAT, BEAT * 0.45, ROOT[ch] + (e ? 12 : 0), m === "full" ? 1 : 0.85);
+    if (has(t, "groove", "full")) hat(t + BEAT / 2, m === "full" ? 0.11 : 0.08);
+    if (has(t, "full")) { hat(t + BEAT / 4, 0.05); hat(t + BEAT * 0.75, 0.05); }
+    if (has(t, "full", "groove") && (b === 1 || b === 3)) clap(t, m === "full" ? 0.34 : 0.22);
+  }
+  // Arp: 16ths in full sections, 8ths in groove and build; two-octave chord tones.
+  const arpNotes = [...notes.map((n) => n + 12), ...notes.map((n) => n + 24)];
+  const step = m === "full" ? BEAT / 4 : BEAT / 2;
+  if (has(t0 + 0.01, "full", "groove", "build", "drop")) {
+    for (let i = 0, t = t0; t < t0 + BAR - 1e-6; i++, t += step) {
+      const n = arpNotes[[0, 2, 4, 1, 3, 5, 4, 2][i % 8]];
+      const bright = m === "build" ? 600 + 3000 * ((t - 46) / 4) : m === "groove" ? 2200 : 3600;
+      pluck(t, n, m === "full" ? 1 : 0.8, bright);
+    }
+  }
+}
+// Snare roll into the final hit.
+for (let i = 0, t = 48; t < 50 - 1e-6; i++, t += i < 16 ? BEAT / 4 : BEAT / 8) clap(t, 0.08 + 0.22 * ((t - 48) / 2));
+// Breakdown: the pad's filter sweeps down after the laptop dies, then opens again.
+padFilter.frequency.setValueAtTime(1400, 41.9);
+padFilter.frequency.exponentialRampToValueAtTime(260, 43.0);
+padFilter.frequency.setValueAtTime(260, 45.5);
+padFilter.frequency.exponentialRampToValueAtTime(1600, 50.0);
+padFilter.frequency.setValueAtTime(1600, 56);
+padFilter.frequency.exponentialRampToValueAtTime(500, 60);
+for (const start of MUSIC.risers) riser(start + BAR, BAR);
+// Low sub hit on the logo drop and the outro.
+for (const at of [6, 50]) { const o = ctx.createOscillator(); o.frequency.setValueAtTime(70, at); o.frequency.exponentialRampToValueAtTime(30, at + 1.5);
+  const g = ctx.createGain(); g.gain.setValueAtTime(0.6, at); g.gain.exponentialRampToValueAtTime(0.001, at + 2.2); o.connect(g).connect(music); o.start(at); o.stop(at + 2.3); }
+// Music fade-out.
+music.gain.setValueAtTime(0.62, 57); music.gain.linearRampToValueAtTime(0.0, 59.9);
+
+// ---- voice-over ----
+const take = await get(`/tool/assets/vo/${VO.take}.mp3`);
+const lines = groupRuns(speechRuns(take), VO.runs);
+const placed = [];
+VO.lines.forEach((line, i) => {
+  const [a, b] = lines[i];
+  const from = Math.max(0, a - 0.06), dur = b - from + 0.18;
+  const src = ctx.createBufferSource(); src.buffer = take;
+  const g = ctx.createGain(); g.gain.setValueAtTime(0, line.at); g.gain.linearRampToValueAtTime(1, line.at + 0.03);
+  g.gain.setValueAtTime(1, line.at + dur - 0.12); g.gain.linearRampToValueAtTime(0, line.at + dur);
+  src.connect(g).connect(voBus); src.start(line.at, from, dur);
+  placed.push({ id: line.id, at: line.at, end: +(line.at + dur).toFixed(2), speech: +(b - a).toFixed(2) });
+});
+// Duck the music under each line.
+duck.gain.setValueAtTime(1, 0);
+for (const p of placed) {
+  duck.gain.setTargetAtTime(0.42, p.at - 0.12, 0.05);
+  duck.gain.setTargetAtTime(1, p.end + 0.1, 0.25);
+}
+
+// ---- sound effects ----
+const names = [...new Set(SFX.map((c) => c.s))];
+const fx = Object.fromEntries(await Promise.all(names.map(async (n) => [n, await get(`/tool/assets/sfx/${n}.mp3`)])));
+// Where the sound starts (first sample over -40 dB of its peak) and where it peaks.
+function shape(buf) {
+  const d = buf.getChannelData(0); let peak = 0, at = 0;
+  for (let i = 0; i < d.length; i++) { const v = Math.abs(d[i]); if (v > peak) { peak = v; at = i; } }
+  let on = 0; while (on < d.length && Math.abs(d[on]) < peak * 0.01) on++;
+  return { onset: on / buf.sampleRate, peakAt: at / buf.sampleRate, peak };
+}
+const shapes = Object.fromEntries(names.map((n) => [n, shape(fx[n])]));
+const cues = [];
+for (const c of SFX) {
+  const buf = fx[c.s], sh = shapes[c.s], rate = c.rate ?? 1;
+  const src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = rate;
+  const g = ctx.createGain();
+  // Normalize each effect to a common peak, then apply the cue gain.
+  const norm = 0.7 / Math.max(0.05, sh.peak);
+  let start = c.at, offset = sh.onset;
+  if (c.dur) { // a riser: its loudest moment lands at the end of the window
+    offset = Math.max(0, sh.peakAt - c.dur * rate);
+    start = c.at;
+  } else if (c.s.startsWith("whoosh")) { // a whoosh: `at` is its loudest moment (the cut)
+    const s0 = c.at - sh.peakAt / rate;
+    start = Math.max(0, s0);
+    offset = s0 < 0 ? -s0 * rate : 0;
+  }
+  g.gain.setValueAtTime(0, start);
+  g.gain.linearRampToValueAtTime(c.gain * norm, start + (c.fadeIn ?? 0.004));
+  if (c.loop) {
+    src.loop = true; src.loopStart = 0.05; src.loopEnd = buf.duration - 0.05;
+    g.gain.setValueAtTime(c.gain * norm, start + c.loop - 0.15); g.gain.linearRampToValueAtTime(0, start + c.loop);
+  }
+  if (c.dur) { g.gain.setValueAtTime(c.gain * norm, start + c.dur - 0.02); g.gain.linearRampToValueAtTime(0, start + c.dur); }
+  src.connect(g).connect(sfxBus);
+  if (["impact", "final_hit", "sub_drop", "ping"].includes(c.s)) g.connect(sfxVerb);
+  src.start(start, offset);
+  if (c.loop) src.stop(start + c.loop + 0.05);
+  else if (c.dur) src.stop(start + c.dur + 0.05);
+  cues.push({ s: c.s, at: c.at });
+}
+// Silence for the power cut: everything but the cut's own clunk drops out for half a second.
+for (const bus of [music]) { bus.gain.setValueAtTime(0.62, 5.48); bus.gain.linearRampToValueAtTime(0, 5.5); bus.gain.setValueAtTime(0, 5.98); bus.gain.linearRampToValueAtTime(0.62, 6.0); }
+
+// ---- render, normalize, report ----
+const out = await ctx.startRendering();
+const L = out.getChannelData(0), R = out.getChannelData(1);
+let peak = 0, sum = 0;
+for (let i = 0; i < L.length; i++) { peak = Math.max(peak, Math.abs(L[i]), Math.abs(R[i])); sum += L[i] * L[i] + R[i] * R[i]; }
+const target = Math.pow(10, -1 / 20), k = target / peak;
+for (let i = 0; i < L.length; i++) { L[i] *= k; R[i] *= k; }
+const rmsDb = 20 * Math.log10(Math.sqrt(sum / (2 * L.length)) * k);
+
+function wav(buf) {
+  const n = buf.length, ch = 2, data = new DataView(new ArrayBuffer(44 + n * ch * 2));
+  const w = (o, s) => [...s].forEach((c, i) => data.setUint8(o + i, c.charCodeAt(0)));
+  w(0, "RIFF"); data.setUint32(4, 36 + n * ch * 2, true); w(8, "WAVE"); w(12, "fmt ");
+  data.setUint32(16, 16, true); data.setUint16(20, 1, true); data.setUint16(22, ch, true); data.setUint32(24, SR, true);
+  data.setUint32(28, SR * ch * 2, true); data.setUint16(32, ch * 2, true); data.setUint16(34, 16, true); w(36, "data"); data.setUint32(40, n * ch * 2, true);
+  const c0 = buf.getChannelData(0), c1 = buf.getChannelData(1);
+  for (let i = 0, o = 44; i < n; i++, o += 4) {
+    data.setInt16(o, Math.max(-1, Math.min(1, c0[i])) * 32767, true);
+    data.setInt16(o + 2, Math.max(-1, Math.min(1, c1[i])) * 32767, true);
+  }
+  return data.buffer;
+}
+await fetch("/save?name=mix.wav", { method: "POST", body: wav(out) });
+window.__audio = { placed, cues: cues.length, peakDb: -1, gainDb: +(20 * Math.log10(k)).toFixed(2), rmsDb: +rmsDb.toFixed(1),
+  shapes: Object.fromEntries(Object.entries(shapes).map(([n, s]) => [n, { onset: +s.onset.toFixed(2), peakAt: +s.peakAt.toFixed(2), dur: +fx[n].duration.toFixed(2) }])) };
+</script>
