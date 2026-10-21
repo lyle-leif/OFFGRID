@@ -30,7 +30,7 @@ from app.main import app  # noqa: E402
 from app.services import intents, llm  # noqa: E402
 
 NEAR_BMC = {"lat": 13.7672, "lng": 121.0660}
-STATUS_FOR_INTENT = {"nearest": "places", "nearby": "places", "distance": "route", "contact": "info", "hours": "info"}
+STATUS_FOR_INTENT = {"nearest": "places", "nearby": "place", "distance": "route", "contact": "info", "hours": "info"}
 SUMMARY_TEXT = {"verified": "AI summary kept (checked)", "dropped": "AI summary hidden (unsupported details)",
                 "unavailable": "AI unavailable", "refused": "AI said not covered", "skipped": "no AI"}
 
