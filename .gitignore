@@ -9,9 +9,7 @@ data/reports.db*
 data/raw/
 tools/pmtiles.exe
 tools/showreel/out/
-.claude/
 *.log
 
 # Local notes, kept off GitHub
-CLAUDE.md
 Brownout_Brain_Build_Plan.md

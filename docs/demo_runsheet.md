@@ -1,6 +1,6 @@
 # OFFGRID 1-minute demo run-sheet
 
-Offline copy of the shared doc (https://claude.ai/code/artifact/b06b4286-fee2-49fb-b2e1-9a2036102b69), as of 2026-10-10.
+Offline copy of the shared run-sheet, as of 2026-10-10.
 A live 60-second demo: the AI answers on the laptop with no internet, an iPhone joins over Wi-Fi,
 then the laptop goes away and the phone keeps working.
 
