@@ -10,22 +10,22 @@
    "top": [
     [
      "go-bag#infants-and-young-children",
-     8.726035,
+     9.049648,
      2
     ],
     [
      "typhoon-prep#when-to-evacuate",
-     6.807846,
+     7.139553,
      2
     ],
     [
      "go-bag#light-power-and-communication",
-     4.553921,
+     4.764333,
      2
     ],
     [
      "go-bag#older-adults-persons-with-disabilities-and-pets",
-     4.063089,
+     4.23683,
      2
     ]
    ]
@@ -36,27 +36,27 @@
     "go-bag#clothes-and-protection",
     "go-bag#water-and-food",
     "typhoon-prep#when-to-evacuate",
-    "go-bag#medicine-and-first-aid"
+    "go-bag#what-a-go-bag-is"
    ],
    "top": [
     [
      "go-bag#clothes-and-protection",
-     5.904243,
+     6.453674,
      3
     ],
     [
      "go-bag#water-and-food",
-     5.834132,
+     6.446244,
      4
     ],
     [
      "typhoon-prep#when-to-evacuate",
-     5.184019,
+     5.779353,
      4
     ],
     [
-     "go-bag#medicine-and-first-aid",
-     5.026932,
+     "go-bag#what-a-go-bag-is",
+     5.623882,
      3
     ]
    ]
@@ -69,22 +69,22 @@
    "top": [
     [
      "flood-safety#walking-or-driving-through-floodwater",
-     12.926548,
+     13.425529,
      3
     ],
     [
      "flood-safety#health-risks-after-floods",
-     6.456184,
+     6.693787,
      2
     ],
     [
      "flood-safety#clean-drinking-water",
-     5.861602,
+     6.166229,
      2
     ],
     [
      "typhoon-prep#after-the-typhoon",
-     4.695736,
+     4.917392,
      2
     ]
    ]
@@ -97,12 +97,12 @@
    "top": [
     [
      "first-aid-basics#burns",
-     6.622946,
+     6.793593,
      1
     ],
     [
      "hotlines#other-towns-and-barangays",
-     3.515778,
+     3.401111,
      1
     ],
     [
@@ -126,22 +126,22 @@
    "top": [
     [
      "power-outage#generators-and-carbon-monoxide",
-     13.487851,
+     13.82465,
      4
     ],
     [
      "earthquake#earthquake-intensity-what-the-numbers-mean",
-     7.440243,
+     7.632738,
      3
     ],
     [
      "typhoon-prep#during-the-typhoon",
-     5.304541,
+     5.496041,
      2
     ],
     [
      "taal-volcano#ashfall-protecting-your-health",
-     4.659912,
+     4.786766,
      2
     ]
    ]
@@ -155,22 +155,22 @@
    "top": [
     [
      "typhoon-prep#understanding-warnings",
-     10.284924,
+     10.463352,
      5
     ],
     [
      "earthquake#earthquake-intensity-what-the-numbers-mean",
-     5.742328,
+     5.695017,
      2
     ],
     [
      "flood-safety#if-you-are-trapped-by-rising-water",
-     4.330646,
+     4.495154,
      1
     ],
     [
      "typhoon-prep#after-the-typhoon",
-     3.517503,
+     3.730641,
      1
     ]
    ]
@@ -183,22 +183,22 @@
    "top": [
     [
      "power-outage#food-safety-without-refrigeration",
-     11.652334,
+     12.150631,
      3
     ],
     [
      "power-outage#heat-during-outages",
-     4.766243,
+     5.154559,
      2
     ],
     [
      "power-outage#appliances-and-power-surges",
-     4.182414,
+     4.514553,
      2
     ],
     [
      "go-bag#water-and-food",
-     3.770743,
+     4.006159,
      1
     ]
    ]
@@ -211,22 +211,22 @@
    "top": [
     [
      "flood-safety#health-risks-after-floods",
-     5.342156,
+     5.39917,
      2
     ],
     [
      "flood-safety#warning-signs-of-flooding",
-     3.752266,
+     3.947472,
      1
     ],
     [
      "earthquake#tsunami-warning-signs-shake-drop-roar",
-     3.298706,
+     3.453676,
      1
     ],
     [
      "taal-volcano#ashfall-protecting-your-health",
-     2.786366,
+     2.835189,
      1
     ]
    ]
@@ -240,22 +240,22 @@
    "top": [
     [
      "first-aid-basics#bleeding",
-     9.156183,
+     9.489443,
      2
     ],
     [
      "first-aid-basics#cuts-and-wounds",
-     7.058728,
+     7.27379,
      2
     ],
     [
      "earthquake#during-an-earthquake-drop-cover-and-hold",
-     2.573751,
+     2.664224,
      1
     ],
     [
      "first-aid-basics#burns",
-     2.222792,
+     2.291548,
      1
     ]
    ]
@@ -270,22 +270,22 @@
    "top": [
     [
      "typhoon-prep#before-typhoon-season",
-     8.112479,
+     8.608575,
      3
     ],
     [
      "typhoon-prep#when-to-evacuate",
-     7.178793,
+     7.497156,
      2
     ],
     [
      "typhoon-prep#after-the-typhoon",
-     6.107814,
+     6.512788,
      2
     ],
     [
      "typhoon-prep#during-the-typhoon",
-     3.4797,
+     3.688922,
      1
     ]
    ]
@@ -301,22 +301,22 @@
    "top": [
     [
      "power-outage#saving-phone-battery",
-     6.223754,
+     6.613259,
      2
     ],
     [
      "go-bag#documents-and-money",
-     4.697437,
+     4.955171,
      2
     ],
     [
      "power-outage#preparing-for-brownouts",
-     4.629993,
+     4.896116,
      2
     ],
     [
      "go-bag#light-power-and-communication",
-     4.163897,
+     4.388127,
      2
     ]
    ]
@@ -330,22 +330,22 @@
    "top": [
     [
      "typhoon-prep#before-typhoon-season",
-     4.968505,
+     5.363409,
      3
     ],
     [
      "power-outage#preparing-for-brownouts",
-     4.950252,
+     5.106833,
      1
     ],
     [
      "earthquake#preparing-your-home-for-earthquakes",
-     4.91337,
+     5.067281,
      1
     ],
     [
      "go-bag#what-a-go-bag-is",
-     4.313091,
+     4.921203,
      2
     ]
    ]
@@ -358,22 +358,22 @@
    "top": [
     [
      "go-bag#infants-and-young-children",
-     8.726035,
+     9.049648,
      2
     ],
     [
      "power-outage#heat-during-outages",
-     3.015727,
+     3.075048,
      1
     ],
     [
      "go-bag#clothes-and-protection",
-     2.677441,
+     2.802446,
      1
     ],
     [
      "go-bag#medicine-and-first-aid",
-     2.507148,
+     2.618442,
      1
     ]
    ]
@@ -386,22 +386,22 @@
    "top": [
     [
      "go-bag#infants-and-young-children",
-     6.719083,
+     7.042057,
      2
     ],
     [
      "power-outage#lighting-safely",
-     2.985762,
+     3.074683,
      1
     ],
     [
      "go-bag#clothes-and-protection",
-     2.677441,
+     2.802446,
      1
     ],
     [
      "power-outage#heat-during-outages",
-     2.658063,
+     2.727856,
      1
     ]
    ]
@@ -414,22 +414,22 @@
    "top": [
     [
      "typhoon-prep#during-the-typhoon",
-     5.952227,
+     6.402566,
      2
     ],
     [
      "typhoon-prep#after-the-typhoon",
-     3.517503,
+     3.730641,
      1
     ],
     [
      "typhoon-prep#before-typhoon-season",
-     3.4427,
+     3.648126,
      1
     ],
     [
      "typhoon-prep#when-a-typhoon-is-approaching",
-     3.336278,
+     3.530979,
      1
     ]
    ]
@@ -445,22 +445,22 @@
    "top": [
     [
      "flood-safety#walking-or-driving-through-floodwater",
-     8.142208,
+     8.456002,
      2
     ],
     [
      "flood-safety#health-risks-after-floods",
-     7.548056,
+     7.757001,
      2
     ],
     [
      "flood-safety#clean-drinking-water",
-     5.861602,
+     6.166229,
      2
     ],
     [
      "typhoon-prep#after-the-typhoon",
-     4.695736,
+     4.917392,
      2
     ]
    ]
@@ -475,22 +475,22 @@
    "top": [
     [
      "go-bag#older-adults-persons-with-disabilities-and-pets",
-     8.869011,
+     9.196395,
      3
     ],
     [
      "go-bag#water-and-food",
-     7.262668,
+     7.669311,
      3
     ],
     [
      "power-outage#heat-during-outages",
-     5.401159,
+     5.538921,
      2
     ],
     [
      "earthquake#earthquake-intensity-what-the-numbers-mean",
-     4.19833,
+     4.380159,
      1
     ]
    ]
@@ -504,22 +504,22 @@
    "top": [
     [
      "first-aid-basics#bleeding",
-     13.718607,
+     14.224819,
      3
     ],
     [
      "first-aid-basics#cuts-and-wounds",
-     12.262294,
+     12.641062,
      3
     ],
     [
      "first-aid-basics#before-helping-anyone",
-     3.217126,
+     3.320988,
      1
     ],
     [
-     "go-bag#medicine-and-first-aid",
-     3.080714,
+     "hotlines#philippine-red-cross-national-hotline",
+     3.320988,
      1
     ]
    ]
@@ -532,22 +532,22 @@
    "top": [
     [
      "first-aid-basics#burns",
-     10.734228,
+     11.109555,
      3
     ],
     [
      "power-outage#heat-during-outages",
-     4.966474,
+     5.228949,
      2
     ],
     [
      "first-aid-basics#dehydration-and-heat-exhaustion",
-     4.934047,
+     5.17814,
      2
     ],
     [
      "flood-safety#clean-drinking-water",
-     1.064911,
+     1.281552,
      1
     ]
    ]
@@ -556,29 +556,29 @@
    "q": "What number do I call for an emergency?",
    "evidence": [
     "hotlines#national-emergency-hotline-911",
-    "hotlines#philippine-red-cross-national-hotline",
-    "hotlines#batangas-city-emergency-hotlines",
-    "hotlines#lipa-city-emergency-hotlines"
+    "hotlines#nasugbu-rescue-hotline",
+    "hotlines#lemery-rescue-hotlines",
+    "hotlines#talisay-rescue-hotline"
    ],
    "top": [
     [
      "hotlines#national-emergency-hotline-911",
-     7.917451,
+     6.065427,
      3
     ],
     [
-     "hotlines#philippine-red-cross-national-hotline",
-     6.534896,
+     "hotlines#nasugbu-rescue-hotline",
+     4.766055,
      3
     ],
     [
-     "hotlines#batangas-city-emergency-hotlines",
-     6.277532,
+     "hotlines#lemery-rescue-hotlines",
+     4.755886,
      3
     ],
     [
-     "hotlines#lipa-city-emergency-hotlines",
-     5.839327,
+     "hotlines#talisay-rescue-hotline",
+     4.606138,
      3
     ]
    ]
@@ -587,27 +587,29 @@
    "q": "Batangas City rescue hotline",
    "evidence": [
     "hotlines#batangas-city-emergency-hotlines",
+    "hotlines#calaca-city-rescue-hotlines",
+    "hotlines#talisay-rescue-hotline",
     "hotlines#lipa-city-emergency-hotlines"
    ],
    "top": [
     [
      "hotlines#batangas-city-emergency-hotlines",
-     13.733329,
+     12.160724,
      4
     ],
     [
-     "hotlines#lipa-city-emergency-hotlines",
-     8.662994,
+     "hotlines#calaca-city-rescue-hotlines",
+     9.381478,
      3
     ],
     [
-     "hotlines#national-emergency-hotline-911",
-     6.584501,
-     2
+     "hotlines#talisay-rescue-hotline",
+     8.073005,
+     3
     ],
     [
-     "hotlines#power-and-water-utilities-in-lipa",
-     6.384762,
+     "hotlines#lipa-city-emergency-hotlines",
+     7.289976,
      3
     ]
    ]
@@ -617,28 +619,28 @@
    "evidence": [
     "hotlines#lipa-city-emergency-hotlines",
     "hotlines#power-and-water-utilities-in-lipa",
-    "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
+    "hotlines#alitagtag-rescue-fire-and-police-hotlines",
     "hotlines#national-emergency-hotline-911"
    ],
    "top": [
     [
      "hotlines#lipa-city-emergency-hotlines",
-     10.703556,
+     9.863345,
      3
     ],
     [
      "hotlines#power-and-water-utilities-in-lipa",
-     7.249975,
+     6.788903,
      2
     ],
     [
-     "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
-     6.41888,
+     "hotlines#alitagtag-rescue-fire-and-police-hotlines",
+     5.519889,
      2
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     6.25814,
+     5.302544,
      2
     ]
    ]
@@ -649,28 +651,28 @@
     "hotlines#batangas-province-pdrrmo-and-provincial-offices",
     "hotlines#other-towns-and-barangays",
     "hotlines#batangas-city-emergency-hotlines",
-    "hotlines#national-emergency-hotline-911"
+    "hotlines#talisay-rescue-hotline"
    ],
    "top": [
     [
      "hotlines#batangas-province-pdrrmo-and-provincial-offices",
-     12.654432,
+     12.186465,
      4
     ],
     [
      "hotlines#other-towns-and-barangays",
-     9.842292,
+     8.781499,
      4
     ],
     [
      "hotlines#batangas-city-emergency-hotlines",
-     9.642913,
+     7.478336,
      3
     ],
     [
-     "hotlines#national-emergency-hotline-911",
-     6.805196,
-     2
+     "hotlines#talisay-rescue-hotline",
+     7.34439,
+     3
     ]
    ]
   },
@@ -679,28 +681,28 @@
    "evidence": [
     "hotlines#lipa-city-emergency-hotlines",
     "hotlines#power-and-water-utilities-in-lipa",
-    "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
+    "hotlines#alitagtag-rescue-fire-and-police-hotlines",
     "hotlines#national-emergency-hotline-911"
    ],
    "top": [
     [
      "hotlines#lipa-city-emergency-hotlines",
-     10.934029,
+     9.863345,
      3
     ],
     [
      "hotlines#power-and-water-utilities-in-lipa",
-     7.249975,
+     6.788903,
      2
     ],
     [
-     "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
-     6.61696,
+     "hotlines#alitagtag-rescue-fire-and-police-hotlines",
+     5.519889,
      2
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     6.584501,
+     5.302544,
      2
     ]
    ]
@@ -714,22 +716,22 @@
    "top": [
     [
      "hotlines#power-and-water-utilities-in-lipa",
-     9.070352,
+     8.704524,
      3
     ],
     [
      "hotlines#lipa-city-emergency-hotlines",
-     8.687,
+     7.970048,
      2
     ],
     [
-     "hotlines#national-emergency-hotline-911",
-     3.402598,
+     "power-outage#preparing-for-brownouts",
+     3.078727,
      1
     ],
     [
-     "hotlines#philippine-red-cross-national-hotline",
-     2.959345,
+     "power-outage#heat-during-outages",
+     2.970091,
      1
     ]
    ]
@@ -738,28 +740,27 @@
    "q": "Red Cross hotline",
    "evidence": [
     "hotlines#philippine-red-cross-national-hotline",
-    "hotlines#lipa-city-emergency-hotlines",
-    "hotlines#batangas-city-emergency-hotlines"
+    "hotlines#lipa-city-emergency-hotlines"
    ],
    "top": [
     [
      "hotlines#philippine-red-cross-national-hotline",
-     11.945402,
+     11.849215,
      3
     ],
     [
      "hotlines#lipa-city-emergency-hotlines",
-     6.773091,
+     5.943182,
      3
     ],
     [
      "hotlines#batangas-city-emergency-hotlines",
-     6.232742,
+     5.289778,
      3
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     3.402598,
+     3.010208,
      1
     ]
    ]
@@ -770,22 +771,22 @@
    "top": [
     [
      "flood-safety#warning-signs-of-flooding",
-     7.252522,
+     7.513161,
      2
     ],
     [
      "flood-safety#health-risks-after-floods",
-     4.857168,
+     5.06584,
      2
     ],
     [
      "go-bag#clothes-and-protection",
-     3.732656,
+     3.831364,
      1
     ],
     [
-     "flood-safety#clean-drinking-water",
-     3.610054,
+     "flood-safety#electrical-safety-in-floods",
+     3.751856,
      1
     ]
    ]
@@ -847,24 +848,24 @@
    "evidence": [],
    "top": [
     [
+     "hotlines#national-emergency-hotline-911",
+     3.133967,
+     1
+    ],
+    [
      "flood-safety#walking-or-driving-through-floodwater",
-     3.4842,
+     3.018303,
      1
     ],
     [
      "first-aid-basics#dehydration-and-heat-exhaustion",
-     2.56925,
+     2.609066,
      1
     ],
     [
      "hotlines#batangas-city-emergency-hotlines",
-     2.095687,
+     2.118965,
      1
-    ],
-    [
-     "earthquake#during-an-earthquake-drop-cover-and-hold",
-     0.0,
-     0
     ]
    ]
   },
@@ -3991,14 +3992,14 @@
       },
       {
        "doc": "hotlines.md",
-       "chunk_id": "hotlines#lipa-city-emergency-hotlines",
+       "chunk_id": "hotlines#calaca-city-rescue-hotlines",
        "doc_title": "Emergency Hotlines",
-       "title": "Lipa City emergency hotlines",
-       "text": "Lipa CDRRMO (Lipa Rescue): 0915-463-5005, (043) 756-0127, (043) 757-5164. Lipa Bureau of Fire Protection: 0927-575-8065, (043) 757-4618. Lipa PNP (police): 0977-744-9692, (043) 702-3832. Lipa Traffic Management Division: (043) 702-6454, (043) 404-9152. Red Cross Lipa: 0998-957-0443, (043) 740-0768. Source: City Government of Lipa official website, For Residents page.",
+       "title": "Calaca City rescue hotlines",
+       "text": "Calaca City Disaster Risk Reduction and Management Office (CDRRMO, 24/7 emergency response): (043) 424-1379, 0967-740-3510, 0929-827-1605.",
        "draft": false,
-       "checked_on": "2026-10-09",
-       "source": "City Government of Lipa",
-       "source_url": "https://lipa.gov.ph/for-residents/"
+       "checked_on": "2026-10-27",
+       "source": "City of Calaca",
+       "source_url": "https://cityofcalaca.gov.ph/city-disaster-risk-reduction-and-management-office/"
       }
      ]
     },
@@ -4014,15 +4015,15 @@
       },
       {
        "doc": "hotlines.md",
-       "chunk_id": "hotlines#lipa-city-emergency-hotlines",
-       "title": "Lipa City emergency hotlines",
-       "excerpt": "Lipa CDRRMO (Lipa Rescue): 0915-463-5005, (043) 756-0127, (043) 757-5164. Lipa Bureau of Fire Protection: 0927-575-8065, (043) 757-4618. Lipa PNP (police): 0977-744-9692, (043) 702-3832. Lipa Traffic Management Division: (043) 702-6454, (043) 404-9152. Red Cross Lipa:..."
+       "chunk_id": "hotlines#calaca-city-rescue-hotlines",
+       "title": "Calaca City rescue hotlines",
+       "excerpt": "Calaca City Disaster Risk Reduction and Management Office (CDRRMO, 24/7 emergency response): (043) 424-1379, 0967-740-3510, 0929-827-1605."
       },
       {
        "doc": "hotlines.md",
        "chunk_id": "hotlines#national-emergency-hotline-911",
        "title": "National emergency hotline 911",
-       "excerpt": "For any emergency anywhere in the Philippines (police, fire, medical, rescue), call 911. It is the national emergency hotline. Source: DZRH News national hotline list, 7 January 2026."
+       "excerpt": "The number to call in an emergency is 911. For any emergency anywhere in the Philippines (police, fire, medical, rescue), call 911. It is the national emergency hotline, free and open 24 hours. It replaced the PNP Patrol 117 line, and since September 2025 the DILG's unified..."
       }
      ],
      "location_used": null,
@@ -4997,6 +4998,54 @@
   [
    "red cros number",
    "red cross number"
+  ],
+  [
+   "Nasugbu rescue hotline",
+   "nasugbu rescue hotline"
+  ],
+  [
+   "number ng MDRRMO sa Nasugbu",
+   "number ng mdrrmo sa nasugbu"
+  ],
+  [
+   "nasugbu emergncy number",
+   "nasugbu emergency number"
+  ],
+  [
+   "Lemery MDRRMO number",
+   "lemery mdrrmo number"
+  ],
+  [
+   "rescue hotline Lemery",
+   "rescue hotline lemery"
+  ],
+  [
+   "San Juan Batangas rescue number",
+   "san juan batangas rescue number"
+  ],
+  [
+   "Laiya emergency response unit",
+   "laiya emergency response unit"
+  ],
+  [
+   "Calaca emergency hotline",
+   "calaca emergency hotline"
+  ],
+  [
+   "calaca rescue number",
+   "calaca rescue number"
+  ],
+  [
+   "Alitagtag fire station number",
+   "alitagtag fire station number"
+  ],
+  [
+   "Balete MDRRMO hotline",
+   "balete mdrrmo hotline"
+  ],
+  [
+   "Talisay Batangas MDRRMO number",
+   "talisay batangas mdrrmo number"
   ],
   [
    "What should I do during an earthquake?",

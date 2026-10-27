@@ -849,6 +849,75 @@
    ]
   },
   {
+   "name": "Nasugbu hotline",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#nasugbu-rescue-hotline"
+    ]
+   },
+   "qs": [
+    "Nasugbu rescue hotline",
+    "number ng MDRRMO sa Nasugbu",
+    "nasugbu emergncy number"
+   ]
+  },
+  {
+   "name": "Lemery hotline",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#lemery-rescue-hotlines"
+    ]
+   },
+   "qs": [
+    "Lemery MDRRMO number",
+    "rescue hotline Lemery"
+   ]
+  },
+  {
+   "name": "San Juan hotline",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#san-juan-rescue-hotlines"
+    ]
+   },
+   "qs": [
+    "San Juan Batangas rescue number",
+    "Laiya emergency response unit"
+   ]
+  },
+  {
+   "name": "Calaca hotline",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#calaca-city-rescue-hotlines"
+    ]
+   },
+   "qs": [
+    "Calaca emergency hotline",
+    "calaca rescue number"
+   ]
+  },
+  {
+   "name": "Other town hotlines",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "hotlines#alitagtag-rescue-fire-and-police-hotlines",
+     "hotlines#balete-rescue-hotlines",
+     "hotlines#talisay-rescue-hotline"
+    ]
+   },
+   "qs": [
+    "Alitagtag fire station number",
+    "Balete MDRRMO hotline",
+    "Talisay Batangas MDRRMO number"
+   ]
+  },
+  {
    "name": "During an earthquake",
    "ctx": {},
    "expect": {

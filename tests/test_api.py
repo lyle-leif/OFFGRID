@@ -218,7 +218,9 @@ def test_hotlines_endpoint(client):
     titles = [s["title"] for s in sections]
     assert "National emergency hotline 911" in titles
     assert any("Batangas City" in t for t in titles)
-    assert all("Source:" in s["text"] or s["title"] == "Other towns and barangays" for s in sections)
+    # Every section names the official source it was checked against (shown on screen),
+    # except the general advice for towns without a verified list.
+    assert all((not s["draft"] and s["source"]) or s["title"] == "Other towns and barangays" for s in sections)
 
 
 def test_hotline_answers_always_include_911(client, fake_llm):
