@@ -107,7 +107,7 @@ async def health(request: Request):
 def hotlines(request: Request):
     """Sections of data/guides/hotlines.md, for the Hotlines tab."""
     return [
-        {"title": c.title, "text": c.text, "chunk_id": c.chunk_id}
+        {"title": c.title, "text": c.text, "chunk_id": c.chunk_id, **c.trust()}
         for c in request.app.state.retriever.chunks
         if c.doc == "hotlines.md"
     ]

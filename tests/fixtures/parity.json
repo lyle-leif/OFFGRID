@@ -3949,7 +3949,11 @@
        "chunk_id": "first-aid-basics#bleeding",
        "doc_title": "Basic First Aid",
        "title": "Bleeding",
-       "text": "Press firmly on the wound with a clean cloth or bandage and keep pressing. If blood soaks through, add more cloth on top without removing the first layer. Raise the injured arm or leg above heart level if it does not cause more pain. Seek medical help for deep wounds or bleeding that does not stop."
+       "text": "Press firmly on the wound with a clean cloth or bandage and keep pressing. If blood soaks through, add more cloth on top without removing the first layer. Raise the injured arm or leg above heart level if it does not cause more pain. Seek medical help for deep wounds or bleeding that does not stop.",
+       "draft": true,
+       "checked_on": "",
+       "source": "",
+       "source_url": ""
       }
      ]
     },
@@ -3968,7 +3972,7 @@
      "summary": "unavailable",
      "summary_error": "no AI",
      "timing": {
-      "total_ms": 1
+      "total_ms": 2
      }
     }
    ]
@@ -3986,14 +3990,22 @@
        "chunk_id": "hotlines#batangas-city-emergency-hotlines",
        "doc_title": "Emergency Hotlines",
        "title": "Batangas City emergency hotlines",
-       "text": "Batangas City CDRRMO (disaster and rescue): (043) 702-3902. 24/7 Mayor's Action Center hotline: 0999-222-6626; Mayor's Action Center: (043) 786-1920. BFP Batangas City (fire): (043) 425-7163. PNP Batangas City (police): (043) 702-1974. Batangas Medical Center: (043) 723-0911. Nazareth Hospital: (043) 723-4144. City Health Office: (043) 723-8890. City Social Welfare and Development: (043) 723-2357. Philippine Red Cross (Batangas City listing): 0951-282-0000. VAWC Batangas City: 0956-826-7017. Source: Batangas City Government official website, Emergency Hotlines box."
+       "text": "Batangas City CDRRMO (disaster and rescue): (043) 702-3902. 24/7 Mayor's Action Center hotline: 0999-222-6626; Mayor's Action Center: (043) 786-1920. BFP Batangas City (fire): (043) 425-7163. PNP Batangas City (police): (043) 702-1974. Batangas Medical Center: (043) 723-0911. Nazareth Hospital: (043) 723-4144. City Health Office: (043) 723-8890. City Social Welfare and Development: (043) 723-2357. Philippine Red Cross (Batangas City listing): 0951-282-0000. VAWC Batangas City: 0956-826-7017. Source: Batangas City Government official website, Emergency Hotlines box.",
+       "draft": false,
+       "checked_on": "2026-10-09",
+       "source": "Batangas City Government",
+       "source_url": "https://www.batangascity.gov.ph/web/cdrrmoprofile"
       },
       {
        "doc": "hotlines.md",
        "chunk_id": "hotlines#lipa-city-emergency-hotlines",
        "doc_title": "Emergency Hotlines",
        "title": "Lipa City emergency hotlines",
-       "text": "Lipa CDRRMO (Lipa Rescue): 0915-463-5005, (043) 756-0127, (043) 757-5164. Lipa Bureau of Fire Protection: 0927-575-8065, (043) 757-4618. Lipa PNP (police): 0977-744-9692, (043) 702-3832. Lipa Traffic Management Division: (043) 702-6454, (043) 404-9152. Red Cross Lipa: 0998-957-0443, (043) 740-0768. Source: City Government of Lipa official website, For Residents page."
+       "text": "Lipa CDRRMO (Lipa Rescue): 0915-463-5005, (043) 756-0127, (043) 757-5164. Lipa Bureau of Fire Protection: 0927-575-8065, (043) 757-4618. Lipa PNP (police): 0977-744-9692, (043) 702-3832. Lipa Traffic Management Division: (043) 702-6454, (043) 404-9152. Red Cross Lipa: 0998-957-0443, (043) 740-0768. Source: City Government of Lipa official website, For Residents page.",
+       "draft": false,
+       "checked_on": "2026-10-09",
+       "source": "City Government of Lipa",
+       "source_url": "https://lipa.gov.ph/for-residents/"
       }
      ]
     },
@@ -4024,7 +4036,7 @@
      "summary": "unavailable",
      "summary_error": "no AI",
      "timing": {
-      "total_ms": 0
+      "total_ms": 1
      }
     }
    ]
@@ -4084,14 +4096,22 @@
        "chunk_id": "go-bag#older-adults-persons-with-disabilities-and-pets",
        "doc_title": "Emergency Go-Bag Checklist",
        "title": "Older adults, persons with disabilities, and pets",
-       "text": "Pack extra maintenance medicine, eyeglasses, hearing-aid batteries, mobility aids, and adult diapers if needed. Write down medical conditions and doctor contacts. For pets, pack food, water, a leash or carrier, and vaccination records; ask in advance whether your evacuation site accepts pets."
+       "text": "Pack extra maintenance medicine, eyeglasses, hearing-aid batteries, mobility aids, and adult diapers if needed. Write down medical conditions and doctor contacts. For pets, pack food, water, a leash or carrier, and vaccination records; ask in advance whether your evacuation site accepts pets.",
+       "draft": true,
+       "checked_on": "",
+       "source": "",
+       "source_url": ""
       },
       {
        "doc": "power-outage.md",
        "chunk_id": "power-outage#heat-during-outages",
        "doc_title": "Brownout and Power Outage Safety",
        "title": "Heat during outages",
-       "text": "Without fans or air conditioning, drink water often, wear light clothing, and rest in the coolest shaded part of the house. Check on older adults, infants, and sick people, who are more affected by heat."
+       "text": "Without fans or air conditioning, drink water often, wear light clothing, and rest in the coolest shaded part of the house. Check on older adults, infants, and sick people, who are more affected by heat.",
+       "draft": true,
+       "checked_on": "",
+       "source": "",
+       "source_url": ""
       }
      ]
     },
@@ -4138,14 +4158,22 @@
        "chunk_id": "power-outage#heat-during-outages",
        "doc_title": "Brownout and Power Outage Safety",
        "title": "Heat during outages",
-       "text": "Without fans or air conditioning, drink water often, wear light clothing, and rest in the coolest shaded part of the house. Check on older adults, infants, and sick people, who are more affected by heat."
+       "text": "Without fans or air conditioning, drink water often, wear light clothing, and rest in the coolest shaded part of the house. Check on older adults, infants, and sick people, who are more affected by heat.",
+       "draft": true,
+       "checked_on": "",
+       "source": "",
+       "source_url": ""
       },
       {
        "doc": "go-bag.md",
        "chunk_id": "go-bag#older-adults-persons-with-disabilities-and-pets",
        "doc_title": "Emergency Go-Bag Checklist",
        "title": "Older adults, persons with disabilities, and pets",
-       "text": "Pack extra maintenance medicine, eyeglasses, hearing-aid batteries, mobility aids, and adult diapers if needed. Write down medical conditions and doctor contacts. For pets, pack food, water, a leash or carrier, and vaccination records; ask in advance whether your evacuation site accepts pets."
+       "text": "Pack extra maintenance medicine, eyeglasses, hearing-aid batteries, mobility aids, and adult diapers if needed. Write down medical conditions and doctor contacts. For pets, pack food, water, a leash or carrier, and vaccination records; ask in advance whether your evacuation site accepts pets.",
+       "draft": true,
+       "checked_on": "",
+       "source": "",
+       "source_url": ""
       }
      ]
     },

@@ -294,6 +294,7 @@ export async function localAsk(body, ctx) {
   if (hits.length) {
     const passages = hits.slice(0, PASSAGES_SHOWN).map((h) => ({
       doc: h.chunk.doc, chunk_id: h.chunk.chunk_id, doc_title: h.chunk.doc_title, title: h.chunk.title, text: h.chunk.text,
+      draft: h.chunk.draft, checked_on: h.chunk.checked_on, source: h.chunk.source, source_url: h.chunk.source_url,
     }));
     return [
       { type: "passages", passages },

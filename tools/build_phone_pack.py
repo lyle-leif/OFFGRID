@@ -42,7 +42,7 @@ def build_guides() -> tuple[dict, str]:
     pack = {
         "chunks": [
             {"doc": c.doc, "chunk_id": c.chunk_id, "doc_title": c.doc_title, "title": c.title, "text": c.text,
-             "tf": bm25.doc_freqs[i], "len": bm25.doc_len[i]}
+             **c.trust(), "tf": bm25.doc_freqs[i], "len": bm25.doc_len[i]}
             for i, c in enumerate(chunks)
         ],
         # Exact BM25 weights from the hub's index (rank_bm25), so scores match to the decimal.

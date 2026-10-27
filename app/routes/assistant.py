@@ -276,7 +276,7 @@ async def ask(body: AskRequest, request: Request):
         timing = {}
         passages = [
             {"doc": h.chunk.doc, "chunk_id": h.chunk.chunk_id, "doc_title": h.chunk.doc_title,
-             "title": h.chunk.title, "text": h.chunk.text}
+             "title": h.chunk.title, "text": h.chunk.text, **h.chunk.trust()}
             for h in hits[:PASSAGES_SHOWN]
         ]
         if passages:

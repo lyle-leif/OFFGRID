@@ -9,6 +9,7 @@ retrieved_on: 2026-10-09
 Know your area's hazards: flooding, landslides, and storm surge along the coast. Find out where your barangay's designated evacuation center is and walk the route in daylight. Prepare a go-bag for each family member and agree on a family meeting place and a contact person outside your area.
 
 ## Understanding warnings
+<!-- checked: 2026-10-09 | source: DOST-PAGASA | url: https://pagasa.dost.gov.ph/press-release/108 -->
 PAGASA issues Tropical Cyclone Wind Signals (TCWS) numbered 1 to 5 for specific areas. A higher number means stronger winds and less warning time. Signal No. 1: winds of 39 to 61 km/h expected within 36 hours, minimal to minor threat to lives and properties. Signal No. 2: 62 to 88 km/h within 24 hours, minor to moderate threat. Signal No. 3: 89 to 117 km/h within 18 hours, moderate to significant threat. Signal No. 4: 118 to 184 km/h within 12 hours, significant to severe threat. Signal No. 5: 185 km/h or higher within 12 hours, extreme threat to lives and properties. (Source: DOST-PAGASA press release on the modified TCWS system, 23 March 2022.) Listen for whether your province or municipality is included, and follow PAGASA, NDRRMC, and your local government on radio or TV. Saved information on this device cannot tell you the current signal level.
 
 ## When a typhoon is approaching

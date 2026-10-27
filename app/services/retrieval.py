@@ -54,6 +54,35 @@ class Chunk:
     title: str
     text: str
     tokens: list[str] = field(repr=False, default_factory=list)
+    # Where this section was checked (from its <!-- checked: … --> comment). A section
+    # without one is a draft, and the app says so on screen.
+    checked_on: str = ""
+    source: str = ""
+    source_url: str = ""
+
+    @property
+    def draft(self) -> bool:
+        return not self.checked_on
+
+    def trust(self) -> dict:
+        """What the app shows under the section: checked against a source, or a draft."""
+        return {"draft": self.draft, "checked_on": self.checked_on, "source": self.source, "source_url": self.source_url}
+
+
+# Per-section metadata, written right under a `## ` heading, for example
+#   <!-- checked: 2026-10-27 | source: PHIVOLCS | url: https://www.phivolcs.dost.gov.ph/ -->
+# It is removed from the section text, so it is never searched, shown as text, or given to the AI.
+_META = re.compile(r"<!--(.*?)-->", re.DOTALL)
+
+
+def _parse_section_meta(text: str) -> tuple[dict[str, str], str]:
+    meta: dict[str, str] = {}
+    for comment in _META.findall(text):
+        for part in comment.split("|"):
+            if ":" in part:
+                k, v = part.split(":", 1)
+                meta[k.strip().lower()] = v.strip()
+    return meta, _META.sub("", text).strip()
 
 
 @dataclass
@@ -85,15 +114,21 @@ def load_chunks(guides_dir: Path) -> list[Chunk]:
         sections = re.split(r"^## +", body, flags=re.MULTILINE)[1:]
         for section in sections:
             heading, _, text = section.partition("\n")
-            heading, text = heading.strip(), text.strip()
+            section_meta, text = _parse_section_meta(text)
+            heading = heading.strip()
             if not text:
                 continue
+            checked = section_meta.get("checked", "")
             chunk = Chunk(
                 doc=path.name,
                 chunk_id=f"{path.stem}#{slugify(heading)}",
                 doc_title=doc_title,
                 title=heading,
                 text=text,
+                # "checked" only counts with a named source; "status: draft" (or nothing) is a draft.
+                checked_on=checked if section_meta.get("source") else "",
+                source=section_meta.get("source", "") if checked else "",
+                source_url=section_meta.get("url", "") if checked else "",
             )
             # Heading and doc title words count twice: they say what the section is about.
             chunk.tokens = tokenize(f"{doc_title} {heading} {heading} {text}")

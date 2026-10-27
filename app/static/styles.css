@@ -415,6 +415,12 @@ a { color: var(--accent); }
 .passage { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--ok); border-radius: 9px; padding: 8px 10px; }
 .passage-head { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
 .passage-text { white-space: pre-wrap; font-size: 13.5px; line-height: 1.5; }
+.passage.draft { border-left-color: var(--warn); }
+/* Under a guide section: checked against an official source, or still a draft. */
+.trust { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-top: 6px; font-size: 11px; color: var(--ok); }
+.trust a { color: inherit; font-weight: 650; }
+.trust.draft { color: var(--warn); }
+.trust .ui-icon { flex: none; }
 .summary-head { display: flex; align-items: center; gap: 6px; margin: 10px 0 2px; font-size: 11px; font-weight: 700; color: var(--muted); white-space: normal; }
 .summary-head.ok { color: var(--ok); }
 .summary-body { font-size: 13.5px; }

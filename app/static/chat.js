@@ -1,4 +1,4 @@
-import { iconLabel } from "./ui-icons.js";
+import { icon, iconLabel } from "./ui-icons.js";
 
 // Chat UI: streams NDJSON events from /api/assistant/ask and renders answer + sources.
 
@@ -46,13 +46,38 @@ function renderSources(sources) {
 }
 
 // The exact guide sections that answer the question, shown before any AI text.
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// Under each guide section: which official source it was checked against (and when), or
+// that it is still a draft. Also used by the Hotlines tab.
+export function trustNote(p) {
+  const div = el("div", p.draft ? "trust draft" : "trust");
+  if (p.draft) {
+    div.append(icon("warning", 13), " Draft, not yet checked against official sources");
+    return div;
+  }
+  const d = /^(\d{4})-(\d{2})/.exec(p.checked_on || "");
+  div.append(icon("check", 13), " Checked against ");
+  if (p.source_url) {
+    const a = el("a", null, p.source);
+    a.href = p.source_url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    div.append(a);
+  } else {
+    div.append(p.source);
+  }
+  if (d) div.append(` · ${MONTHS[Number(d[2]) - 1]} ${d[1]}`);
+  return div;
+}
+
 function renderPassages(passages) {
   const wrap = el("div", "passages");
   for (const p of passages) {
-    const card = el("div", "passage");
+    const card = el("div", p.draft ? "passage draft" : "passage");
     const head = el("div", "passage-head");
     iconLabel(head, "doc", `${p.doc_title} › ${p.title}`, 13);
-    card.append(head, el("div", "passage-text", p.text));
+    card.append(head, el("div", "passage-text", p.text), trustNote(p));
     wrap.append(card);
   }
   return wrap;

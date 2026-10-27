@@ -1,5 +1,5 @@
 import { createMap, DEFAULT_OFF, inBounds, TYPE_STYLE, typeStyle } from "./map.js";
-import { createChat } from "./chat.js";
+import { createChat, trustNote } from "./chat.js";
 import { createDirections } from "./directions.js";
 import { createBrain } from "./offline/brain.js";
 import { createReports } from "./reports.js";
@@ -350,7 +350,7 @@ async function loadHotlines() {
       h.textContent = s.title;
       const p = document.createElement("p");
       p.append(linkifyPhones(s.text));
-      div.append(h, p);
+      div.append(h, p, trustNote(s));
       box.append(div);
     }
   } catch {
