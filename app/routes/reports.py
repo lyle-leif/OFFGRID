@@ -6,6 +6,7 @@ from fastapi import APIRouter, Header, HTTPException, Request
 
 from app import config
 from app.models import NewReport, ReportVote, ResponderLogin
+from app.services.i18n import request_lang, t
 from app.services.reports import CENTER_KINDS, ROAD_KINDS, public
 from app.services.routing import CLASS_LABEL, RoutingError
 
@@ -27,10 +28,10 @@ def _check_pin(request: Request, pin: str | None) -> None:
     state = request.app.state
     ip = _client(request)
     if state.pin_failures.blocked(ip):
-        raise HTTPException(429, "Too many wrong PINs. Wait 10 minutes and try again.")
+        raise HTTPException(429, t(request_lang(request), "apierr.pin_locked"))
     if not pin or not hmac.compare_digest(pin.encode(), state.responder_pin.encode()):
         state.pin_failures.hit(ip)
-        raise HTTPException(403, "Wrong responder PIN.")
+        raise HTTPException(403, t(request_lang(request), "apierr.pin_wrong"))
 
 
 def active_public(request: Request) -> list[dict]:
@@ -52,24 +53,24 @@ def add_report(body: NewReport, request: Request):
 
     b = config.BBOX
     if not (b["min_lat"] <= body.lat <= b["max_lat"] and b["min_lng"] <= body.lng <= b["max_lng"]):
-        raise HTTPException(422, "That point is outside the area this app covers.")
+        raise HTTPException(422, t(request_lang(request), "apierr.outside"))
     ip = _client(request)
     if state.report_limits["device"].blocked(body.device) or state.report_limits["ip"].blocked(ip):
-        raise HTTPException(429, "Too many reports from this phone. Try again later.")
+        raise HTTPException(429, t(request_lang(request), "apierr.too_many"))
 
     lat, lng, edge_id, road_name = body.lat, body.lng, None, None
     loc = state.locations.get(body.location_id) if body.location_id else None
     if body.location_id and loc is None:
-        raise HTTPException(404, f"Unknown location_id '{body.location_id}'")
+        raise HTTPException(404, t(request_lang(request), "rerr.unknown_location", id=body.location_id))
     if body.kind in CENTER_KINDS:
         if loc is None or "evacuation_center" not in (loc.type, *loc.also):
-            raise HTTPException(422, "Choose an evacuation center for this report.")
+            raise HTTPException(422, t(request_lang(request), "apierr.choose_center"))
         lat, lng = loc.lat, loc.lng
     elif body.kind in ROAD_KINDS and state.router is not None:
         try:
             snap = state.router.snap(body.lat, body.lng, "walk", max_m=ROAD_SNAP_M)
         except RoutingError:
-            raise HTTPException(422, "Put the pin on the road itself.") from None
+            raise HTTPException(422, t(request_lang(request), "apierr.pin_on_road")) from None
         e = state.router.edges[snap.edge]
         edge_id, road_name = snap.edge, e.name or CLASS_LABEL.get(e.cls, "road")
         lat, lng = snap.point
@@ -86,7 +87,7 @@ def add_report(body: NewReport, request: Request):
 def vote(report_id: str, body: ReportVote, request: Request):
     r = request.app.state.reports.vote(report_id, body.device, body.vote)
     if r is None:
-        raise HTTPException(404, "That report no longer exists.")
+        raise HTTPException(404, t(request_lang(request), "apierr.gone"))
     return _public(request, r)
 
 
@@ -102,7 +103,7 @@ def verify(report_id: str, request: Request, x_responder_pin: str | None = Heade
     _check_pin(request, x_responder_pin)
     r = request.app.state.reports.set_flag(report_id, "verified")
     if r is None:
-        raise HTTPException(404, "That report no longer exists.")
+        raise HTTPException(404, t(request_lang(request), "apierr.gone"))
     return _public(request, r)
 
 
@@ -110,5 +111,5 @@ def verify(report_id: str, request: Request, x_responder_pin: str | None = Heade
 def remove(report_id: str, request: Request, x_responder_pin: str | None = Header(default=None)):
     _check_pin(request, x_responder_pin)
     if request.app.state.reports.set_flag(report_id, "removed") is None:
-        raise HTTPException(404, "That report no longer exists.")
+        raise HTTPException(404, t(request_lang(request), "apierr.gone"))
     return {"ok": True}

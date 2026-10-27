@@ -23,6 +23,9 @@
       try { t = localStorage.getItem("bb.theme"); } catch (e) { /* no storage */ }
       if (t !== "dark" && t !== "light") t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       document.documentElement.dataset.theme = t;
+      let l = null;
+      try { l = localStorage.getItem("bb.lang"); } catch (e) { /* no storage */ }
+      if (l === "tl") document.documentElement.lang = "fil";
     })();
     // iPhone home-screen app: the page draws under the status bar (black-translucent), but iOS
     // still reports the height as screen minus status bar, leaving an empty strip at the
@@ -79,7 +82,7 @@
       <path fill="#e03131" d="M47.6 63.2L50 65L51.2 63.4Z"/>
     </svg>
     <div class="splash-name">OFFGRID</div>
-    <div class="splash-tag">Ready beyond the grid</div>
+    <div class="splash-tag" data-i18n="app.tagline">Ready beyond the grid</div>
   </div>
   <header class="topbar">
     <div class="brand">
@@ -99,13 +102,14 @@
       </svg>
       <div class="brand-text">
         <h1>OFFGRID</h1>
-        <p class="tagline">Ready beyond the grid</p>
+        <p class="tagline" data-i18n="app.tagline">Ready beyond the grid</p>
       </div>
     </div>
     <div class="top-actions">
       <div id="status" class="status" role="status" aria-live="polite">
-        <span class="dot"></span><span id="status-text">Checking…</span>
+        <span class="dot"></span><span id="status-text" data-i18n="status.checking">Checking…</span>
       </div>
+      <button id="settings-btn" type="button" class="icon-btn round-btn" aria-label="Settings" title="Settings" data-i18n-aria="settings.open" data-i18n-title="settings.open" aria-haspopup="dialog"><span data-icon="gear"></span></button>
       <button id="theme-toggle" type="button" class="icon-btn theme-toggle" aria-label="Switch to dark mode"></button>
     </div>
   </header>
@@ -113,112 +117,112 @@
   <div id="banner" class="banner" hidden></div>
 
   <main class="layout">
-    <section class="map-wrap" aria-label="Map">
+    <section class="map-wrap" aria-label="Map" data-i18n-aria="map.aria">
       <div id="map"></div>
-      <div id="map-loading" class="map-loading" role="status"><span class="spinner" aria-hidden="true"></span>Loading offline map…</div>
+      <div id="map-loading" class="map-loading" role="status"><span class="spinner" aria-hidden="true"></span><span data-i18n="map.loading">Loading offline map…</span></div>
       <div id="map-error" class="map-error" hidden></div>
       <div class="map-tools">
-        <button id="set-pos" type="button" class="tool-btn" aria-pressed="false" aria-label="Set my location"><span data-icon="pin"></span><span>Set my location</span></button>
-        <button id="use-gps" type="button" class="tool-btn" aria-label="Use GPS" hidden><span data-icon="gps"></span><span>Use GPS</span></button>
-        <button id="report-btn" type="button" class="tool-btn" aria-label="Report something"><span data-icon="flag"></span><span>Report</span></button>
-        <button id="legend-toggle" type="button" class="tool-btn legend-toggle" aria-expanded="false" aria-controls="legend" aria-label="Legend"><span data-icon="layers"></span><span>Legend</span></button>
+        <button id="set-pos" type="button" class="tool-btn" aria-pressed="false" aria-label="Set my location" data-i18n-aria="pos.set"><span data-icon="pin"></span><span data-i18n="pos.set">Set my location</span></button>
+        <button id="use-gps" type="button" class="tool-btn" aria-label="Use GPS" data-i18n-aria="gps.use" hidden><span data-icon="gps"></span><span data-i18n="gps.use">Use GPS</span></button>
+        <button id="report-btn" type="button" class="tool-btn" aria-label="Report something" data-i18n-aria="report.btn_aria"><span data-icon="flag"></span><span data-i18n="report.btn">Report</span></button>
+        <button id="legend-toggle" type="button" class="tool-btn legend-toggle" aria-expanded="false" aria-controls="legend" aria-label="Legend" data-i18n-aria="legend.btn"><span data-icon="layers"></span><span data-i18n="legend.btn">Legend</span></button>
       </div>
-      <div id="pos-hint" class="pos-hint" role="status" hidden>Click the map where you are.</div>
-      <div id="gps-msg" class="pos-hint gps-msg" role="status" hidden><span></span><button id="gps-msg-close" type="button" class="gps-msg-close" aria-label="Close message"><span data-icon="close" data-icon-size="14"></span></button></div>
-      <ul class="legend" id="legend" aria-label="Map legend" hidden></ul>
+      <div id="pos-hint" class="pos-hint" role="status" hidden data-i18n="pos.hint_click">Click the map where you are.</div>
+      <div id="gps-msg" class="pos-hint gps-msg" role="status" hidden><span></span><button id="gps-msg-close" type="button" class="gps-msg-close" aria-label="Close message" data-i18n-aria="gps.close"><span data-icon="close" data-icon-size="14"></span></button></div>
+      <ul class="legend" id="legend" aria-label="Map legend" data-i18n-aria="legend.aria" hidden></ul>
     </section>
 
     <!-- Laptop: a floating card over the map (collapses to the rail below).
          Phone: a bottom sheet you drag between peek, half and full. -->
-    <aside class="side" id="side-panel" aria-label="Assistant and lists">
-      <div class="sheet-handle" id="sheet-handle" role="button" tabindex="0" aria-label="Resize panel"><span></span></div>
+    <aside class="side" id="side-panel" aria-label="Assistant and lists" data-i18n-aria="panel.aria">
+      <div class="sheet-handle" id="sheet-handle" role="button" tabindex="0" aria-label="Resize panel" data-i18n-aria="panel.resize"><span></span></div>
       <div class="side-head" id="side-head">
         <div class="tabs" role="tablist">
-          <button id="tab-chat" class="tab" role="tab" aria-selected="true" aria-controls="panel-chat"><span data-icon="chat"></span><span class="tab-label">Assistant</span></button>
-          <button id="tab-list" class="tab" role="tab" aria-selected="false" aria-controls="panel-list"><span data-icon="list"></span><span class="tab-label">Places</span><span id="fac-count" class="badge"></span></button>
-          <button id="tab-reports" class="tab" role="tab" aria-selected="false" aria-controls="panel-reports"><span data-icon="flag"></span><span class="tab-label">Reports</span><span id="report-count" class="badge"></span></button>
-          <button id="tab-hotlines" class="tab" role="tab" aria-selected="false" aria-controls="panel-hotlines"><span data-icon="phone"></span><span class="tab-label">Hotlines</span></button>
+          <button id="tab-chat" class="tab" role="tab" aria-selected="true" aria-controls="panel-chat"><span data-icon="chat"></span><span class="tab-label" data-i18n="tab.chat">Assistant</span></button>
+          <button id="tab-list" class="tab" role="tab" aria-selected="false" aria-controls="panel-list"><span data-icon="list"></span><span class="tab-label" data-i18n="tab.list">Places</span><span id="fac-count" class="badge"></span></button>
+          <button id="tab-reports" class="tab" role="tab" aria-selected="false" aria-controls="panel-reports"><span data-icon="flag"></span><span class="tab-label" data-i18n="tab.reports">Reports</span><span id="report-count" class="badge"></span></button>
+          <button id="tab-hotlines" class="tab" role="tab" aria-selected="false" aria-controls="panel-hotlines"><span data-icon="phone"></span><span class="tab-label" data-i18n="tab.hotlines">Hotlines</span></button>
         </div>
-        <button id="panel-collapse" type="button" class="icon-btn panel-collapse" aria-label="Hide panel" title="Hide panel"><span data-icon="chevron-right"></span></button>
+        <button id="panel-collapse" type="button" class="icon-btn panel-collapse" aria-label="Hide panel" title="Hide panel" data-i18n-aria="panel.hide" data-i18n-title="panel.hide"><span data-icon="chevron-right"></span></button>
       </div>
 
       <section id="place" class="place" hidden aria-live="polite">
         <div class="place-head">
           <div class="place-chips">
             <span id="place-type" class="chip"></span>
-            <span id="place-sample" class="chip chip-sample" hidden>SAMPLE DATA</span>
-            <span id="place-osm" class="chip chip-osm" hidden title="From OpenStreetMap, a community-mapped database. Not an official government list.">Community-mapped</span>
+            <span id="place-sample" class="chip chip-sample" hidden data-i18n="place.sample">SAMPLE DATA</span>
+            <span id="place-osm" class="chip chip-osm" hidden title="From OpenStreetMap, a community-mapped database. Not an official government list." data-i18n="place.osm" data-i18n-title="place.osm_title">Community-mapped</span>
           </div>
-          <button id="place-close" class="icon-btn" aria-label="Clear selected location"><span data-icon="close"></span></button>
+          <button id="place-close" class="icon-btn" aria-label="Clear selected location" data-i18n-aria="place.clear"><span data-icon="close"></span></button>
         </div>
         <h2 id="place-name"></h2>
         <ul id="place-reports" class="place-reports" hidden></ul>
         <p id="place-distance" class="distance" hidden></p>
         <div class="place-actions">
-          <button id="place-route" type="button" class="btn"><span data-icon="route" data-icon-size="16"></span><span>Directions</span></button>
-          <div class="mode-toggle" role="group" aria-label="Travel mode">
-            <button type="button" class="mode" data-mode="walk" aria-pressed="true"><span data-icon="walk" data-icon-size="15"></span><span>Walk</span></button>
-            <button type="button" class="mode" data-mode="drive" aria-pressed="false"><span data-icon="car" data-icon-size="15"></span><span>Drive</span></button>
+          <button id="place-route" type="button" class="btn"><span data-icon="route" data-icon-size="16"></span><span data-i18n="place.directions">Directions</span></button>
+          <div class="mode-toggle" role="group" aria-label="Travel mode" data-i18n-aria="place.mode_aria">
+            <button type="button" class="mode" data-mode="walk" aria-pressed="true"><span data-icon="walk" data-icon-size="15"></span><span data-i18n="mode.walk">Walk</span></button>
+            <button type="button" class="mode" data-mode="drive" aria-pressed="false"><span data-icon="car" data-icon-size="15"></span><span data-i18n="mode.drive">Drive</span></button>
           </div>
-          <button id="place-ask" type="button" class="btn secondary"><span data-icon="chat" data-icon-size="16"></span><span>Ask</span></button>
+          <button id="place-ask" type="button" class="btn secondary"><span data-icon="chat" data-icon-size="16"></span><span data-i18n="place.ask">Ask</span></button>
         </div>
         <div id="route-card" class="route-card" hidden>
           <div class="route-head">
             <strong id="route-summary"></strong>
-            <button id="route-clear" type="button" class="link-btn">Clear route</button>
+            <button id="route-clear" type="button" class="link-btn" data-i18n="route.clear">Clear route</button>
           </div>
           <p id="route-next" class="route-next" role="status" aria-live="polite" hidden></p>
           <p id="route-tracking" class="route-tracking"></p>
           <p id="route-reports" class="route-reports" role="status" hidden></p>
           <ol id="route-steps" class="route-steps"></ol>
-          <label class="route-avoid"><input id="route-avoid" type="checkbox" checked> Avoid roads reported flooded or blocked</label>
-          <p class="route-warning"><span data-icon="warning" data-icon-size="14"></span> Uses saved road data and local reports, which can be missing or wrong. It does not know about other floods, landslides, closures or damage. Follow official instructions and never walk or drive through floodwater.</p>
+          <label class="route-avoid"><input id="route-avoid" type="checkbox" checked> <span data-i18n="route.avoid">Avoid roads reported flooded or blocked</span></label>
+          <p class="route-warning"><span data-icon="warning" data-icon-size="14"></span> <span data-i18n="route.warning_short">Uses saved road data and local reports, which can be missing or wrong. It does not know about other floods, landslides, closures or damage. Follow official instructions and never walk or drive through floodwater.</span></p>
         </div>
         <details class="place-details">
-          <summary>Details</summary>
+          <summary data-i18n="place.details">Details</summary>
           <dl id="place-fields" class="fields"></dl>
-          <p id="place-evac-note" class="evac-note" hidden>Tagged as an evacuation center in OpenStreetMap. Confirm with your barangay or MDRRMO before going.</p>
-          <p class="note">Saved record only. It does not show whether this place is open, safe, or has space right now.</p>
+          <p id="place-evac-note" class="evac-note" hidden data-i18n="place.evac_note">Tagged as an evacuation center in OpenStreetMap. Confirm with your barangay or MDRRMO before going.</p>
+          <p class="note" data-i18n="place.record_note">Saved record only. It does not show whether this place is open, safe, or has space right now.</p>
         </details>
       </section>
 
       <section id="panel-chat" class="panel chat" role="tabpanel" aria-labelledby="tab-chat">
         <div class="chat-head">
-          <h2 class="sr-only">Ask the assistant</h2>
+          <h2 class="sr-only" data-i18n="chat.heading">Ask the assistant</h2>
           <span id="chat-context" class="context" hidden></span>
-          <button id="new-topic" type="button" class="link-btn" hidden>New topic</button>
+          <button id="new-topic" type="button" class="link-btn" hidden data-i18n="chat.new_topic">New topic</button>
           <button id="battery-saver" type="button" class="saver-toggle" aria-pressed="false"
-                  title="Battery saver: answer with the guide text only, without running the AI">
+                  title="Battery saver: answer with the guide text only, without running the AI" data-i18n-title="saver.title">
             <span data-icon="battery" data-icon-size="15"></span><span>Battery saver</span>
           </button>
         </div>
         <div id="messages" class="messages" aria-live="polite">
           <div class="empty" id="empty">
-            <p>Answers come only from guides and reports saved on this device. Try:</p>
+            <p data-i18n="chat.empty">Answers come only from guides and reports saved on this device. Try:</p>
             <div class="suggestions">
-              <button class="suggest">What should I pack for a baby when evacuating?</button>
-              <button class="suggest">Is it safe to walk through floodwater?</button>
-              <button class="suggest">Can I run a generator inside the house?</button>
+              <button class="suggest" data-i18n="chat.suggest1">What should I pack for a baby when evacuating?</button>
+              <button class="suggest" data-i18n="chat.suggest2">Is it safe to walk through floodwater?</button>
+              <button class="suggest" data-i18n="chat.suggest3">Can I run a generator inside the house?</button>
             </div>
           </div>
         </div>
-        <div id="context-chips" class="context-chips" aria-label="Suggested questions"></div>
+        <div id="context-chips" class="context-chips" aria-label="Suggested questions" data-i18n-aria="chat.chips_aria"></div>
         <form id="ask-form" class="ask">
-          <label for="question" class="sr-only">Your question</label>
-          <textarea id="question" rows="1" maxlength="500" placeholder="Ask about safety, floods, first aid…" required></textarea>
-          <button id="send" type="submit" class="send-btn" aria-label="Ask"><span data-icon="send" data-icon-size="18"></span></button>
+          <label for="question" class="sr-only" data-i18n="chat.your_question">Your question</label>
+          <textarea id="question" rows="1" maxlength="500" placeholder="Ask about safety, floods, first aid…" data-i18n-ph="chat.placeholder" required></textarea>
+          <button id="send" type="submit" class="send-btn" aria-label="Ask" data-i18n-aria="chat.send"><span data-icon="send" data-icon-size="18"></span></button>
         </form>
         <div class="ask-foot">
-          <span class="disclaimer">Information aid only. In an emergency, call <a href="tel:911"><strong>911</strong></a>.</span>
+          <span class="disclaimer"><span data-i18n="foot.pre">Information aid only. In an emergency, call</span> <a href="tel:911"><strong>911</strong></a><span data-i18n="foot.post">.</span></span>
           <span id="count" class="count" hidden>0/500</span>
         </div>
       </section>
 
       <section id="panel-list" class="panel list" role="tabpanel" aria-labelledby="tab-list" hidden>
         <div class="list-top">
-          <label for="fac-search" class="sr-only">Search places</label>
-          <div class="search"><span data-icon="search" data-icon-size="16"></span><input id="fac-search" type="search" placeholder="Search name, type, address…" autocomplete="off"></div>
-          <div id="fac-filters" class="filters" aria-label="Filter by type"></div>
+          <label for="fac-search" class="sr-only" data-i18n="list.search_label">Search places</label>
+          <div class="search"><span data-icon="search" data-icon-size="16"></span><input id="fac-search" type="search" placeholder="Search name, type, address…" data-i18n-ph="list.search_ph" autocomplete="off"></div>
+          <div id="fac-filters" class="filters" aria-label="Filter by type" data-i18n-aria="list.filter_aria"></div>
           <p id="fac-note" class="list-note"></p>
         </div>
         <ul id="fac-list" class="fac-list"></ul>
@@ -226,39 +230,65 @@
 
       <section id="panel-reports" class="panel list reports" role="tabpanel" aria-labelledby="tab-reports" hidden>
         <div class="reports-head">
-          <button id="report-new" type="button" class="btn"><span data-icon="flag" data-icon-size="15"></span><span>Report something</span></button>
+          <button id="report-new" type="button" class="btn"><span data-icon="flag" data-icon-size="15"></span><span data-i18n="reports.new">Report something</span></button>
           <p id="reports-sync" class="list-note" role="status"></p>
         </div>
         <div id="report-kinds" class="report-kinds" hidden></div>
         <p id="report-msg" class="report-msg" role="status" aria-live="polite" hidden></p>
         <ul id="report-list" class="fac-list report-list"></ul>
-        <p class="list-note">Reports come from people nearby and may be wrong. They are shared only through the hub, and expire on their own: roads after 2 hours, evacuation centers after 6. No names or phone numbers are collected.</p>
-        <p class="list-note"><button id="responder-btn" type="button" class="link-btn">I'm a responder</button></p>
+        <p class="list-note" data-i18n="reports.note">Reports come from people nearby and may be wrong. They are shared only through the hub, and expire on their own: roads after 2 hours, evacuation centers after 6. No names or phone numbers are collected.</p>
+        <p class="list-note"><button id="responder-btn" type="button" class="link-btn" data-i18n="reports.responder">I'm a responder</button></p>
         <form id="responder-form" class="responder-form" hidden>
-          <label for="responder-pin" class="sr-only">Responder PIN</label>
-          <input id="responder-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="32" placeholder="Hub PIN">
-          <button type="submit" class="btn secondary">Unlock</button>
+          <label for="responder-pin" class="sr-only" data-i18n="reports.pin_label">Responder PIN</label>
+          <input id="responder-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="32" placeholder="Hub PIN" data-i18n-ph="reports.pin_ph">
+          <button type="submit" class="btn secondary" data-i18n="reports.unlock">Unlock</button>
         </form>
       </section>
 
       <section id="panel-hotlines" class="panel hotlines" role="tabpanel" aria-labelledby="tab-hotlines" hidden>
-        <a class="hotline-911" href="tel:911"><span data-icon="phone" data-icon-size="20"></span><span>Emergency anywhere in the Philippines</span><strong>911</strong></a>
+        <a class="hotline-911" href="tel:911"><span data-icon="phone" data-icon-size="20"></span><span data-i18n="hotlines.911">Emergency anywhere in the Philippines</span><strong>911</strong></a>
+        <p id="hotlines-lang" class="list-note" data-i18n="hotlines.lang_note" hidden></p>
         <div id="hotline-list"></div>
-        <p class="list-note">Copied from official sources (named in each section), checked Oct 2026. From a mobile, dial (043) before Batangas landlines.</p>
+        <p class="list-note" data-i18n="hotlines.note">Copied from official sources (named in each section), checked Oct 2026. From a mobile, dial (043) before Batangas landlines.</p>
       </section>
 
       <p id="offline-copy" class="offline-copy" role="status" aria-live="polite" hidden></p>
     </aside>
 
     <!-- Laptop, panel hidden: a slim rail of tab icons. -->
-    <nav class="rail" id="panel-rail" aria-label="Open panel" hidden>
-      <button type="button" class="rail-btn" data-tab="open" aria-label="Show panel" title="Show panel"><span data-icon="chevron-left"></span></button>
-      <button type="button" class="rail-btn" data-tab="chat" aria-label="Assistant" title="Assistant"><span data-icon="chat"></span></button>
-      <button type="button" class="rail-btn" data-tab="list" aria-label="Places" title="Places"><span data-icon="list"></span></button>
-      <button type="button" class="rail-btn" data-tab="reports" aria-label="Reports" title="Reports"><span data-icon="flag"></span><span id="rail-report-count" class="rail-badge" hidden></span></button>
-      <button type="button" class="rail-btn" data-tab="hotlines" aria-label="Hotlines" title="Hotlines"><span data-icon="phone"></span></button>
+    <nav class="rail" id="panel-rail" aria-label="Open panel" data-i18n-aria="panel.rail" hidden>
+      <button type="button" class="rail-btn" data-tab="open" aria-label="Show panel" title="Show panel" data-i18n-aria="panel.show" data-i18n-title="panel.show"><span data-icon="chevron-left"></span></button>
+      <button type="button" class="rail-btn" data-tab="chat" aria-label="Assistant" title="Assistant" data-i18n-aria="tab.chat" data-i18n-title="tab.chat"><span data-icon="chat"></span></button>
+      <button type="button" class="rail-btn" data-tab="list" aria-label="Places" title="Places" data-i18n-aria="tab.list" data-i18n-title="tab.list"><span data-icon="list"></span></button>
+      <button type="button" class="rail-btn" data-tab="reports" aria-label="Reports" title="Reports" data-i18n-aria="tab.reports" data-i18n-title="tab.reports"><span data-icon="flag"></span><span id="rail-report-count" class="rail-badge" hidden></span></button>
+      <button type="button" class="rail-btn" data-tab="hotlines" aria-label="Hotlines" title="Hotlines" data-i18n-aria="tab.hotlines" data-i18n-title="tab.hotlines"><span data-icon="phone"></span></button>
     </nav>
   </main>
+
+  <!-- Settings: a plain panel (not <dialog>, for older phones). More settings can be added
+       as further groups. -->
+  <div id="settings" class="settings" hidden>
+    <div class="settings-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="settings-head">
+        <h2 id="settings-title" data-i18n="settings.title">Settings</h2>
+        <button id="settings-close" type="button" class="icon-btn" aria-label="Close" data-i18n-aria="settings.close"><span data-icon="close"></span></button>
+      </div>
+      <fieldset class="settings-group">
+        <legend data-i18n="settings.language">Language</legend>
+        <div id="settings-langs" class="lang-options"></div>
+        <p class="list-note" data-i18n="settings.lang_note"></p>
+      </fieldset>
+    </div>
+  </div>
+
+  <!-- First run: choose Tagalog or English once (both languages on the card on purpose). -->
+  <div id="lang-picker" class="lang-picker" hidden>
+    <div class="lang-card" role="dialog" aria-modal="true" aria-labelledby="lang-picker-title">
+      <h2 id="lang-picker-title">Pumili ng wika<span>Choose your language</span></h2>
+      <div id="lang-picker-choices" class="lang-choices"></div>
+      <p class="lang-sub">Puwedeng palitan ito sa Settings<span>You can change this later in Settings</span></p>
+    </div>
+  </div>
 
   <script src="/vendor/maplibre-gl.js"></script>
   <script src="/vendor/pmtiles.js"></script>

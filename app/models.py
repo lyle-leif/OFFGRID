@@ -50,6 +50,8 @@ class AskRequest(BaseModel):
     travel_mode: Literal["walk", "drive"] = "walk"
     # Battery saver sends False: answer with the guide text only, no AI summary.
     use_ai: bool = True
+    # Interface language: the app's own sentences (place, report and route answers) use it.
+    lang: Literal["en", "tl"] = "en"
 
     @field_validator("question")
     @classmethod

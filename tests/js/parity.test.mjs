@@ -6,6 +6,7 @@ import { dirname, join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
+import { register } from "../../app/static/i18n.js";
 import { localAsk } from "../../app/static/offline/answers.js";
 import { detect, reportQuery } from "../../app/static/offline/intents.js";
 import { createNormalizer } from "../../app/static/offline/normalize.js";
@@ -15,6 +16,10 @@ import { createSearch } from "../../app/static/offline/search.js";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (p) => readFileSync(join(ROOT, p));
 const json = (p) => JSON.parse(read(p).toString("utf-8"));
+
+// The hub and the phone read the same lang/<lang>.json strings.
+register("en", json("app/static/lang/en.json"));
+register("tl", json("app/static/lang/tl.json"));
 
 const intents = json("tests/fixtures/intents.json");
 const parity = json("tests/fixtures/parity.json");
@@ -48,6 +53,8 @@ test("answers from situation reports match the hub", async () => {
     assert.equal(phone.filter((e) => e.type === "token").map((e) => e.text).join(""), c.text, `${q}: text`);
     assert.deepEqual(done.reports.map((r) => r.id), c.ids, `${q}: reports`);
     assert.equal(done.location_used, c.location_used, `${q}: place`);
+    const tl = await localAsk({ ...c.body, lang: "tl" }, { ...ctx, reports: { reports, syncedMinAgo: null } });
+    assert.equal(tl.filter((e) => e.type === "token").map((e) => e.text).join(""), c.text_tl, `${q}: Tagalog text`);
   }
 });
 
@@ -69,6 +76,7 @@ test("phone routes match the hub", () => {
     const avoid = r.avoid ? new Set(r.avoid) : null;
     if (r.error) {
       assert.throws(() => router.route(r.from, r.to, r.mode, "X", avoid), { message: r.error }, name);
+      assert.throws(() => router.route(r.from, r.to, r.mode, "X", avoid, "tl"), (e) => e.text("tl") === r.error_tl, name);
       continue;
     }
     const res = router.route(r.from, r.to, r.mode, "X", avoid);
@@ -77,13 +85,14 @@ test("phone routes match the hub", () => {
     assert.equal(res.duration_min, r.duration_min, `${name} duration`);
     assert.deepEqual(res.steps.map((s) => s.instruction), r.steps, `${name} steps`);
     assert.deepEqual(res.steps.map((s) => s.distance_m), r.step_m, `${name} step lengths`);
+    if (r.steps_tl) assert.deepEqual(router.route(r.from, r.to, r.mode, "X", null, "tl").steps.map((s) => s.instruction), r.steps_tl, `${name} Tagalog steps`);
   }
 });
 
 test("offline answers match the hub's data answers", async () => {
   for (const { body, events: hub } of parity.asks) {
     const phone = await localAsk(body, ctx);
-    const q = body.question;
+    const q = `${body.question}${body.lang ? ` [${body.lang}]` : ""}`;
     const hubDone = hub[hub.length - 1];
     const phoneDone = phone[phone.length - 1];
     assert.equal(phoneDone.type, hubDone.type, `${q}: last event type`);

@@ -179,6 +179,7 @@ SYNONYM_WORDS: dict[str, list[str]] = {
     "cellphone": ["phone"], "cp": ["phone"], "selpon": ["phone"], "baterya": ["battery"],
     # first aid
     "sugat": ["wound", "cut"], "dugo": ["bleeding", "blood"], "bleed": ["bleeding"],
+    "pagdurugo": ["bleeding"], "dumudugo": ["bleeding"],
     "paso": ["burn"], "napaso": ["burn"], "lagnat": ["fever"], "nahimatay": ["unresponsive", "faint"],
     "patigilin": ["stop"], "tigil": ["stop"], "itigil": ["stop"], "bali": ["broken", "fracture"],
     "buto": ["bone"], "fracture": ["broken"],

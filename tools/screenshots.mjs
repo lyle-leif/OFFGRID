@@ -105,7 +105,7 @@ async function sheetTo(page, want) {
 }
 // Scroll the chat so the last question and its answer start at the top.
 const showLastQuestion = (page) => js(page, `[...document.querySelectorAll('#messages .msg.user')].pop()?.scrollIntoView({ block: 'start' }); return true;`);
-const settings = (theme) => `localStorage.setItem('bb.theme', '${theme}'); localStorage.setItem('bb.saver', 'off');
+const settings = (theme) => `localStorage.setItem('bb.lang', 'en'); localStorage.setItem('bb.theme', '${theme}'); localStorage.setItem('bb.saver', 'off');
   localStorage.setItem('bb.legend', 'closed'); localStorage.setItem('bb.sheet.start', 'half');
   localStorage.setItem('bb.userPos', JSON.stringify(${JSON.stringify(NEAR_BMC)})); return true;`;
 

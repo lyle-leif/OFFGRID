@@ -8,6 +8,7 @@
 // - Fake GPS: navigator.geolocation is replaced by a scripted stub (slow, rough-then-fine,
 //   denied, no signal, outside the map) so every path of "Use GPS" can be checked.
 // - Hub off, the phone's outbox, the update path and console errors are checked too.
+// - Language: the first-run picker, Settings, and the app in Tagalog (with and without the hub).
 
 import { spawn } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -233,6 +234,13 @@ try {
   const phone = await open(`${BASE}/?debug`, PHONE, { phone: true });
   await waitFor(phone, "document.readyState !== 'loading' && !!document.getElementById('splash')", 30000, "splash");
   check("phone: launch screen shows first", await phone.evaluate("!document.getElementById('splash').classList.contains('gone')"));
+  // First run: the app asks for the language before anything else (the checks below read English).
+  await waitFor(phone, "!document.getElementById('lang-picker').hidden", 15000, "language picker").catch(() => {});
+  check("phone: first run asks Tagalog or English", await phone.evaluate(
+    "!document.getElementById('lang-picker').hidden && document.querySelectorAll('#lang-picker-choices button').length === 2"));
+  await tap(phone, '#lang-picker-choices button[lang="en"]', "English");
+  check("phone: the language choice is kept", (await phone.evaluate("localStorage.getItem('bb.lang')")) === "en"
+    && (await phone.evaluate("document.getElementById('lang-picker').hidden")));
   await waitFor(phone, "!document.getElementById('splash')", 15000, "splash to clear").catch(() => {});
   check("phone: launch screen clears once the map is drawn", await phone.evaluate("!document.getElementById('splash')"));
   check("phone: panel starts lowered (peek)", (await sheetState(phone)) === "peek");
@@ -563,6 +571,51 @@ try {
   await startServer();
   const sent = await waitUntil(() => phone.evaluate("!document.querySelector('#report-list li.report.pending')"), 45000, "outbox sent").catch(() => false);
   check("phone: the waiting report is sent when the hub is back", sent);
+
+  // ---------------- phone: Tagalog, chosen in Settings ----------------
+  const RAW_KEY = /^(app|tab|chat|chip|route|rep|reports|status|pos|gps|place|list|ans|rans|step|kind|type|sum|label|err|settings|saver)\.[a-z0-9_.]+$/;
+  const rawKeys = (page) => page.evaluate(`[...document.querySelectorAll('body *')].filter((e) => !e.children.length && ${RAW_KEY}.test(e.textContent.trim()))
+    .map((e) => e.textContent.trim()).concat([...document.querySelectorAll('[aria-label],[title],[placeholder]')].flatMap((e) => [e.getAttribute('aria-label'), e.title, e.placeholder])
+    .filter((v) => v && ${RAW_KEY}.test(v)))`);
+  const langTheme = await phone.evaluate("document.documentElement.dataset.theme");
+  await js(phone, `localStorage.setItem('bb.userPos', JSON.stringify(${JSON.stringify(HOME)})); return true;`);
+  await phone.send("Page.reload", {}); // nothing in progress, so changing the language asks nothing
+  await waitFor(phone, "!!(window.__map && window.__map.loaded()) && !document.getElementById('splash')", 60000, "phone map");
+  await tap(phone, "#settings-btn", "Settings");
+  await sleep(400);
+  check("phone: Settings opens with the language choice", await phone.evaluate("!document.getElementById('settings').hidden && document.querySelectorAll('#settings-langs input').length === 2"));
+  await tap(phone, '.lang-option[lang="fil"]', "Tagalog in Settings");
+  await waitFor(phone, "document.documentElement.lang === 'fil' && !!(window.__map && window.__map.loaded()) && !document.getElementById('splash')", 60000, "app in Tagalog").catch(() => {});
+  check("phone: the app restarts in Tagalog", (await phone.evaluate("document.querySelector('#tab-list .tab-label').textContent")) === "Mga lugar"
+    && (await phone.evaluate("document.getElementById('question').placeholder")).startsWith("Magtanong"));
+  const raw = await rawKeys(phone);
+  check("phone, Tagalog: no untranslated keys on screen", raw.length === 0, raw.slice(0, 5).join(", "));
+  check("phone, Tagalog: page fits the screen", await phone.evaluate("document.scrollingElement.scrollWidth <= innerWidth && document.scrollingElement.scrollHeight <= innerHeight + 1"));
+  const pill = await phone.evaluate("(() => { const s = document.getElementById('status-text'); return s.scrollWidth <= s.clientWidth + 1; })()");
+  check("phone, Tagalog: the status pill is not cut off", pill, await phone.evaluate("document.getElementById('status-text').textContent"));
+  for (const sel of ["#settings-btn", "#theme-toggle", "#tab-chat", "#tab-list", "#tab-reports", "#tab-hotlines"]) {
+    const at = await reach(phone, sel);
+    if (at.problem) check(`phone, Tagalog: ${sel} can be tapped`, false, at.problem);
+  }
+  await sheetTo(phone, "half");
+  const tlNear = await ask(phone, "pinakamalapit na evacuation center");
+  check("phone, Tagalog: nearest evacuation center answered in Tagalog", tlNear.includes("Pinakamalapit na") && tlNear.includes("sa kalsada"), tlNear.split("\n")[1]);
+  await stopServer();
+  await phone.send("Page.reload", {});
+  await waitFor(phone, "!!(window.__map && window.__map.loaded()) && !document.getElementById('splash')", 60000, "Tagalog app with no hub");
+  await sheetTo(phone, "half");
+  const tlOff = await ask(phone, "nearest hospital");
+  check("phone, Tagalog, hub off: the phone answers in Tagalog", tlOff.includes("Pinakamalapit na mga ospital")
+    && (await phone.evaluate("document.getElementById('status-text').textContent")) === "Sa telepono", tlOff.split("\n")[1]);
+  await startServer();
+  await phone.send("Page.reload", {});
+  await waitFor(phone, "!!(window.__map && window.__map.loaded()) && !document.getElementById('splash')", 60000, "phone map");
+  await tap(phone, "#settings-btn", "Settings");
+  await sleep(400);
+  await tap(phone, '.lang-option[lang="en"]', "English in Settings");
+  await waitFor(phone, "document.documentElement.lang === 'en' && !!(window.__map && window.__map.loaded()) && !document.getElementById('splash')", 60000, "app in English").catch(() => {});
+  check("phone: back to English, position and theme kept", (await phone.evaluate("document.querySelector('#tab-list .tab-label').textContent")) === "Places"
+    && near(await userPos(phone), HOME, 2) && (await phone.evaluate("document.documentElement.dataset.theme")) === langTheme);
 
   // ---------------- phone: an update reaches the phone ----------------
   const vfile = join("app", "static", "pack", "version.json");

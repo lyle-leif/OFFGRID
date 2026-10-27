@@ -90,7 +90,7 @@ def test_plan_route_reports_what_it_avoided(town):
 
 def test_plan_route_with_no_way_around_keeps_the_route_and_says_so(town):
     class NoDetour:
-        def route(self, start, end, mode, name, avoid=frozenset()):
+        def route(self, start, end, mode, name, avoid=frozenset(), lang="en"):
             if avoid:
                 raise RoutingError("No road connection found between these points in the saved road data.")
             return town.route(start, end, mode, name)

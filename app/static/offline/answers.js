@@ -1,20 +1,14 @@
 // Answers on the phone when the hub can't be reached. Produces the same events the hub
 // streams (passages / token / done), so the chat shows them the same way. Everything here
 // is exact data — guide text, places, distances, routes — never generated text: the AI
-// summary needs the hub.
+// summary needs the hub. The app's own sentences come from lang/<lang>.json (body.lang),
+// the same file the hub uses, so both word them the same way.
 
+import { format } from "../i18n.js";
 import { detect, FOLLOW_UP, isDirectionQuestion, reportQuery } from "./intents.js";
 import { answerReports } from "./reports.js";
 import { meters, pyRound, RoutingError } from "./router.js";
 
-export const NOT_COVERED =
-  "I can't find this in the saved emergency information on this device, so I can't answer it " +
-  "reliably. For current conditions or anything urgent, follow official announcements and " +
-  "local authorities, or call 911.";
-export const ROUTE_WARNING =
-  "Route uses saved OpenStreetMap road data and steers around roads people reported flooded or blocked, " +
-  "but reports can be missing or wrong. It does not know about other floods, landslides, closures, or damage. " +
-  "Follow official instructions and never walk or drive through floodwater.";
 const ROAD_REPORT_KINDS = new Set(["road_flooded", "road_blocked"]);
 
 // Road edge id -> report id for reported flooded/blocked roads (newest report first).
@@ -28,13 +22,13 @@ export function blockedEdges(reports) {
 
 // Same as plan_route in app/routes/directions.py: the normal route, or if it uses a
 // reported road, a route around them; if there is no way around, the normal route marked.
-export function planRoute(router, start, end, mode, destName, blocked) {
-  let result = router.route(start, end, mode, destName);
+export function planRoute(router, start, end, mode, destName, blocked, lang = "en") {
+  let result = router.route(start, end, mode, destName, null, lang);
   let through = result.edges.filter((e) => blocked.has(e)).map((e) => blocked.get(e));
   let avoided = [];
   if (through.length) {
     try {
-      result = router.route(start, end, mode, destName, new Set(blocked.keys()));
+      result = router.route(start, end, mode, destName, new Set(blocked.keys()), lang);
       avoided = through;
       through = [];
     } catch (e) {
@@ -45,39 +39,25 @@ export function planRoute(router, start, end, mode, destName, blocked) {
 }
 
 // What a route did about reported roads (same wording as the hub).
-export function reportLines(r) {
+export function reportLines(r, lang = "en") {
   const out = [];
   const a = r.avoided_reports?.length ?? 0;
   const t = r.through_reports?.length ?? 0;
-  if (a) out.push(`This route goes around ${a} road${a > 1 ? "s" : ""} people reported flooded or blocked.`);
-  if (t) out.push(`Warning: this route uses ${t} road${t > 1 ? "s" : ""} people reported flooded or blocked. Check before you go.`);
+  if (a) out.push(format(lang, "ans.around", { n: a }));
+  if (t) out.push(format(lang, "ans.through", { n: t }));
   return out;
 }
 const NATIONAL_HOTLINE_ID = "hotlines#national-emergency-hotline-911";
 const PASSAGES_SHOWN = 2;
 
-const LABELS = {
-  evacuation_center: ["evacuation center", "evacuation centers"],
-  hospital: ["hospital", "hospitals"],
-  health_center: ["clinic / health center", "clinics / health centers"],
-  rescue: ["rescue / DRRM station", "rescue / DRRM stations"],
-  fire_station: ["fire station", "fire stations"],
-  police: ["police station", "police stations"],
-  pharmacy: ["pharmacy", "pharmacies"],
-  town_hall: ["town / city hall", "town / city halls"],
-  barangay_hall: ["barangay hall", "barangay halls"],
-  market: ["market / grocery", "markets / groceries"],
-  drinking_water: ["drinking water point", "drinking water points"],
-  relief_point: ["relief point", "relief points"],
-};
+const TYPES = ["evacuation_center", "hospital", "health_center", "rescue", "fire_station", "police", "pharmacy",
+  "town_hall", "barangay_hall", "market", "drinking_water", "relief_point"]; // listing order
 const KEY_TYPES = ["evacuation_center", "hospital", "police"];
 const CANDIDATES = 8;
 const MAX_KM = 15;
 const NEARBY_M = 2000;
-const NEEDS_POSITION = 'set your location with the "Set my location" button on the map';
-const NEEDS_PLACE = "select a place on the map or in the Facilities list";
 
-const label = (t, plural = false) => (LABELS[t] ?? [t, t])[plural ? 1 : 0];
+const label = (lang, type, plural = false) => (TYPES.includes(type) ? format(lang, `plabel.${type}`, { n: plural ? 2 : 1 }) : type);
 export const fmtM = (m) => (m < 1000 ? `${pyRound(m)} m` : `${(m / 1000).toFixed(1)} km`);
 
 class NeedsInput extends Error {}
@@ -88,10 +68,10 @@ function excerpt(text) {
   return cut.slice(0, cut.lastIndexOf(" ")) + "...";
 }
 
-function locationBlock(loc) {
+function locationBlock(loc, lang) {
   const fields = {
     name: loc.name,
-    type: loc.type.replaceAll("_", " "),
+    type: lang === "en" ? loc.type.replaceAll("_", " ") : label(lang, loc.type),
     address: loc.address,
     description: loc.description,
     coordinates: `${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`,
@@ -100,16 +80,15 @@ function locationBlock(loc) {
     website: loc.website,
     source: loc.source,
     verified_on: loc.verified_on,
-    note: loc.is_sample ? "SAMPLE record for testing, not a real facility"
-      : loc.osm_url ? "Community-mapped record (OpenStreetMap), not an official government list; details may be outdated" : null,
+    note: loc.is_sample ? format(lang, "loc.sample_note") : loc.osm_url ? format(lang, "loc.osm_note") : null,
   };
-  return Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join("\n");
+  return Object.entries(fields).filter(([, v]) => v).map(([k, v]) => `${format(lang, `loc.${k}`)}: ${v}`).join("\n");
 }
 
 /**
  * ctx: { search, normalize, getRouter: async () => router|null, locations: [...], byId: Map,
  *        reports: { reports: [...], syncedMinAgo } (this phone's copy of the hub's situation reports) }
- * body: { question, location_id, previous, from_pos, travel_mode }
+ * body: { question, location_id, previous, from_pos, travel_mode, lang }
  * Returns the list of events, like the hub's /api/assistant/ask stream.
  */
 export async function localAsk(body, ctx) {
@@ -121,6 +100,9 @@ export async function localAsk(body, ctx) {
   const loc = body.location_id ? ctx.byId.get(body.location_id) ?? null : null;
   const pos = body.from_pos ? [body.from_pos.lat, body.from_pos.lng] : null;
   const mode = body.travel_mode === "drive" ? "drive" : "walk";
+  const lang = body.lang === "tl" ? "tl" : "en";
+  const t = (key, vars) => format(lang, key, vars);
+  const routeWarning = t("ans.route_warning");
   const reply = (text, done) => [{ type: "token", text }, { type: "done", sources: [], location_used: null, offline: true, ...done }];
 
   // `avoid`: steer around roads reported flooded or blocked (directions), as the hub does.
@@ -129,8 +111,8 @@ export async function localAsk(body, ctx) {
     if (!router) return null;
     try {
       return avoid
-        ? planRoute(router, start, [place.lat, place.lng], m, place.name, blockedEdges(ctx.reports?.reports))
-        : router.route(start, [place.lat, place.lng], m, place.name);
+        ? planRoute(router, start, [place.lat, place.lng], m, place.name, blockedEdges(ctx.reports?.reports), lang)
+        : router.route(start, [place.lat, place.lng], m, place.name, null, lang);
     } catch (e) {
       if (e instanceof RoutingError) return null;
       throw e;
@@ -139,9 +121,9 @@ export async function localAsk(body, ctx) {
 
   function require(needPlace, needPos) {
     const missing = [];
-    if (needPlace && !loc) missing.push(NEEDS_PLACE);
-    if (needPos && !pos) missing.push(NEEDS_POSITION);
-    if (missing.length) throw new NeedsInput(`To answer that, ${missing.join(" and ")}, then ask again.`);
+    if (needPlace && !loc) missing.push(t("ans.needs_place"));
+    if (needPos && !pos) missing.push(t("ans.needs_position"));
+    if (missing.length) throw new NeedsInput(t("ans.to_answer", { missing: missing.join(t("ans.and")) }));
   }
 
   const toPlace = (l, r, straight) => ({
@@ -159,33 +141,34 @@ export async function localAsk(body, ctx) {
         const perType = intent.ftype ? 3 : 1;
         const places = [];
         const lines = [];
-        for (const t of types) {
+        for (const ty of types) {
           const cands = ctx.locations
-            .filter((l) => l.type === t || (l.also ?? []).includes(t))
+            .filter((l) => l.type === ty || (l.also ?? []).includes(ty))
             .map((l) => [meters(pos, [l.lat, l.lng]), l])
             .sort((a, b) => a[0] - b[0])
             .slice(0, CANDIDATES)
             .filter(([d]) => d <= MAX_KM * 1000);
-          if (!cands.length) { lines.push(`No ${label(t)} is saved within ${MAX_KM} km of your location.`); continue; }
+          if (!cands.length) { lines.push(t("ans.none_within", { label: label(lang, ty), km: MAX_KM })); continue; }
           const ranked = [];
           for (const [d, l] of cands) ranked.push(toPlace(l, await road(pos, l, mode), d));
           ranked.sort((a, b) => a.distance_m - b.distance_m);
           const top = ranked.slice(0, perType);
           places.push(...top);
-          const how = mode === "walk" ? "walk" : "drive";
+          const how = t(mode === "walk" ? "ans.how_walk" : "ans.how_drive");
           if (intent.ftype) {
-            lines.push(`Nearest ${label(t, top.length > 1)} from your location:`);
-            top.forEach((p, i) => lines.push(`${i + 1}. ${p.name}: ` + (p.by_road
-              ? `${fmtM(p.distance_m)} by road (about ${p.duration_min} min ${how})`
-              : `${fmtM(p.distance_m)} in a straight line (no road route found)`)));
+            lines.push(t("ans.nearest_head", { label: label(lang, ty, top.length > 1) }));
+            top.forEach((p, i) => lines.push(t("ans.place_line", {
+              i: i + 1, name: p.name, dist: p.by_road
+                ? t("ans.by_road", { d: fmtM(p.distance_m), min: p.duration_min, how })
+                : t("ans.straight_none", { d: fmtM(p.distance_m) }),
+            })));
           } else {
             const p = top[0];
-            lines.push(`Nearest ${label(t)}: ${p.name}, ${fmtM(p.distance_m)}` +
-              (p.by_road ? ` by road (about ${p.duration_min} min)` : " in a straight line"));
+            lines.push(t(p.by_road ? "ans.nearest_one_road" : "ans.nearest_one_straight",
+              { label: label(lang, ty), name: p.name, d: fmtM(p.distance_m), min: p.duration_min }));
           }
         }
-        lines.push("", "Tap a result to see it or get directions. Roads may be flooded or blocked; " +
-          "facility details come from OpenStreetMap and are not an official list.");
+        lines.push("", t("ans.nearest_foot"));
         return reply(lines.join("\n"), { status: "places", places });
       }
       if (intent.kind === "nearby") {
@@ -196,49 +179,48 @@ export async function localAsk(body, ctx) {
           if (d <= NEARBY_M) (groups.get(l.type) ?? groups.set(l.type, []).get(l.type)).push([d, l]);
         }
         if (!groups.size) {
-          return reply(`No saved facilities within ${fmtM(NEARBY_M)} of your location (straight line). ` +
-            "Try asking for the nearest hospital or evacuation center.", { status: "places", places: [] });
+          return reply(t("ans.nearby_none", { d: fmtM(NEARBY_M) }), { status: "places", places: [] });
         }
-        const order = Object.keys(LABELS);
-        const lines = [`Within ${fmtM(NEARBY_M)} of your location (straight-line distance):`];
+        const lines = [t("ans.nearby_head", { d: fmtM(NEARBY_M) })];
         const places = [];
-        for (const t of [...groups.keys()].sort((a, b) => (order.indexOf(a) + 1 || 99) - (order.indexOf(b) + 1 || 99))) {
-          const items = groups.get(t).sort((a, b) => a[0] - b[0]);
+        for (const ty of [...groups.keys()].sort((a, b) => (TYPES.indexOf(a) + 1 || 99) - (TYPES.indexOf(b) + 1 || 99))) {
+          const items = groups.get(ty).sort((a, b) => a[0] - b[0]);
           const [d, closest] = items[0];
-          lines.push(`- ${items.length} ${label(t, items.length > 1)}: closest is ${closest.name}, ${fmtM(d)}`);
+          const n = items.length;
+          lines.push(t("ans.nearby_line", { n, label: label(lang, ty, n > 1), label_one: label(lang, ty), name: closest.name, d: fmtM(d) }));
           places.push(toPlace(closest, null, d));
         }
-        lines.push("", 'Ask for a type (e.g. "nearest hospital") to get road distances and directions.');
+        lines.push("", t("ans.nearby_foot"));
         return reply(lines.join("\n"), { status: "places", places });
       }
       if (intent.kind === "distance") {
         require(true, true);
         const shown = await road(pos, loc, mode, true);
-        if (!shown) throw new NeedsInput("No road connection found between these points in the saved road data.");
+        if (!shown) throw new NeedsInput(t("rerr.no_connection"));
         const other = await road(pos, loc, mode === "walk" ? "drive" : "walk");
         const [walk, drive] = mode === "walk" ? [shown, other] : [other, shown];
         const parts = [];
-        if (walk) parts.push(`${fmtM(walk.distance_m)} on foot (about ${walk.duration_min} min)`);
-        if (drive) parts.push(`${fmtM(drive.distance_m)} by car (about ${drive.duration_min} min)`);
-        const route = { ...shown, to_id: loc.id, to_name: loc.name, warning: ROUTE_WARNING };
-        return reply(`${loc.name} is ${parts.join(" or ")} from your location. ` +
-          `Straight-line distance: ${fmtM(shown.straight_line_m)}.\n\n` +
-          `The ${mode === "walk" ? "walking" : "driving"} route is shown on the map. ${ROUTE_WARNING}`,
-        { status: "route", route, location_used: loc.id });
+        if (walk) parts.push(t("ans.on_foot", { d: fmtM(walk.distance_m), min: walk.duration_min }));
+        if (drive) parts.push(t("ans.by_car", { d: fmtM(drive.distance_m), min: drive.duration_min }));
+        const route = { ...shown, to_id: loc.id, to_name: loc.name, warning: routeWarning };
+        return reply(t("ans.distance", {
+          name: loc.name, parts: parts.join(t("ans.or")), straight: fmtM(shown.straight_line_m),
+          how: t(mode === "walk" ? "ans.how_walking" : "ans.how_driving"), warning: routeWarning,
+        }), { status: "route", route, location_used: loc.id });
       }
       if (intent.kind === "contact") {
         require(true, false);
         return reply(loc.phone
-          ? `Phone for ${loc.name} (saved from OpenStreetMap, may be outdated): ${loc.phone}.\nFor emergencies, call 911.`
-          : `No phone number is saved for ${loc.name}. For emergencies, call 911. Local hotlines (CDRRMO, police, fire) are in the Hotlines tab.`,
+          ? t("ans.phone", { name: loc.name, phone: loc.phone })
+          : t("ans.no_phone", { name: loc.name }),
         { status: "info", location_used: loc.id, phone: loc.phone ?? null });
       }
       if (intent.kind === "hours") {
         require(true, false);
-        const hrs = loc.opening_hours?.trim() === "24/7" ? "open 24 hours" : `hours: ${loc.opening_hours}`;
+        const hrs = loc.opening_hours?.trim() === "24/7" ? t("ans.open24") : t("ans.hours_val", { hours: loc.opening_hours });
         return reply(loc.opening_hours
-          ? `Saved ${hrs} for ${loc.name} (from OpenStreetMap). The app cannot confirm whether it is open right now, especially during a disaster.`
-          : `No opening hours are saved for ${loc.name}. The app cannot tell whether it is open right now. Call ahead if a number is available, or ask your barangay.`,
+          ? t("ans.hours", { hrs, name: loc.name })
+          : t("ans.no_hours", { name: loc.name }),
         { status: "info", location_used: loc.id });
       }
     } catch (e) {
@@ -253,7 +235,7 @@ export async function localAsk(body, ctx) {
   if (kinds) {
     const snap = ctx.reports ?? { reports: [], syncedMinAgo: null };
     const place = loc ? { id: loc.id, name: loc.name, lat: loc.lat, lng: loc.lng } : null;
-    const [text, done] = answerReports(body.question, kinds, snap.reports, place, pos, snap.syncedMinAgo);
+    const [text, done] = answerReports(body.question, kinds, snap.reports, place, pos, snap.syncedMinAgo, lang);
     return reply(text, done);
   }
 
@@ -261,16 +243,19 @@ export async function localAsk(body, ctx) {
   if (isDirectionQuestion(body.question)) {
     if (!loc || !pos) {
       const missing = [];
-      if (!loc) missing.push("select the place you want to go to (on the map or in the Facilities list)");
-      if (!pos) missing.push('set your location with the "Set my location" button on the map');
-      return reply(`To get directions, ${missing.join(" and ")}. Then ask again or press Directions.`, { status: "needs_input" });
+      if (!loc) missing.push(t("ans.dir_missing_place"));
+      if (!pos) missing.push(t("ans.needs_position"));
+      return reply(t("ans.dir_wrap", { missing: missing.join(t("ans.and")) }), { status: "needs_input" });
     }
     const r = await road(pos, loc, mode, true);
-    if (!r) return [{ type: "error", message: "No road connection found between these points in the saved road data." }];
-    const route = { ...r, to_id: loc.id, to_name: loc.name, warning: ROUTE_WARNING };
-    const lines = [`${mode === "walk" ? "Walking" : "Driving"} route to ${loc.name}: ${(r.distance_m / 1000).toFixed(1)} km, about ${r.duration_min} min.`];
-    r.steps.forEach((s, i) => lines.push(`${i + 1}. ${s.instruction}${s.distance_m ? ` (${s.distance_m} m)` : ""}`));
-    lines.push("", ...reportLines(r), ROUTE_WARNING);
+    if (!r) return [{ type: "error", message: t("rerr.no_connection") }];
+    const route = { ...r, to_id: loc.id, to_name: loc.name, warning: routeWarning };
+    const lines = [t(mode === "walk" ? "ans.route_head_walk" : "ans.route_head_drive",
+      { name: loc.name, km: (r.distance_m / 1000).toFixed(1), min: r.duration_min })];
+    r.steps.forEach((s, i) => lines.push(t("ans.step_line", {
+      i: i + 1, step: s.instruction, dist: s.distance_m ? t("ans.step_dist", { m: s.distance_m }) : "",
+    })));
+    lines.push("", ...reportLines(r, lang), routeWarning);
     return reply(lines.join("\n"), { status: "route", route, location_used: loc.id });
   }
 
@@ -302,8 +287,8 @@ export async function localAsk(body, ctx) {
     ];
   }
   if (loc) {
-    return [{ type: "token", text: locationBlock(loc) },
+    return [{ type: "token", text: locationBlock(loc, lang) },
       { type: "done", status: "grounded", sources: [], location_used: loc.id, summary: "offline", offline: true }];
   }
-  return reply(NOT_COVERED, { status: "uncertain" });
+  return reply(t("ans.not_covered"), { status: "uncertain" });
 }

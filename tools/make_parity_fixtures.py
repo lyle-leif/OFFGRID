@@ -19,7 +19,7 @@ from app.main import app  # noqa: E402
 from app.services import intents, llm, report_answers  # noqa: E402
 from app.services.locations import LocationStore  # noqa: E402
 from app.services.retrieval import Retriever, load_chunks  # noqa: E402
-from app.services.routing import Router  # noqa: E402
+from app.services.routing import Router, RoutingError  # noqa: E402
 from tests.test_intents import CASES, NOT_INTENTS, REPORT_CASES  # noqa: E402
 from tests.test_retrieval import COVERED, UNCOVERED  # noqa: E402
 
@@ -59,6 +59,12 @@ ASKS = [
      "previous": {"question": "What should I pack in my go-bag?", "answer": "Water and food."}},
     {"question": "what about for elderly people?",
      "previous": {"question": "What should I pack in my go-bag?", "answer": "Water and food."}},
+]
+# The same data answers with a Tagalog interface (lang=tl): the app's own sentences change,
+# guide text does not.
+TL_ASKS = [i for i, b in enumerate(ASKS) if "previous" not in b]
+ASKS += [{**ASKS[i], "lang": "tl"} for i in TL_ASKS] + [
+    {"question": "How do I get there?", "location_id": BSU, "from_pos": NEAR_BMC, "lang": "tl"},
 ]
 
 
@@ -103,8 +109,9 @@ def report_fixtures() -> dict:
         place = {"id": loc.id, "name": loc.name, "lat": loc.lat, "lng": loc.lng} if loc else None
         pos = (body["from_pos"]["lat"], body["from_pos"]["lng"]) if body.get("from_pos") else None
         text, done = report_answers.answer(body["question"], kinds, reports, place, pos)
-        cases.append({"body": body, "kinds": kinds, "text": text, "ids": [r["id"] for r in done["reports"]],
-                      "location_used": done["location_used"]})
+        text_tl, _ = report_answers.answer(body["question"], kinds, reports, place, pos, "tl")
+        cases.append({"body": body, "kinds": kinds, "text": text, "text_tl": text_tl,
+                      "ids": [r["id"] for r in done["reports"]], "location_used": done["location_used"]})
     return {"reports": reports, "cases": cases}
 
 
@@ -129,8 +136,10 @@ def main() -> int:
     routes = []
     for a, b, mode in ROUTES:
         res = router.route(a, b, mode, "X")
+        tl = router.route(a, b, mode, "X", lang="tl")
         routes.append({"from": a, "to": b, "mode": mode, "distance_m": res["distance_m"],
                        "duration_min": res["duration_min"], "steps": [s["instruction"] for s in res["steps"]],
+                       "steps_tl": [s["instruction"] for s in tl["steps"]],
                        "step_m": [s["distance_m"] for s in res["steps"]]})
         # The same trip with its longest road segment reported blocked.
         avoid = [max(res["edges"], key=lambda e: router.edges[e].length)]
@@ -139,8 +148,9 @@ def main() -> int:
             routes.append({"from": a, "to": b, "mode": mode, "avoid": avoid, "distance_m": alt["distance_m"],
                            "duration_min": alt["duration_min"], "steps": [s["instruction"] for s in alt["steps"]],
                            "step_m": [s["distance_m"] for s in alt["steps"]], "edges": alt["edges"]})
-        except Exception as e:  # no way around: the phone must fail the same way
-            routes.append({"from": a, "to": b, "mode": mode, "avoid": avoid, "error": str(e)})
+        except RoutingError as e:  # no way around: the phone must fail the same way
+            routes.append({"from": a, "to": b, "mode": mode, "avoid": avoid, "error": str(e),
+                           "error_tl": e.text("tl")})
 
     # How the hub's spelling fixer reads every question in the bank (plus a few edge cases),
     # so the phone's copy (offline/normalize.js) can be checked word for word.

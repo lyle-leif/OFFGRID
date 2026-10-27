@@ -1,7 +1,9 @@
 // Road routing on the phone, with no hub. A port of app/services/routing.py that works on
 // the compact typed arrays in pack/roads.bin: snap to the nearest point on a road, A* over
 // segment lengths, walk/drive rules, and the same turn-by-turn steps as the hub.
-// Routes know nothing about floods, closures or damage.
+// Routes know nothing about floods, closures or damage. Step wording: lang/<lang>.json.
+
+import { format } from "../i18n.js";
 
 const FOOT_ONLY = new Set(["footway", "path", "steps", "cycleway", "bridleway", "pedestrian"]);
 const WALK_KMH = 4.5;
@@ -16,12 +18,24 @@ const CLASS_LABEL = {
   cycleway: "footpath", bridleway: "footpath", track: "track", service: "service road",
   residential: "local road", unclassified: "local road", living_street: "local road",
 };
+const CLASS_KEY = { footpath: "footpath", track: "track", "service road": "service_road", "local road": "local_road", road: "road" };
 const SHORT_M = 50;
 const BEARING_M = 20;
 const CELL = 0.005;
 const CELL_M = 500;
 
-export class RoutingError extends Error {}
+// Raised with a string key ("rerr.no_road"); .message is the English text, .text(lang) the
+// text in the app's language.
+export class RoutingError extends Error {
+  constructor(key) {
+    super(format("en", key));
+    this.key = key;
+  }
+
+  text(lang) {
+    return format(lang, this.key);
+  }
+}
 
 // Python's round(): halves go to the even neighbour, so numbers match the hub exactly.
 export function pyRound(x) {
@@ -51,13 +65,14 @@ export function bearing(a, b) {
 const COMPASS = ["north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest"];
 export const compass = (deg) => COMPASS[((pyRound(deg / 45) % 8) + 8) % 8];
 
-export function turnWord(delta) {
+// Step key for a turn (step.<key>), as turn_key in routing.py.
+export function turnKey(delta) {
   const a = Math.abs(delta);
-  if (a < 25) return "Continue";
+  if (a < 25) return "continue";
   const side = delta > 0 ? "right" : "left";
-  if (a < 60) return `Bear ${side}`;
-  if (a < 150) return `Turn ${side}`;
-  return "Make a U-turn";
+  if (a < 60) return `bear_${side}`;
+  if (a < 150) return `turn_${side}`;
+  return "uturn";
 }
 
 function bearingAlong(pts, fromEnd = false) {
@@ -275,7 +290,7 @@ export function createRouter(meta, buffer) {
       }
       if (best && best[0] < ring * CELL_M) break;
     }
-    if (!best || best[0] > maxM) throw new RoutingError("No road found near that point in the saved road data.");
+    if (!best || best[0] > maxM) throw new RoutingError("rerr.no_road");
     const [d, e, s, t] = best;
     const cum = cumulative(e);
     const along = cum[s] + t * (cum[s + 1] - cum[s]);
@@ -346,7 +361,7 @@ export function createRouter(meta, buffer) {
           }
         }
       }
-      if (best === Infinity) throw new RoutingError("No road connection found between these points in the saved road data.");
+      if (best === Infinity) throw new RoutingError("rerr.no_connection");
       if (bestEnd === -1) return [partial(es, s.along, g.along)];
       const middle = [];
       let x = bestEnd;
@@ -367,8 +382,10 @@ export function createRouter(meta, buffer) {
       lng: Math.round(at[1] * 1e6) / 1e6, road };
   }
 
-  function route(startPt, endPt, mode = "walk", destName = "your destination", avoid = null) {
-    if (mode !== "walk" && mode !== "drive") throw new RoutingError("Mode must be 'walk' or 'drive'.");
+  function route(startPt, endPt, mode = "walk", destName = null, avoid = null, lang = "en") {
+    const t = (key, vars) => format(lang, key, vars);
+    destName = destName || t("step.dest_default");
+    if (mode !== "walk" && mode !== "drive") throw new RoutingError("rerr.mode");
     const s = snap(startPt[0], startPt[1], mode, 3000, avoid);
     const g = snap(endPt[0], endPt[1], mode, 3000, avoid);
     const legs = searchLegs(s, g, mode, avoid).filter((l) => l.length >= 0.5);
@@ -402,27 +419,27 @@ export function createRouter(meta, buffer) {
 
     const steps = [];
     const line = [startPt];
-    if (s.off > 25) steps.push(step("Go to the nearest road", s.off, startPt));
+    if (s.off > 25) steps.push(step(t("step.to_road"), s.off, startPt));
     let prevOut = null;
     let turns = 0;
     for (const gr of groups) {
       const bIn = bearingAlong(gr.pts);
-      const road = gr.named ? gr.label : `the ${gr.label}`;
+      const road = gr.named ? gr.label : t("road.unnamed", { label: t(`road.${CLASS_KEY[gr.label]}`) });
       let text;
       if (prevOut === null) {
-        text = `Head ${compass(bIn)} on ${road}`;
+        text = t("step.head", { dir: t(`dir.${compass(bIn)}`), road });
       } else {
-        const word = turnWord(((bIn - prevOut + 540) % 360) - 180);
-        if (word !== "Continue") turns++;
-        text = word === "Continue" ? `${word} on ${road}` : `${word} onto ${road}`;
+        const word = turnKey(((bIn - prevOut + 540) % 360) - 180);
+        if (word !== "continue") turns++;
+        text = t(`step.${word}`, { road });
       }
       steps.push(step(text, gr.len, gr.pts[0], gr.label));
       prevOut = bearingAlong(gr.pts, true);
       line.push(...gr.pts);
     }
-    if (g.off > 25) steps.push(step(`Leave the road to reach ${destName}`, g.off, g.point));
+    if (g.off > 25) steps.push(step(t("step.leave", { dest: destName }), g.off, g.point));
     line.push(endPt);
-    steps.push(step(`Arrive at ${destName}`, 0, endPt));
+    steps.push(step(t("step.arrive", { dest: destName }), 0, endPt));
 
     const roadM = groups.reduce((t, gr) => t + gr.len, 0);
     const total = roadM + s.off + g.off;

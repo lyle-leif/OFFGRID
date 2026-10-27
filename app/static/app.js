@@ -3,6 +3,7 @@ import { createChat, trustNote } from "./chat.js";
 import { createDirections } from "./directions.js";
 import { createBrain } from "./offline/brain.js";
 import { createReports } from "./reports.js";
+import { applyStatic, getLang, LANGS, loadLang, saveLang, savedLang, t } from "./i18n.js";
 import { createSheet } from "./sheet.js";
 import { pinImg, reportImg } from "./icons.js";
 import { REPORT_KINDS } from "./report-kinds.js";
@@ -11,6 +12,36 @@ import { hydrateIcons, icon, iconLabel } from "./ui-icons.js";
 hydrateIcons();
 
 const $ = (id) => document.getElementById(id);
+
+// ---------- language (Tagalog / English) ----------
+// First run: ask once, before anything is drawn in a language. The choice is kept in
+// bb.lang and can be changed in Settings (which restarts the app in the new language).
+function chooseLanguage() {
+  const saved = savedLang();
+  if (saved) return Promise.resolve(saved);
+  const box = $("lang-picker");
+  const choices = $("lang-picker-choices");
+  box.hidden = false;
+  return new Promise((resolve) => {
+    for (const l of LANGS) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "lang-choice";
+      b.lang = l.html;
+      b.textContent = l.name;
+      b.addEventListener("click", () => {
+        saveLang(l.id);
+        box.hidden = true;
+        resolve(l.id);
+      });
+      choices.append(b);
+    }
+  });
+}
+await loadLang(await chooseLanguage());
+applyStatic();
+document.title = t("app.title");
+$("hotlines-lang").hidden = !t("hotlines.lang_note");
 
 // Launch screen (index.html): fade it out once the map has drawn, so the app appears in one
 // piece. Never longer than 5 s, whatever happens to the map.
@@ -42,7 +73,7 @@ function applyTheme(theme, { save = false } = {}) {
   const btn = document.getElementById("theme-toggle");
   if (btn) {
     btn.replaceChildren(icon(theme === "dark" ? "sun" : "moon", 18));
-    btn.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    btn.setAttribute("aria-label", t(theme === "dark" ? "theme.to_light" : "theme.to_dark"));
   }
   if (save) { try { localStorage.setItem("bb.theme", theme); } catch { /* no storage */ } }
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#0f1626" : "#f7f8f4");
@@ -100,27 +131,27 @@ async function checkHealth() {
     banner.hidden = true;
     if (h.ollama !== "ok") {
       box.classList.add("bad");
-      text.textContent = "AI offline";
-      banner.textContent = "The local AI runtime (Ollama) is not running. The map works; start Ollama to ask questions.";
+      text.textContent = t("status.ai_offline");
+      banner.textContent = t("banner.ollama");
       banner.hidden = false;
     } else if (!h.model_installed) {
       box.classList.add("bad");
-      text.textContent = "Model missing";
-      banner.textContent = `Model "${h.model}" is not installed. Run: ollama pull ${h.model}`;
+      text.textContent = t("status.model_missing");
+      banner.textContent = t("banner.model", { model: h.model });
       banner.hidden = false;
     } else if (!h.model_loaded) {
       box.classList.add("warn");
-      text.textContent = "AI warming up";
+      text.textContent = t("status.warming");
     } else {
       box.classList.add("ok");
-      text.textContent = "Offline-ready";
+      text.textContent = t("status.ready");
     }
     reports.setHubUp(true); // also sends reports waiting in the outbox
   } catch {
     reports.setHubUp(false);
     // No hub: the phone answers on its own from the saved copy.
     box.className = "status warn";
-    setStatusText(hasOfflineCopy ? "On this phone (no hub)" : "Hub not reachable", hasOfflineCopy ? "On this phone" : "No hub");
+    setStatusText(t(hasOfflineCopy ? "status.phone_full" : "status.nohub_full"), t(hasOfflineCopy ? "status.phone" : "status.nohub"));
   }
 }
 
@@ -138,14 +169,14 @@ function showOfflineCopy(msg) {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "link-btn";
-    btn.textContent = "Tap to restart";
+    btn.textContent = t("copy.restart");
     btn.addEventListener("click", () => window.location.reload());
-    el.append(icon("check", 14), " Update saved on this phone. ", btn);
+    el.append(icon("check", 14), ` ${t("copy.update")} `, btn);
   } else if (msg.state === "saving") {
-    el.append(icon("signal", 14), ` Saving offline copy… ${Math.round((100 * msg.done) / msg.total)}% (keep this page open)`);
+    el.append(icon("signal", 14), ` ${t("copy.saving", { pct: Math.round((100 * msg.done) / msg.total) })}`);
   } else if (msg.state === "saved" || msg.state === "ready") {
     hasOfflineCopy = true;
-    el.append(icon("check", 14), " Saved on this phone: works with no hub or internet.");
+    el.append(icon("check", 14), ` ${t("copy.saved")}`);
     appendDates(el);
   } else if (msg.state === "error") {
     el.append(icon("warning", 14), ` ${msg.text}`);
@@ -189,15 +220,15 @@ let packDates = null;
 function appendDates(el) {
   if (!packDates) return;
   const d = packDates;
-  el.append(` · Data: map ${d.map} · places ${d.places} · roads ${d.roads} · guides ${d.guides}`);
+  el.append(` · ${t("copy.dates", d)}`);
 }
 async function setUpOfflineCopy() {
   if (!("serviceWorker" in navigator)) {
-    showOfflineCopy({ state: "error", text: "This browser can't save an offline copy." });
+    showOfflineCopy({ state: "error", text: t("copy.no_sw") });
     return;
   }
   if (!window.isSecureContext) {
-    showOfflineCopy({ state: "error", text: "Offline copy needs the secure hub address (https). Open the hub's setup page." });
+    showOfflineCopy({ state: "error", text: t("copy.no_https") });
     return;
   }
   navigator.serviceWorker.addEventListener("message", (e) => { if (e.data?.type === "offline-copy") showOfflineCopy(e.data); });
@@ -206,10 +237,7 @@ async function setUpOfflineCopy() {
   const hadCopy = Boolean(navigator.serviceWorker.controller);
   navigator.serviceWorker.addEventListener("controllerchange", () => {
     if (!hadCopy) return; // the first save: this page is already the current version
-    const busy = document.querySelector("#messages .msg.user")
-      || (state.selected && directions.isActiveFor(state.selected.id))
-      || !$("pos-hint").hidden;
-    if (!busy) { window.location.reload(); return; }
+    if (!isBusy()) { window.location.reload(); return; }
     updateWaiting = true;
     showOfflineCopy({ state: "ready" });
   }, { once: true });
@@ -230,13 +258,60 @@ async function setUpOfflineCopy() {
 }
 setUpOfflineCopy();
 
+// In the middle of something a restart would throw away (an answer, a route, a map tap).
+function isBusy() {
+  return Boolean(document.querySelector("#messages .msg.user")
+    || (state.selected && directions.isActiveFor(state.selected.id))
+    || !$("pos-hint").hidden);
+}
+
+// ---------- settings ----------
+// A panel with groups of settings; for now only the interface language. Changing it saves
+// bb.lang and restarts the app, so every part (map labels, lists, answers) is redrawn in it.
+function openSettings() {
+  const box = $("settings-langs");
+  box.replaceChildren();
+  for (const l of LANGS) {
+    const label = document.createElement("label");
+    label.className = "lang-option";
+    label.lang = l.html;
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "lang";
+    input.value = l.id;
+    input.checked = l.id === getLang();
+    input.addEventListener("change", () => switchLanguage(l.id));
+    label.append(input, l.name);
+    box.append(label);
+  }
+  $("settings").hidden = false;
+  box.querySelector("input:checked")?.focus();
+}
+function closeSettings() {
+  $("settings").hidden = true;
+  $("settings-btn").focus();
+}
+function switchLanguage(id) {
+  if (id === getLang()) return;
+  if (isBusy() && !window.confirm(t("settings.restart_busy"))) {
+    $("settings-langs").querySelector(`input[value="${getLang()}"]`).checked = true;
+    return;
+  }
+  saveLang(id);
+  window.location.reload();
+}
+$("settings-btn").addEventListener("click", openSettings);
+$("settings-close").addEventListener("click", closeSettings);
+$("settings").addEventListener("click", (e) => { if (e.target === $("settings")) closeSettings(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("settings").hidden) closeSettings(); });
+
 // The phone's own answer engine (guide search, places, routing) for when the hub is gone.
 const brain = createBrain(() => state.locations, () => reports.snapshot());
 function setHubState(reachable) {
   if (!reachable) {
     reports.setHubUp(false);
     $("status").className = "status warn";
-    setStatusText("On this phone (no hub)", "On this phone");
+    setStatusText(t("status.phone_full"), t("status.phone"));
   }
 }
 
@@ -354,20 +429,20 @@ async function loadHotlines() {
       box.append(div);
     }
   } catch {
-    $("hotline-list").textContent = "Could not load hotlines.";
+    $("hotline-list").textContent = t("hotlines.error");
   }
 }
 loadHotlines();
 
 // ---------- location panel ----------
 const FIELD_LABELS = [
-  ["address", "Address"],
-  ["phone", "Phone"],
-  ["opening_hours", "Hours"],
-  ["description", "Details"],
-  ["coords", "Coordinates"],
-  ["source", "Source"],
-  ["verified_on", "Verified"],
+  ["address", t("field.address")],
+  ["phone", t("field.phone")],
+  ["opening_hours", t("field.opening_hours")],
+  ["description", t("field.description")],
+  ["coords", t("field.coords")],
+  ["source", t("field.source")],
+  ["verified_on", t("field.verified_on")],
 ];
 
 function fieldValue(key, value, loc) {
@@ -389,7 +464,7 @@ function fieldValue(key, value, loc) {
     a.target = "_blank";
     a.rel = "noopener";
     a.textContent = value;
-    wrap.append(a, " (link needs internet)");
+    wrap.append(a, ` ${t("field.link_internet")}`);
     return wrap;
   }
   return document.createTextNode(value);
@@ -400,7 +475,7 @@ function renderPlaceDistance() {
   const p = $("place-distance");
   if (!loc || !state.userPos) { p.hidden = true; return; }
   p.hidden = false;
-  iconLabel(p, "ruler", `${fmtKm(distanceKm(state.userPos, loc))} from your position (straight line, not a route)`, 14);
+  iconLabel(p, "ruler", t("place.distance", { d: fmtKm(distanceKm(state.userPos, loc)) }), 14);
 }
 
 // Live reports about the open place (e.g. "Evacuation center full · unverified · 40 min ago").
@@ -408,23 +483,23 @@ function renderPlaceReports() {
   const ul = $("place-reports");
   const lines = state.selected ? reports.forPlace(state.selected.id) : [];
   ul.hidden = !lines.length;
-  ul.replaceChildren(...lines.map((t) => {
+  ul.replaceChildren(...lines.map((line) => {
     const li = document.createElement("li");
-    iconLabel(li, "flag", t, 14);
+    iconLabel(li, "flag", line, 14);
     return li;
   }));
 }
 
 function selectPlace(loc) {
   state.selected = loc;
-  const t = typeStyle(loc.type);
+  const ts = typeStyle(loc.type);
   // The details live in the side panel: open it if the user had collapsed it.
   panel.open();
   $("place").hidden = false;
   $("place-name").textContent = loc.name;
-  $("place-type").textContent = [t.label, ...(loc.also ?? []).map((a) => typeStyle(a).label)].join(" · ");
-  $("place-type").style.background = t.color + "22";
-  $("place-type").style.color = t.color;
+  $("place-type").textContent = [ts.label, ...(loc.also ?? []).map((a) => typeStyle(a).label)].join(" · ");
+  $("place-type").style.background = ts.color + "22";
+  $("place-type").style.color = ts.color;
   $("place-sample").hidden = !loc.is_sample;
   $("place-osm").hidden = loc.is_sample || !loc.osm_url;
   $("place-evac-note").hidden = !(loc.type === "evacuation_center" && loc.osm_url);
@@ -468,7 +543,7 @@ $("place-route").addEventListener("click", () => directions.start());
 // ---------- facility list ----------
 function matches(loc) {
   // A hospital that is also an evacuation site shows under either filter.
-  if (!state.types.has(loc.type) && !(loc.also ?? []).some((t) => state.types.has(t))) return false;
+  if (!state.types.has(loc.type) && !(loc.also ?? []).some((a) => state.types.has(a))) return false;
   const q = state.query.trim().toLowerCase();
   if (!q) return true;
   const hay = [loc.name, typeStyle(loc.type).label, loc.address, loc.description].filter(Boolean).join(" ").toLowerCase();
@@ -486,9 +561,7 @@ function renderList() {
   mapApi?.filter(new Set(visible.map((l) => l.id)));
   renderLegend();
   $("fac-count").textContent = String(visible.length);
-  $("fac-note").textContent = state.userPos
-    ? "Sorted by straight-line distance from your position. Not a route; roads may be longer or blocked."
-    : "Set your location on the map to sort by distance.";
+  $("fac-note").textContent = t(state.userPos ? "list.sorted" : "list.set_pos");
 
   const LIMIT = 100;
   const ul = $("fac-list");
@@ -496,24 +569,24 @@ function renderList() {
   if (!visible.length) {
     const li = document.createElement("li");
     li.className = "fac-empty";
-    li.textContent = "No facilities match.";
+    li.textContent = t("list.none");
     ul.append(li);
     return;
   }
   for (const loc of visible.slice(0, LIMIT)) {
-    const t = typeStyle(loc.type);
+    const ts = typeStyle(loc.type);
     const li = document.createElement("li");
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "fac" + (state.selected?.id === loc.id ? " selected" : "");
-    const sw = pinImg(loc.type, t.color, 24);
+    const sw = pinImg(loc.type, ts.color, 24);
     const info = document.createElement("span");
     const name = document.createElement("div");
     name.className = "fac-name";
-    name.textContent = loc.name + (loc.is_sample ? " · sample" : "");
+    name.textContent = loc.name + (loc.is_sample ? ` · ${t("list.sample")}` : "");
     const meta = document.createElement("div");
     meta.className = "fac-meta";
-    meta.textContent = [t.label, loc.address].filter(Boolean).join(" · ");
+    meta.textContent = [ts.label, loc.address].filter(Boolean).join(" · ");
     info.append(name, meta);
     const dist = document.createElement("span");
     dist.className = "fac-dist";
@@ -526,7 +599,7 @@ function renderList() {
   if (visible.length > LIMIT) {
     const li = document.createElement("li");
     li.className = "fac-empty";
-    li.textContent = `Showing ${LIMIT} of ${visible.length}. Search or filter to narrow the list.`;
+    li.textContent = t("list.limit", { limit: LIMIT, total: visible.length });
     ul.append(li);
   }
 }
@@ -534,13 +607,13 @@ function renderList() {
 function buildFilters() {
   const wrap = $("fac-filters");
   const present = new Set(state.locations.map((l) => l.type));
-  for (const [type, t] of Object.entries(TYPE_STYLE)) {
+  for (const [type, ts] of Object.entries(TYPE_STYLE)) {
     if (!present.has(type)) continue;
     const b = document.createElement("button");
     b.type = "button";
     b.className = "filter";
     b.setAttribute("aria-pressed", String(state.types.has(type)));
-    b.append(pinImg(type, t.color, 18), t.label);
+    b.append(pinImg(type, ts.color, 18), ts.label);
     b.addEventListener("click", () => {
       const on = !state.types.has(type);
       on ? state.types.add(type) : state.types.delete(type);
@@ -566,7 +639,7 @@ function setUserPos(pos, { persist = true, fromGps = false, accuracy = null } = 
   mapApi?.setUserPosition(pos);
   mapApi?.setAccuracy(fromGps && pos && accuracy ? { lat: pos.lat, lng: pos.lng, radius: accuracy } : null);
   if (persist && !fromGps) store.set("bb.userPos", pos);
-  iconLabel($("set-pos"), "pin", pos ? "Move my location" : "Set my location");
+  iconLabel($("set-pos"), "pin", t(pos ? "pos.move" : "pos.set"));
   renderPlaceDistance();
   if (!fromGps || Date.now() - lastHeavyRender > 3000) {
     lastHeavyRender = Date.now();
@@ -590,7 +663,7 @@ function pickMyLocation(then) {
   stopLocate();
   showGpsMsg("");
   $("set-pos").setAttribute("aria-pressed", "true");
-  $("pos-hint").textContent = isPhone() ? "Tap the map where you are." : "Click the map where you are.";
+  $("pos-hint").textContent = t(isPhone() ? "pos.hint_tap" : "pos.hint_click");
   $("pos-hint").hidden = false;
   restoreSheet = panel.peekForPick();
   mapApi.pickPosition((pos) => {
@@ -671,18 +744,10 @@ const LOCATE_GOOD_M = 30;
 const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const touchDevice = window.matchMedia("(pointer: coarse)").matches;
 const GPS_TEXT = {
-  waiting: touchDevice
-    ? "Waiting for a GPS signal… With Wi-Fi off this can take a minute. Step outside or near a window."
-    : "Waiting for your location… Laptops often need internet for this.",
-  none: touchDevice
-    ? "No GPS signal yet. Try again outside, or use “Move my location” and tap where you are."
-    : "Location unavailable (laptops often need internet for this). Use “Move my location” instead.",
-  denied: isIOS
-    ? "Location is off for OFFGRID. On iPhone: Settings → Privacy & Security → Location Services → Safari Websites → While Using the App, and turn on Precise Location. Then try again."
-    : touchDevice
-      ? "Location is blocked for OFFGRID. Allow Location for Chrome in the phone's Settings, and for this site in Chrome (Site settings → Location). Then try again."
-      : "Location permission was denied. Use “Move my location” instead.",
-  outside: "You seem to be outside the area this map covers (Batangas). Use “Move my location” to set a spot on the map.",
+  waiting: t(touchDevice ? "gps.waiting_touch" : "gps.waiting_desk"),
+  none: t(touchDevice ? "gps.none_touch" : "gps.none_desk"),
+  denied: t(isIOS ? "gps.denied_ios" : touchDevice ? "gps.denied_android" : "gps.denied_desk"),
+  outside: t("gps.outside"),
 };
 function showGpsMsg(text) {
   $("gps-msg").querySelector("span").textContent = text || "";
@@ -699,7 +764,7 @@ function stopLocate() {
   locating = null;
   const btn = $("use-gps");
   btn.classList.remove("busy");
-  iconLabel(btn, "gps", "Use GPS");
+  iconLabel(btn, "gps", t("gps.use"));
   mapApi?.setLocateBusy(false);
 }
 function locateMe() {
@@ -707,7 +772,7 @@ function locateMe() {
   showGpsMsg("");
   const btn = $("use-gps");
   btn.classList.add("busy");
-  iconLabel(btn, "gps", "Locating…");
+  iconLabel(btn, "gps", t("gps.locating"));
   mapApi?.setLocateBusy(true);
   startHeading({ autoStopMs: 60_000 }); // must start inside the tap (iOS asks permission)
   const session = { best: Infinity, gotFix: false, userMoved: false };
@@ -830,12 +895,12 @@ $("legend-toggle").addEventListener("click", () => setLegend($("legend").hidden)
 function renderLegend() {
   const present = new Set(state.locations.map((l) => l.type));
   $("legend").replaceChildren();
-  for (const [type, t] of Object.entries(TYPE_STYLE)) {
+  for (const [type, ts] of Object.entries(TYPE_STYLE)) {
     if (!present.has(type) || !state.types.has(type)) continue;
     const li = document.createElement("li");
     const label = document.createElement("span");
-    label.textContent = t.label;
-    li.append(pinImg(type, t.color, 30), label);
+    label.textContent = ts.label;
+    li.append(pinImg(type, ts.color, 30), label);
     $("legend").append(li);
   }
 }
@@ -850,7 +915,7 @@ function setSaver(on, { save = false, auto = false } = {}) {
   const btn = $("battery-saver");
   btn.setAttribute("aria-pressed", String(on));
   btn.classList.toggle("on", on);
-  iconLabel(btn, "battery", on ? (auto ? "Battery saver (low battery)" : "Battery saver on") : "Battery saver", 15);
+  iconLabel(btn, "battery", t(on ? (auto ? "saver.auto" : "saver.on") : "saver.off"), 15);
   if (save) {
     saver.chosen = true;
     try { localStorage.setItem("bb.saver", on ? "on" : "off"); } catch { /* no storage */ }
@@ -909,27 +974,27 @@ function byId(id) {
 function renderChips() {
   const place = state.selected;
   const pos = state.userPos;
-  let chips;
+  let chips; // keys in lang/<lang>.json
   if (place && pos) {
-    chips = ["How far is it?", "How do I get there?", "Contact number?", "Is it open?"];
+    chips = ["how_far", "get_there", "contact", "open"];
   } else if (place) {
-    chips = ["Contact number?", "Is it open?", "Is this an evacuation center?", "How do I get there?"];
+    chips = ["contact", "open", "is_evac", "get_there"];
   } else if (pos) {
-    chips = ["Nearest evacuation center", "Nearest hospital", "Nearest pharmacy", "What's near me?", "Emergency hotlines"];
+    chips = ["nearest_evac", "nearest_hospital", "nearest_pharmacy", "near_me", "hotlines"];
   } else {
-    chips = ["Emergency hotlines", "What should I pack in a go-bag?", "What does signal no. 3 mean?", "How do I stop bleeding?"];
+    chips = ["hotlines", "gobag", "signal3", "bleeding"];
   }
   const box = $("context-chips");
   box.replaceChildren();
-  for (const text of chips) {
+  for (const key of chips) {
     const b = document.createElement("button");
     b.type = "button";
     b.className = "chip-q";
-    b.textContent = text;
+    b.textContent = t(`chip.${key}`);
     b.addEventListener("click", () => {
       // Questions that need a position start the "set my location" flow first.
-      if (/how do i get there/i.test(text)) { directions.start(); return; }
-      chat.ask(text === "Emergency hotlines" ? "What number do I call for an emergency?" : text);
+      if (key === "get_there") { directions.start(); return; }
+      chat.ask(t(key === "hotlines" ? "chip.hotlines_q" : `chip.${key}`));
     });
     box.append(b);
   }
@@ -942,7 +1007,7 @@ renderChips();
     state.locations = await (await fetch("/api/locations")).json();
   } catch {
     $("map-error").hidden = false;
-    $("map-error").textContent = "Could not load location records from the server.";
+    $("map-error").textContent = t("map.error_locations");
   }
   buildFilters();
   renderList();
@@ -972,7 +1037,7 @@ renderChips();
     hideSplash();
     $("map-loading").classList.add("done");
     $("map-error").hidden = false;
-    $("map-error").textContent = "The offline map failed to load. Location records and the assistant still work.";
+    $("map-error").textContent = t("map.error");
   }
 })();
 

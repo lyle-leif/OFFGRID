@@ -8,6 +8,7 @@
 // Routes steer around roads people reported flooded or blocked (situation reports), unless
 // the user turns that off; a new or expired road report recomputes the route.
 
+import { getLang, t } from "./i18n.js";
 import { icon, iconLabel } from "./ui-icons.js";
 
 const $ = (id) => document.getElementById(id);
@@ -89,7 +90,7 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
       from = pr.idx;
     }
     iconLabel($("route-summary"), r.mode === "walk" ? "walk" : "car",
-      `${r.mode === "walk" ? "Walk" : "Drive"} ${fmtM(r.distance_m)} · about ${r.duration_min} min`);
+      t(r.mode === "walk" ? "route.summary_walk" : "route.summary_drive", { d: fmtM(r.distance_m), min: r.duration_min }));
     const ol = $("route-steps");
     ol.replaceChildren();
     for (const s of r.steps) {
@@ -117,13 +118,10 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
     p.replaceChildren();
     p.classList.toggle("warn", through > 0);
     p.hidden = !avoided && !through;
-    const s = (n) => (n > 1 ? "s" : "");
-    if (avoided) p.append(icon("check", 14), ` Goes around ${avoided} road${s(avoided)} reported flooded or blocked.`);
+    if (avoided) p.append(icon("check", 14), ` ${t("route.around", { n: avoided })}`);
     if (through) {
       if (avoided) p.append(document.createElement("br"));
-      p.append(icon("warning", 14), avoidReports
-        ? ` No way around: this route uses ${through} road${s(through)} reported flooded or blocked. Check before you go.`
-        : ` This route uses ${through} road${s(through)} reported flooded or blocked.`);
+      p.append(icon("warning", 14), ` ${t(avoidReports ? "route.no_way" : "route.uses", { n: through })}`);
     }
   }
 
@@ -139,13 +137,13 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
       return b;
     };
     if (watchId !== null) {
-      p.append(icon("signal", 14), ` ${status || "Following GPS."} `);
-      if (!follow) p.append(btn("Recenter", () => { follow = true; if (getPos()) getMapApi()?.follow(getPos()); renderTracking(); }), " · ");
-      p.append(btn("Stop", stopTracking));
+      p.append(icon("signal", 14), ` ${status || t("route.following")} `);
+      if (!follow) p.append(btn(t("route.recenter"), () => { follow = true; if (getPos()) getMapApi()?.follow(getPos()); renderTracking(); }), " · ");
+      p.append(btn(t("route.stop"), stopTracking));
       return;
     }
-    p.append("Drag the blue dot to update your position. ");
-    if ("geolocation" in navigator && window.isSecureContext) p.append(btn("Track with GPS", startTracking));
+    p.append(`${t("route.drag")} `);
+    if ("geolocation" in navigator && window.isSecureContext) p.append(btn(t("route.track"), startTracking));
   }
 
   function showError(msg) {
@@ -153,7 +151,7 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
     line = null;
     $("route-card").hidden = false;
     $("route-next").hidden = true;
-    $("route-summary").textContent = "No route";
+    $("route-summary").textContent = t("route.none");
     renderReports(null);
     const ol = $("route-steps");
     ol.replaceChildren();
@@ -170,7 +168,7 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
     const seq = ++requestSeq; // only the newest request may update the screen
     lastRequest = Date.now();
     const q = new URLSearchParams({ from_lat: pos.lat, from_lng: pos.lng, to_id: active.placeId, mode,
-      avoid_reports: String(avoidReports) });
+      avoid_reports: String(avoidReports), lang: getLang() });
     try {
       let body;
       try {
@@ -179,13 +177,13 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
         const resp = await fetch(`/api/route?${q}`, { signal: ctrl.signal }).finally(() => clearTimeout(timer));
         body = await resp.json();
         if (seq !== requestSeq) return;
-        if (!resp.ok) throw new Error(typeof body.detail === "string" ? body.detail : "Could not compute a route.");
+        if (!resp.ok) throw new Error(typeof body.detail === "string" ? body.detail : t("route.compute_failed"));
       } catch (netErr) {
         // No hub: route on this phone with the saved road network.
         if (!(netErr instanceof TypeError || netErr.name === "AbortError") || !brain) throw netErr;
         const place = getPlaceById?.(active.placeId);
         if (!place) throw netErr;
-        body = await brain.route(pos.lat, pos.lng, place, mode, avoidReports);
+        body = await brain.route(pos.lat, pos.lng, place, mode, avoidReports, getLang());
         if (seq !== requestSeq) return;
       }
       if (!active || active.placeId !== body.to_id) return; // cleared or changed meanwhile
@@ -196,7 +194,7 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
       if (watchId !== null && lastFix) updateProgress(lastFix);
     } catch (err) {
       if (seq !== requestSeq) return;
-      showError(err instanceof TypeError ? "Cannot reach the OFFGRID hub, and this phone has no saved road data yet." : err.message);
+      showError(err instanceof TypeError ? t("route.no_hub_data") : err.message);
     }
   }
 
@@ -212,10 +210,10 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
     const pr = project(line, fix);
     if (pr.dist > tolerance) {
       offRouteCount += 1;
-      status = `Off route by ${fmtM(pr.dist)}…`;
+      status = t("route.off_by", { d: fmtM(pr.dist) });
       renderTracking();
       if (offRouteCount >= OFF_ROUTE_FIXES) {
-        status = "Off route. Finding a new route…";
+        status = t("route.off");
         renderTracking();
         fetchRoute({ fit: false });
       }
@@ -236,19 +234,19 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
     const banner = $("route-next");
     banner.hidden = false;
     banner.textContent = next
-      ? `Next: ${next.instruction} in ${fmtM(Math.max(0, stepAlong[cur + 1] - pr.along))} · ${fmtM(remaining)} left (~${mins} min)`
-      : `${fmtM(remaining)} left`;
-    status = `Following GPS (±${Math.round(fix.accuracy ?? 0)} m).`;
+      ? t("route.next", { step: next.instruction, d: fmtM(Math.max(0, stepAlong[cur + 1] - pr.along)), left: fmtM(remaining), min: mins })
+      : t("route.left", { left: fmtM(remaining) });
+    status = t("route.following_acc", { m: Math.round(fix.accuracy ?? 0) });
     renderTracking();
     if (Date.now() - lastRequest > REFRESH_MS) fetchRoute({ fit: false });
   }
 
   function arrived() {
-    const name = active?.name ?? "your destination";
+    const name = active?.name ?? t("step.dest_default");
     stopTracking();
     const banner = $("route-next");
     banner.hidden = false;
-    iconLabel(banner, "check", `You have arrived at ${name}.`, 16);
+    iconLabel(banner, "check", t("route.arrived", { name }), 16);
     const items = $("route-steps").children;
     for (const li of items) { li.classList.add("done"); li.classList.remove("current"); }
   }
@@ -276,14 +274,12 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
     if (err.code !== err.PERMISSION_DENIED) {
       // Timeout or no fix yet: keep watching. Phones without Wi-Fi need a while for the
       // satellites, and the signal may come back outdoors.
-      status = lastFix ? "GPS signal lost. Waiting for it to come back…" : "Waiting for a GPS signal… (with Wi-Fi off this can take a minute)";
+      status = t(lastFix ? "route.gps_lost" : "route.gps_wait_wifi");
       renderTracking();
       return;
     }
     stopTracking();
-    $("route-tracking").textContent = /iPhone|iPad|iPod/.test(navigator.userAgent)
-      ? "Location is off for OFFGRID (Settings → Privacy & Security → Location Services → Safari Websites). Drag the blue dot instead."
-      : "Location permission was denied. Drag the blue dot to update your position instead.";
+    $("route-tracking").textContent = t(/iPhone|iPad|iPod/.test(navigator.userAgent) ? "route.denied_ios" : "route.denied");
   }
 
   function startTracking() {
@@ -292,7 +288,7 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
     follow = true;
     bestAccuracy = Infinity;
     lastFix = null;
-    status = "Waiting for a GPS signal…";
+    status = t("route.gps_wait");
     watchId = navigator.geolocation.watchPosition(onFix, onGpsError,
       { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
     renderTracking();
@@ -316,9 +312,9 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
       requestPosition(); // the position callback calls positionChanged()
       $("route-card").hidden = false;
       $("route-next").hidden = true;
-      $("route-summary").textContent = "Set your location";
+      $("route-summary").textContent = t("route.set_pos");
       $("route-steps").replaceChildren();
-      $("route-tracking").textContent = "Click the map where you are now.";
+      $("route-tracking").textContent = t("route.click_map");
       return;
     }
     fetchRoute();

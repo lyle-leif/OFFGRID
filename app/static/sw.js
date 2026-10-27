@@ -13,6 +13,7 @@ const FONT_RANGES = ["0-255", "256-511", "8192-8447"];
 const PRECACHE = [
   "/", "/index.html", "/styles.css", "/manifest.webmanifest",
   "/app.js", "/map.js", "/chat.js", "/directions.js", "/icons.js", "/ui-icons.js", "/reports.js", "/report-kinds.js", "/sheet.js",
+  "/i18n.js", "/lang/en.json", "/lang/tl.json",
   "/offline/search.js", "/offline/intents.js", "/offline/router.js", "/offline/answers.js", "/offline/brain.js", "/offline/reports.js", "/offline/normalize.js",
   "/vendor/maplibre-gl.js", "/vendor/maplibre-gl.css", "/vendor/pmtiles.js",
   "/icons/icon-192.png", "/icons/icon-512.png", "/icons/icon-maskable-512.png", "/icons/apple-touch-icon.png", "/icons/logo.svg",

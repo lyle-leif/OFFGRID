@@ -14,6 +14,8 @@ import math
 from dataclasses import dataclass
 from pathlib import Path
 
+from app.services.i18n import t
+
 FOOT_ONLY = {"footway", "path", "steps", "cycleway", "bridleway", "pedestrian"}
 WALK_KMH = 4.5
 DRIVE_KMH = {
@@ -27,6 +29,8 @@ CLASS_LABEL = {
     "cycleway": "footpath", "bridleway": "footpath", "track": "track", "service": "service road",
     "residential": "local road", "unclassified": "local road", "living_street": "local road",
 }
+CLASS_KEY = {"footpath": "footpath", "track": "track", "service road": "service_road", "local road": "local_road",
+             "road": "road"}  # class label -> lang key, for the step text
 SHORT_M = 50  # unnamed bits shorter than this are folded into the neighbouring step
 BEARING_M = 20  # measure turn bearings over this distance, not just the first tiny segment
 CELL = 0.005  # grid cell size in degrees (~550 m) for snapping
@@ -34,7 +38,15 @@ CELL_M = 500  # a safe lower bound for a cell's size in metres at this latitude
 
 
 class RoutingError(Exception):
-    """Message is safe to show to the user."""
+    """Message is safe to show to the user. Raised with a string key ("rerr.no_road") so it
+    can be shown in the app's language with .text(lang); str(e) is the English text."""
+
+    def __init__(self, key: str):
+        self.key = key
+        super().__init__(t("en", key) if key.startswith("rerr.") else key)
+
+    def text(self, lang: str | None) -> str:
+        return t(lang, self.key) if self.key.startswith("rerr.") else str(self)
 
 
 def meters(a: tuple[float, float], b: tuple[float, float]) -> float:
@@ -67,6 +79,19 @@ def turn_word(delta: float) -> str:
     if a < 150:
         return f"Turn {side}"
     return "Make a U-turn"
+
+
+def turn_key(delta: float) -> str:
+    """The step key for a turn: continue, bear_right, turn_left, uturn..."""
+    a = abs(delta)
+    if a < 25:
+        return "continue"
+    side = "right" if delta > 0 else "left"
+    if a < 60:
+        return f"bear_{side}"
+    if a < 150:
+        return f"turn_{side}"
+    return "uturn"
 
 
 def bearing_along(pts: list[tuple[float, float]], from_end: bool = False) -> float:
@@ -255,7 +280,7 @@ class Router:
             if best is not None and best[0] < ring * CELL_M:
                 break
         if best is None or best[0] > max_m:
-            raise RoutingError("No road found near that point in the saved road data.")
+            raise RoutingError("rerr.no_road")
         d, ei, si, t = best
         cum = self._cumulative(ei)
         along = cum[si] + t * (cum[si + 1] - cum[si])
@@ -312,7 +337,7 @@ class Router:
                     prev[y] = (x, ei, fwd)
                     heapq.heappush(heap, (nd + meters(self.nodes[y], goal_pt), y))
         if best == math.inf:
-            raise RoutingError("No road connection found between these points in the saved road data.")
+            raise RoutingError("rerr.no_connection")
         if best_end is None:
             return [self._partial(s.edge, s.along, g.along)]
 
@@ -326,10 +351,12 @@ class Router:
 
     # ---- public ---------------------------------------------------------
     def route(self, start: tuple[float, float], end: tuple[float, float], mode: str = "walk",
-              dest_name: str = "your destination", avoid: frozenset[int] = frozenset()) -> dict:
-        """`avoid`: edge ids the route must not use (reported flooded or blocked)."""
+              dest_name: str | None = None, avoid: frozenset[int] = frozenset(), lang: str = "en") -> dict:
+        """`avoid`: edge ids the route must not use (reported flooded or blocked). `lang`: the
+        language of the step instructions."""
+        dest_name = dest_name or t(lang, "step.dest_default")
         if mode not in self.adj:
-            raise RoutingError("Mode must be 'walk' or 'drive'.")
+            raise RoutingError("rerr.mode")
         s = self.snap(*start, mode, avoid=avoid)
         g = self.snap(*end, mode, avoid=avoid)
         legs = [leg for leg in self._search(s, g, mode, avoid) if leg.length >= 0.5]
@@ -363,25 +390,25 @@ class Router:
 
         steps, line = [], [start]
         if s.off > 25:
-            steps.append(self._step("Go to the nearest road", s.off, start))
+            steps.append(self._step(t(lang, "step.to_road"), s.off, start))
         prev_out, turns = None, 0
         for gr in groups:
             pts = gr["pts"]
             b_in = bearing_along(pts)
-            road = gr["label"] if gr["named"] else f"the {gr['label']}"
+            road = gr["label"] if gr["named"] else t(lang, "road.unnamed", label=t(lang, f"road.{CLASS_KEY[gr['label']]}"))
             if prev_out is None:
-                text = f"Head {compass(b_in)} on {road}"
+                text = t(lang, "step.head", dir=t(lang, f"dir.{compass(b_in)}"), road=road)
             else:
-                word = turn_word((b_in - prev_out + 540) % 360 - 180)
-                turns += word != "Continue"
-                text = f"{word} on {road}" if word == "Continue" else f"{word} onto {road}"
+                word = turn_key((b_in - prev_out + 540) % 360 - 180)
+                turns += word != "continue"
+                text = t(lang, f"step.{word}", road=road)
             steps.append(self._step(text, gr["len"], pts[0], gr["label"]))
             prev_out = bearing_along(pts, from_end=True)
             line.extend(pts)
         if g.off > 25:
-            steps.append(self._step(f"Leave the road to reach {dest_name}", g.off, g.point))
+            steps.append(self._step(t(lang, "step.leave", dest=dest_name), g.off, g.point))
         line.append(end)
-        steps.append(self._step(f"Arrive at {dest_name}", 0, end))
+        steps.append(self._step(t(lang, "step.arrive", dest=dest_name), 0, end))
 
         road_m = sum(gr["len"] for gr in groups)
         total = road_m + s.off + g.off

@@ -52,6 +52,7 @@ Both are made from the real app, recorded with the internet blocked.
 |---|---|
 | **Offline map** | Street-level map of all of Batangas with 1,758 facilities: evacuation centers, hospitals, clinics, pharmacies, police, fire, rescue, town halls. Light and dark themes. |
 | **Local AI assistant** | Answers from saved emergency guides. The **exact guide text comes first**; then the local AI (Qwen 2.5, 3B, via Ollama) adds a short summary. Code checks every number, phone number and name in that summary against the guide, and drops the summary if anything doesn't match. |
+| **Tagalog or English** | The first time it opens, OFFGRID asks: Tagalog or English. Buttons, messages and the app's own answers (nearest places, directions, report summaries) follow that choice, on the laptop and on the phone with no hub. Change it any time in **Settings** (the gear). Guides and hotlines stay in English, word for word from the official sources. |
 | **Understands typos and Taglish** | "how do i stop bleding", "is it safe to wlak thru flood water", "saan ang pinakamalapit na ospital" all work. Spelling is fixed by code before the search, on the laptop and on the phone. |
 | **Nearest places, by road** | "Nearest hospital?", "Saan may botika?", "How far is it?". Answered from the map data, never invented by the AI. |
 | **Offline directions** | Walking or driving routes with turn-by-turn steps and GPS tracking, computed on the device. Routes **steer around roads people reported as flooded or blocked**. |
@@ -227,9 +228,9 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 4. **Install the certificate:** Settings → **Security** (or Security & privacy) → More security settings → **Encryption & credentials** → **Install a certificate** → **CA certificate** → Install anyway, and choose `offgrid-ca.crt` from Downloads.
    - Android 8–9: Settings → Security & location → Encryption & credentials → **Install from storage**.
    - Android may ask you to set a screen lock first. That is normal.
-5. Back on the setup page, tap **Open https://…:8443/**. The OFFGRID app opens with no security warning.
+5. Back on the setup page, tap **Open https://…:8443/**. The OFFGRID app opens with no security warning and asks **Tagalog or English**; choose one (it can be changed later in Settings).
 6. In Chrome's menu (⋮), tap **Install app** (or **Add to Home screen**).
-7. Wait until the bottom of the app says **"Saved on this phone: works with no hub or internet."** About 46 MB is saved.
+7. Wait until the bottom of the app says **"Saved on this phone: works with no hub or internet."** (in Tagalog: *"Naka-save sa teleponong ito"*). About 46 MB is saved.
 8. From now on, open OFFGRID **from its home-screen icon**.
 
 **Why the certificate?** Phones allow offline copies and GPS only on secure (https) pages. The hub makes its own small certificate authority. It is limited to private network addresses, so it cannot be used to fake real websites. You can remove it later in the same Settings screen.
@@ -244,7 +245,7 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
    2. Settings → General → About → **Certificate Trust Settings** → turn on **OFFGRID Hub**.
 5. Back in Safari, tap **Open https://…:8443/**.
 6. Tap the **Share** button → **Add to Home Screen** → **Add**.
-7. Open OFFGRID **from the new icon** (not from Safari), and wait for **"Saved on this phone"**.
+7. Open OFFGRID **from the new icon** (not from Safari), choose **Tagalog or English**, and wait for **"Saved on this phone"** (*"Naka-save sa teleponong ito"*).
 
 ### F. Check that the phone works without the hub
 
@@ -274,7 +275,8 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 
 ## Using OFFGRID
 
-- **Top bar:** the status pill (*Offline-ready*, *AI warming up*, *AI offline*, or *On this phone* when there is no hub) and the light/dark toggle.
+- **First open:** choose **Tagalog** or **English**. It is asked once per phone (and once more inside an iPhone home-screen app, which keeps its own settings).
+- **Top bar:** the status pill (*Offline-ready*, *AI warming up*, *AI offline*, or *On this phone* when there is no hub), **Settings** (the gear: change the language; the app restarts in it, keeping your position, theme and waiting reports) and the light/dark toggle.
 - **Map buttons:** *Move my location* (tap the map where you are), *Use GPS* (zooms to you), *Report*, *Legend*. The compass appears when the map is rotated; tap it to face north again.
 - **Panel tabs** (a floating card on the laptop, a bottom sheet on phones):
   - **Assistant:** ask anything. Tap a suggestion chip or type. *New topic* clears the follow-up context. *Battery saver* skips the AI.
@@ -307,7 +309,7 @@ The full question bank, with what answers each one, is in [data/suggested_questi
 ```powershell
 .venv\Scripts\python -m pytest -q          # Python and Node parity tests; no Ollama needed (the AI is mocked)
 node tools\e2e_offline.mjs                 # headless Edge: save the copy, stop the hub, check everything still works
-.venv\Scripts\python tools\check_questions.py        # 220-question bank -> docs/question_report.md
+.venv\Scripts\python tools\check_questions.py        # 267-question bank -> docs/question_report.md
 .venv\Scripts\python tools\check_questions.py --ai --sample 40   # also check real AI summaries
 node tools\screenshots.mjs                 # retake the README screenshots (Ollama running)
 ```
@@ -323,6 +325,8 @@ node tools\showreel\build.mjs              # soundtrack -> 3,600 frames -> docs/
 .venv\Scripts\python tools\build_phone_pack.py
 ```
 After changing answer logic, also run `.venv\Scripts\python tools\make_parity_fixtures.py`.
+
+**Interface language.** Every sentence the app shows or writes itself lives in `app/static/lang/en.json` and `tl.json` (flat keys, `{placeholders}`, plurals as `key_one`/`key_other`). The interface, the phone engine and the hub all read these same files, so their wording can't drift; `tests/test_i18n.py` checks both files have the same keys and placeholders and that every key the code uses exists. After changing Tagalog text, run `.venv\Scripts\python tools\make_translation_review.py` to refresh [docs/translation_review.md](docs/translation_review.md), the side-by-side list for a native speaker to check. To add a language: a new `lang/<id>.json` with the same keys, plus an entry in `LANGS` in `app/static/i18n.js` and `app/services/i18n.py`.
 
 **Where things are**
 
@@ -343,12 +347,12 @@ After changing answer logic, also run `.venv\Scripts\python tools\make_parity_fi
 |---|---|
 | `GET /api/health` | Server, Ollama and model status, report count |
 | `GET /api/locations`, `GET /api/locations/{id}` | Facility records |
-| `POST /api/assistant/ask` | `{question, location_id?, previous?, from_pos?, travel_mode?, use_ai?}` → NDJSON stream |
-| `GET /api/route` | `from_lat, from_lng, to_id, mode=walk\|drive, avoid_reports=true` → line, steps, distance, time, avoided reports |
+| `POST /api/assistant/ask` | `{question, location_id?, previous?, from_pos?, travel_mode?, use_ai?, lang?}` → NDJSON stream (`lang`: `en` or `tl`, for the app's own sentences) |
+| `GET /api/route` | `from_lat, from_lng, to_id, mode=walk\|drive, avoid_reports=true, lang=en\|tl` → line, steps, distance, time, avoided reports |
 | `GET /api/hotlines` | Hotline sections |
 | `GET/POST /api/reports`, `POST /api/reports/{id}/vote` | List, post and confirm/dispute situation reports |
 | `POST /api/reports/responder`, `POST /api/reports/{id}/verify`, `DELETE /api/reports/{id}` | Responder sign-in (PIN), verify, remove |
-| `GET /setup`, `GET /offgrid-ca.crt` | Phone setup page and the hub certificate |
+| `GET /setup`, `GET /offgrid-ca.crt` | Phone setup page (`?lang=tl\|en`, otherwise the browser's language) and the hub certificate |
 
 ---
 
@@ -414,4 +418,5 @@ The showreel's voice-over and sound effects were generated with [ElevenLabs](htt
 - **Facility data is community-mapped,** not an official list, and may be out of date.
 - **Routes and reports can be wrong or missing.** Every route says so: OFFGRID only knows about the floods and closures people reported.
 - **AI summaries are most reliable in English.** For Filipino questions the guide text is always shown.
+- **Guides and hotlines are in English only,** also with the Tagalog interface: they are copied from official sources, and translating them is separate work. The Tagalog interface text has not yet been reviewed by a native speaker ([docs/translation_review.md](docs/translation_review.md)).
 - **Content gaps:** the official evacuation-center list (a request to the Batangas PDRRMO is drafted in [docs/pdrrmo_request_letter.md](docs/pdrrmo_request_letter.md)), hotlines for the remaining towns, and the current Taal alert level (only PHIVOLCS can say which level is in force).

@@ -2,9 +2,10 @@
 // and road network from the saved data pack on first use (so app start stays fast on
 // low-end phones), then answers with exact data via localAsk.
 
-import { blockedEdges, localAsk, planRoute, ROUTE_WARNING } from "./answers.js";
+import { format } from "../i18n.js";
+import { blockedEdges, localAsk, planRoute } from "./answers.js";
 import { createNormalizer } from "./normalize.js";
-import { createRouter } from "./router.js";
+import { createRouter, RoutingError } from "./router.js";
 import { createSearch } from "./search.js";
 
 export function createBrain(getLocations, getReports = () => null) {
@@ -55,20 +56,26 @@ export function createBrain(getLocations, getReports = () => null) {
 
   // Same shape as the hub's /api/route response, for the Directions card.
   // avoidReports: steer around roads in this phone's copy of the reports (flooded/blocked).
-  async function route(fromLat, fromLng, place, mode, avoidReports = true) {
+  // lang: the language of the steps and messages ("en" or "tl").
+  async function route(fromLat, fromLng, place, mode, avoidReports = true, lang = "en") {
     const router = await getRouter();
-    if (!router) throw new Error("Directions aren't saved on this phone yet. Connect to the hub once to save them.");
+    if (!router) throw new Error(format(lang, "err.no_road_pack"));
     const blocked = blockedEdges(getReports()?.reports);
     const start = [fromLat, fromLng];
     const end = [place.lat, place.lng];
     let r;
-    if (avoidReports) {
-      r = planRoute(router, start, end, mode, place.name, blocked);
-    } else {
-      r = router.route(start, end, mode, place.name);
-      r = { ...r, avoided_reports: [], through_reports: r.edges.filter((e) => blocked.has(e)).map((e) => blocked.get(e)) };
+    try {
+      if (avoidReports) {
+        r = planRoute(router, start, end, mode, place.name, blocked, lang);
+      } else {
+        r = router.route(start, end, mode, place.name, null, lang);
+        r = { ...r, avoided_reports: [], through_reports: r.edges.filter((e) => blocked.has(e)).map((e) => blocked.get(e)) };
+      }
+    } catch (e) {
+      if (e instanceof RoutingError) throw new Error(e.text(lang));
+      throw e;
     }
-    return { ...r, to_id: place.id, to_name: place.name, warning: ROUTE_WARNING, offline: true };
+    return { ...r, to_id: place.id, to_name: place.name, warning: format(lang, "ans.route_warning"), offline: true };
   }
 
   return { ask, route };

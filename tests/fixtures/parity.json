@@ -948,6 +948,19 @@
     "Turn left onto Galauran Drive",
     "Arrive at X"
    ],
+   "steps_tl": [
+    "Tumungo pa-timog sa Roxas Road",
+    "Dumiretso sa service road",
+    "Kumanan sa daanang pantao",
+    "Kumaliwa sa Tolentino Road",
+    "Dumiretso sa P. Herrera Street",
+    "Kumanan sa C. Tirona Street",
+    "Kumaliwa sa D. Silang Street",
+    "Bahagyang kumanan papunta sa Rizal Avenue",
+    "Dumiretso sa daanang pantao",
+    "Kumaliwa sa Galauran Drive",
+    "Dumating sa X"
+   ],
    "step_m": [
     132,
     60,
@@ -1094,6 +1107,19 @@
     "Turn right onto Rizal Avenue",
     "Continue on Galauran Drive",
     "Arrive at X"
+   ],
+   "steps_tl": [
+    "Tumungo pa-hilaga sa Roxas Road",
+    "Dumiretso sa Roxas Road Extension",
+    "Kumaliwa sa service road",
+    "Kumanan sa Tolentino Road",
+    "Kumaliwa sa National Highway 4",
+    "Bahagyang kumaliwa papunta sa P. Burgos Street",
+    "Kumanan sa C. Tirona Street",
+    "Kumaliwa sa P. Zamora Street",
+    "Kumanan sa Rizal Avenue",
+    "Dumiretso sa Galauran Drive",
+    "Dumating sa X"
    ],
    "step_m": [
     256,
@@ -1249,6 +1275,21 @@
     "Turn left onto the local road",
     "Leave the road to reach X",
     "Arrive at X"
+   ],
+   "steps_tl": [
+    "Tumungo pa-hilaga sa Galauran Drive",
+    "Kumaliwa sa daanang pantao",
+    "Dumiretso sa Rizal Avenue",
+    "Bahagyang kumaliwa papunta sa D. Silang Street",
+    "Kumanan sa C. Tirona Street",
+    "Kumaliwa sa P. Herrera Street",
+    "Dumiretso sa Tolentino Road",
+    "Kumanan sa daanang pantao",
+    "Kumaliwa sa service road",
+    "Kumanan sa Ebora Road",
+    "Kumaliwa sa lokal na kalsada",
+    "Umalis sa kalsada para marating ang X",
+    "Dumating sa X"
    ],
    "step_m": [
     128,
@@ -1411,6 +1452,25 @@
     "Turn left onto Mojica Street",
     "Turn right onto Perez Street",
     "Arrive at X"
+   ],
+   "steps_tl": [
+    "Tumungo pa-silangan sa service road",
+    "Kumanan sa G. A. Solis Street",
+    "Kumaliwa sa E. Mayo Street",
+    "Kumaliwa sa Obispo Obviar Street",
+    "Kumanan sa P. Torres Street",
+    "Dumiretso sa Lipa-Rosario Road",
+    "Kumaliwa sa J. P. Rizal Street",
+    "Kumanan sa Rosario Bypass Road",
+    "Dumiretso sa Rosario-San Juan Road",
+    "Kumaliwa sa kalsada",
+    "Kumaliwa sa Rosario-San Juan Road",
+    "Dumiretso sa General Luna Street",
+    "Kumaliwa sa Kalayaan Street",
+    "Kumanan sa De Villa Street",
+    "Kumaliwa sa Mojica Street",
+    "Kumanan sa Perez Street",
+    "Dumating sa X"
    ],
    "step_m": [
     204,
@@ -1971,6 +2031,17 @@
     "Leave the road to reach X",
     "Arrive at X"
    ],
+   "steps_tl": [
+    "Pumunta sa pinakamalapit na kalsada",
+    "Tumungo pa-hilaga sa J. P. Laurel Street",
+    "Kumanan sa Mulingbayan Street",
+    "Kumaliwa sa A. Oriondo Street",
+    "Kumanan sa F. Alix Street",
+    "Dumiretso sa Looc Road",
+    "Kumaliwa sa lokal na kalsada",
+    "Umalis sa kalsada para marating ang X",
+    "Dumating sa X"
+   ],
    "step_m": [
     30,
     33,
@@ -2064,6 +2135,13 @@
     "Turn right onto the local road",
     "Leave the road to reach X",
     "Arrive at X"
+   ],
+   "steps_tl": [
+    "Tumungo pa-hilaga sa Roxas Road",
+    "Kumanan sa service road",
+    "Kumanan sa lokal na kalsada",
+    "Umalis sa kalsada para marating ang X",
+    "Dumating sa X"
    ],
    "step_m": [
     77,
@@ -4196,6 +4274,2554 @@
      }
     }
    ]
+  },
+  {
+   "body": {
+    "question": "nearest hospital",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "travel_mode": "drive",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Pinakamalapit na mga ospital mula sa iyo:\n1. Batangas Medical Center: 446 m sa kalsada (mga 2 min sa sasakyan)\n2. Philippine Red Cross: 716 m sa kalsada (mga 3 min sa sasakyan)\n3. Batangas Healthcare Hospital Jesus of Nazareth: 2.3 km sa kalsada (mga 5 min sa sasakyan)\n\nPindutin ang isang resulta para makita ito o makakuha ng direksiyon. Maaaring baha o sarado ang mga daan; ang detalye ng mga lugar ay mula sa OpenStreetMap at hindi opisyal na listahan."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-way-508042958",
+       "name": "Batangas Medical Center",
+       "type": "evacuation_center",
+       "distance_m": 446,
+       "duration_min": 2,
+       "by_road": true,
+       "mode": "drive"
+      },
+      {
+       "id": "osm-way-653867138",
+       "name": "Philippine Red Cross",
+       "type": "hospital",
+       "distance_m": 716,
+       "duration_min": 3,
+       "by_road": true,
+       "mode": "drive"
+      },
+      {
+       "id": "osm-way-352486844",
+       "name": "Batangas Healthcare Hospital Jesus of Nazareth",
+       "type": "hospital",
+       "distance_m": 2273,
+       "duration_min": 5,
+       "by_road": true,
+       "mode": "drive"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "pinakamalapit na evacuation center",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Pinakamalapit na mga evacuation center mula sa iyo:\n1. Kumintang Ibaba Covered Court: 351 m sa kalsada (mga 5 min na lakad)\n2. Batangas Medical Center: 420 m sa kalsada (mga 6 min na lakad)\n3. Girl Scouts of the Philippines - Batangas City Council: 642 m sa kalsada (mga 9 min na lakad)\n\nPindutin ang isang resulta para makita ito o makakuha ng direksiyon. Maaaring baha o sarado ang mga daan; ang detalye ng mga lugar ay mula sa OpenStreetMap at hindi opisyal na listahan."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-way-462913743",
+       "name": "Kumintang Ibaba Covered Court",
+       "type": "evacuation_center",
+       "distance_m": 351,
+       "duration_min": 5,
+       "by_road": true,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-508042958",
+       "name": "Batangas Medical Center",
+       "type": "evacuation_center",
+       "distance_m": 420,
+       "duration_min": 6,
+       "by_road": true,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-465152078",
+       "name": "Girl Scouts of the Philippines - Batangas City Council",
+       "type": "evacuation_center",
+       "distance_m": 642,
+       "duration_min": 9,
+       "by_road": true,
+       "mode": "walk"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "nearest hospital",
+    "from_pos": {
+     "lat": 14.07,
+     "lng": 120.633
+    },
+    "travel_mode": "drive",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Pinakamalapit na mga ospital mula sa iyo:\n1. Ospital Ng Nasugbu: 620 m sa kalsada (mga 2 min sa sasakyan)\n2. Apacible Memorial District Hospital: 3.4 km sa kalsada (mga 6 min sa sasakyan)\n3. Tuy Health Center: 13.7 km sa kalsada (mga 22 min sa sasakyan)\n\nPindutin ang isang resulta para makita ito o makakuha ng direksiyon. Maaaring baha o sarado ang mga daan; ang detalye ng mga lugar ay mula sa OpenStreetMap at hindi opisyal na listahan."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-node-9921619318",
+       "name": "Ospital Ng Nasugbu",
+       "type": "hospital",
+       "distance_m": 620,
+       "duration_min": 2,
+       "by_road": true,
+       "mode": "drive"
+      },
+      {
+       "id": "osm-way-458228120",
+       "name": "Apacible Memorial District Hospital",
+       "type": "hospital",
+       "distance_m": 3402,
+       "duration_min": 6,
+       "by_road": true,
+       "mode": "drive"
+      },
+      {
+       "id": "osm-way-865193308",
+       "name": "Tuy Health Center",
+       "type": "hospital",
+       "distance_m": 13703,
+       "duration_min": 22,
+       "by_road": true,
+       "mode": "drive"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "Where's the nearest place to go?",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Pinakamalapit na evacuation center: Kumintang Ibaba Covered Court, 351 m sa kalsada (mga 5 min)\nPinakamalapit na ospital: Philippine Red Cross, 271 m sa kalsada (mga 4 min)\nPinakamalapit na istasyon ng pulis: Batangas City Police Station, 1.9 km sa kalsada (mga 25 min)\n\nPindutin ang isang resulta para makita ito o makakuha ng direksiyon. Maaaring baha o sarado ang mga daan; ang detalye ng mga lugar ay mula sa OpenStreetMap at hindi opisyal na listahan."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-way-462913743",
+       "name": "Kumintang Ibaba Covered Court",
+       "type": "evacuation_center",
+       "distance_m": 351,
+       "duration_min": 5,
+       "by_road": true,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-653867138",
+       "name": "Philippine Red Cross",
+       "type": "hospital",
+       "distance_m": 271,
+       "duration_min": 4,
+       "by_road": true,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-node-1428621064",
+       "name": "Batangas City Police Station",
+       "type": "police",
+       "distance_m": 1907,
+       "duration_min": 25,
+       "by_road": true,
+       "mode": "walk"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "What's near me?",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Sa loob ng 2.0 km mula sa iyo (tuwid na layo):\n- evacuation center (10): pinakamalapit ang Batangas Medical Center, 86 m\n- ospital (6): pinakamalapit ang Philippine Red Cross, 172 m\n- klinika / health center (61): pinakamalapit ang CityLab 2, 103 m\n- istasyon ng bumbero (2): pinakamalapit ang Batangas Filipino Chinese Volunteer Fire Brigade, 1.6 km\n- istasyon ng pulis (3): pinakamalapit ang Batangas City Police Station, 1.5 km\n- botika (43): pinakamalapit ang Green Pharmacy, 65 m\n- munisipyo / city hall (1): pinakamalapit ang Bahay Pamahalaan Lungsod ng Batangas, 1.5 km\n- barangay hall (27): pinakamalapit ang Barangay 6 Hall, 724 m\n- palengke / grocery (10): pinakamalapit ang Pic N' Save, 710 m\n\nMagtanong ng isang uri (hal. \"pinakamalapit na ospital\") para makuha ang layo sa kalsada at direksiyon."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "places",
+     "places": [
+      {
+       "id": "osm-way-508042958",
+       "name": "Batangas Medical Center",
+       "type": "evacuation_center",
+       "distance_m": 86,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-653867138",
+       "name": "Philippine Red Cross",
+       "type": "hospital",
+       "distance_m": 172,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-node-8401415815",
+       "name": "CityLab 2",
+       "type": "health_center",
+       "distance_m": 103,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-813702444",
+       "name": "Batangas Filipino Chinese Volunteer Fire Brigade",
+       "type": "fire_station",
+       "distance_m": 1598,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-node-1428621064",
+       "name": "Batangas City Police Station",
+       "type": "police",
+       "distance_m": 1549,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-node-8692564306",
+       "name": "Green Pharmacy",
+       "type": "pharmacy",
+       "distance_m": 65,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-131893368",
+       "name": "Bahay Pamahalaan Lungsod ng Batangas",
+       "type": "town_hall",
+       "distance_m": 1532,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-468989126",
+       "name": "Barangay 6 Hall",
+       "type": "barangay_hall",
+       "distance_m": 724,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      },
+      {
+       "id": "osm-way-366313802",
+       "name": "Pic N' Save",
+       "type": "market",
+       "distance_m": 710,
+       "duration_min": null,
+       "by_road": false,
+       "mode": "walk"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How far is it?",
+    "location_id": "osm-way-129493352",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Ang Batangas State University ay 2.5 km kung lalakarin (mga 33 min) o 3.2 km kung sasakyan (mga 7 min) mula sa iyo. Tuwid na layo: 2.0 km.\n\nNasa mapa ang ruta para sa paglalakad. Gumagamit ang ruta ng naka-save na datos ng kalsada mula sa OpenStreetMap at umiiwas sa mga daang iniulat na baha o sarado, pero maaaring kulang o mali ang mga ulat. Hindi nito alam ang ibang baha, pagguho ng lupa, pagsasara o sira. Sundin ang opisyal na abiso at huwag kailanman lumusong o magmaneho sa baha."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "status": "route",
+     "route": {
+      "mode": "walk",
+      "distance_m": 2484,
+      "duration_min": 33,
+      "straight_line_m": 2005,
+      "coords": [
+       [
+        121.066,
+        13.7672
+       ],
+       [
+        121.06587,
+        13.767222
+       ],
+       [
+        121.06583,
+        13.767
+       ],
+       [
+        121.065781,
+        13.766699
+       ],
+       [
+        121.065661,
+        13.766043
+       ],
+       [
+        121.065661,
+        13.766043
+       ],
+       [
+        121.065542,
+        13.765518
+       ],
+       [
+        121.065542,
+        13.765518
+       ],
+       [
+        121.065488,
+        13.765533
+       ],
+       [
+        121.065418,
+        13.765549
+       ],
+       [
+        121.065126,
+        13.765601
+       ],
+       [
+        121.065042,
+        13.765572
+       ],
+       [
+        121.064992,
+        13.765263
+       ],
+       [
+        121.064906,
+        13.765276
+       ],
+       [
+        121.064891,
+        13.765279
+       ],
+       [
+        121.064756,
+        13.765291
+       ],
+       [
+        121.064756,
+        13.765291
+       ],
+       [
+        121.06469,
+        13.764927
+       ],
+       [
+        121.064681,
+        13.764871
+       ],
+       [
+        121.064638,
+        13.764605
+       ],
+       [
+        121.064626,
+        13.764525
+       ],
+       [
+        121.064617,
+        13.764469
+       ],
+       [
+        121.064567,
+        13.764187
+       ],
+       [
+        121.064515,
+        13.763909
+       ],
+       [
+        121.064515,
+        13.763909
+       ],
+       [
+        121.064416,
+        13.76353
+       ],
+       [
+        121.064309,
+        13.763144
+       ],
+       [
+        121.064165,
+        13.762647
+       ],
+       [
+        121.064115,
+        13.762448
+       ],
+       [
+        121.06397,
+        13.761998
+       ],
+       [
+        121.063919,
+        13.761849
+       ],
+       [
+        121.063844,
+        13.761635
+       ],
+       [
+        121.063828,
+        13.761592
+       ],
+       [
+        121.063753,
+        13.761364
+       ],
+       [
+        121.063559,
+        13.760799
+       ],
+       [
+        121.063527,
+        13.760709
+       ],
+       [
+        121.063458,
+        13.760506
+       ],
+       [
+        121.063447,
+        13.760474
+       ],
+       [
+        121.063395,
+        13.760324
+       ],
+       [
+        121.063372,
+        13.760259
+       ],
+       [
+        121.063347,
+        13.760188
+       ],
+       [
+        121.063271,
+        13.759977
+       ],
+       [
+        121.063185,
+        13.759722
+       ],
+       [
+        121.063077,
+        13.759368
+       ],
+       [
+        121.063045,
+        13.759187
+       ],
+       [
+        121.063045,
+        13.759187
+       ],
+       [
+        121.061584,
+        13.758964
+       ],
+       [
+        121.06131,
+        13.758924
+       ],
+       [
+        121.060657,
+        13.758832
+       ],
+       [
+        121.059374,
+        13.758623
+       ],
+       [
+        121.059247,
+        13.758604
+       ],
+       [
+        121.058955,
+        13.758565
+       ],
+       [
+        121.058012,
+        13.758417
+       ],
+       [
+        121.057905,
+        13.758402
+       ],
+       [
+        121.057584,
+        13.758347
+       ],
+       [
+        121.056984,
+        13.758232
+       ],
+       [
+        121.056854,
+        13.758215
+       ],
+       [
+        121.056788,
+        13.758221
+       ],
+       [
+        121.056712,
+        13.75824
+       ],
+       [
+        121.05663,
+        13.758281
+       ],
+       [
+        121.05663,
+        13.758281
+       ],
+       [
+        121.056516,
+        13.758123
+       ],
+       [
+        121.056362,
+        13.75789
+       ],
+       [
+        121.056225,
+        13.75768
+       ],
+       [
+        121.05616,
+        13.757569
+       ],
+       [
+        121.056113,
+        13.75747
+       ],
+       [
+        121.056078,
+        13.757402
+       ],
+       [
+        121.056049,
+        13.757312
+       ],
+       [
+        121.056018,
+        13.75715
+       ],
+       [
+        121.055999,
+        13.757
+       ],
+       [
+        121.055993,
+        13.756941
+       ],
+       [
+        121.055988,
+        13.756868
+       ],
+       [
+        121.055985,
+        13.75678
+       ],
+       [
+        121.055988,
+        13.75667
+       ],
+       [
+        121.055988,
+        13.756581
+       ],
+       [
+        121.055997,
+        13.756267
+       ],
+       [
+        121.056,
+        13.756183
+       ],
+       [
+        121.056004,
+        13.756069
+       ],
+       [
+        121.056004,
+        13.756069
+       ],
+       [
+        121.055935,
+        13.756004
+       ],
+       [
+        121.055837,
+        13.755966
+       ],
+       [
+        121.055417,
+        13.755889
+       ],
+       [
+        121.055395,
+        13.755886
+       ],
+       [
+        121.055343,
+        13.755877
+       ],
+       [
+        121.055205,
+        13.755852
+       ],
+       [
+        121.055006,
+        13.755816
+       ],
+       [
+        121.054847,
+        13.755788
+       ],
+       [
+        121.054704,
+        13.755759
+       ],
+       [
+        121.054564,
+        13.755731
+       ],
+       [
+        121.054297,
+        13.755678
+       ],
+       [
+        121.053985,
+        13.755616
+       ],
+       [
+        121.05371,
+        13.755566
+       ],
+       [
+        121.053619,
+        13.755548
+       ],
+       [
+        121.053577,
+        13.755541
+       ],
+       [
+        121.053577,
+        13.755541
+       ],
+       [
+        121.053593,
+        13.755483
+       ],
+       [
+        121.053526,
+        13.75546
+       ],
+       [
+        121.053082,
+        13.755368
+       ],
+       [
+        121.053082,
+        13.75534
+       ],
+       [
+        121.053081,
+        13.75528
+       ],
+       [
+        121.053071,
+        13.755187
+       ],
+       [
+        121.053071,
+        13.755117
+       ],
+       [
+        121.052873,
+        13.755074
+       ],
+       [
+        121.052873,
+        13.755074
+       ],
+       [
+        121.052884,
+        13.754985
+       ],
+       [
+        121.053,
+        13.754494
+       ],
+       [
+        121.05301,
+        13.754452
+       ],
+       [
+        121.053039,
+        13.754341
+       ],
+       [
+        121.053054,
+        13.754278
+       ],
+       [
+        121.053072,
+        13.754185
+       ],
+       [
+        121.053082,
+        13.754137
+       ],
+       [
+        121.053128,
+        13.754146
+       ]
+      ],
+      "steps": [
+       {
+        "instruction": "Tumungo pa-timog sa Roxas Road",
+        "distance_m": 132,
+        "lat": 13.767222,
+        "lng": 121.06587,
+        "road": "Roxas Road"
+       },
+       {
+        "instruction": "Dumiretso sa service road",
+        "distance_m": 60,
+        "lat": 13.766043,
+        "lng": 121.065661,
+        "road": "service road"
+       },
+       {
+        "instruction": "Kumanan sa daanang pantao",
+        "distance_m": 116,
+        "lat": 13.765518,
+        "lng": 121.065542,
+        "road": "footpath"
+       },
+       {
+        "instruction": "Kumaliwa sa Tolentino Road",
+        "distance_m": 155,
+        "lat": 13.765291,
+        "lng": 121.064756,
+        "road": "Tolentino Road"
+       },
+       {
+        "instruction": "Dumiretso sa P. Herrera Street",
+        "distance_m": 546,
+        "lat": 13.763909,
+        "lng": 121.064515,
+        "road": "P. Herrera Street"
+       },
+       {
+        "instruction": "Kumanan sa C. Tirona Street",
+        "distance_m": 704,
+        "lat": 13.759187,
+        "lng": 121.063045,
+        "road": "C. Tirona Street"
+       },
+       {
+        "instruction": "Kumaliwa sa D. Silang Street",
+        "distance_m": 262,
+        "lat": 13.758281,
+        "lng": 121.05663,
+        "road": "D. Silang Street"
+       },
+       {
+        "instruction": "Bahagyang kumanan papunta sa Rizal Avenue",
+        "distance_m": 271,
+        "lat": 13.756069,
+        "lng": 121.056004,
+        "road": "Rizal Avenue"
+       },
+       {
+        "instruction": "Dumiretso sa daanang pantao",
+        "distance_m": 113,
+        "lat": 13.755541,
+        "lng": 121.053577,
+        "road": "footpath"
+       },
+       {
+        "instruction": "Kumaliwa sa Galauran Drive",
+        "distance_m": 106,
+        "lat": 13.755074,
+        "lng": 121.052873,
+        "road": "Galauran Drive"
+       },
+       {
+        "instruction": "Dumating sa Batangas State University",
+        "distance_m": 0,
+        "lat": 13.754146,
+        "lng": 121.053128,
+        "road": null
+       }
+      ],
+      "data_date": "2026-10-09",
+      "edges": [
+       9770,
+       9771,
+       9772,
+       9773,
+       9774,
+       9775,
+       9950,
+       9951,
+       9952,
+       9953,
+       9954,
+       9955,
+       9956,
+       9957,
+       35234,
+       35235,
+       35236,
+       35237,
+       46489,
+       46490,
+       54080,
+       54081,
+       67884,
+       67885,
+       67886,
+       67887,
+       67888,
+       68139,
+       68140,
+       68141,
+       68142,
+       68143,
+       68187,
+       68188,
+       68189,
+       68192,
+       68211,
+       68212,
+       68213,
+       68214,
+       68215,
+       71070,
+       71071,
+       75008,
+       75038,
+       75039,
+       75184,
+       75185,
+       75378,
+       75379,
+       80330,
+       80339,
+       80340,
+       80343,
+       112143,
+       112231,
+       117181,
+       139557,
+       155720,
+       156406,
+       159008,
+       159009,
+       159011,
+       160245,
+       160246,
+       180561,
+       180562
+      ],
+      "avoided_reports": [],
+      "through_reports": [],
+      "to_id": "osm-way-129493352",
+      "to_name": "Batangas State University",
+      "warning": "Gumagamit ang ruta ng naka-save na datos ng kalsada mula sa OpenStreetMap at umiiwas sa mga daang iniulat na baha o sarado, pero maaaring kulang o mali ang mga ulat. Hindi nito alam ang ibang baha, pagguho ng lupa, pagsasara o sira. Sundin ang opisyal na abiso at huwag kailanman lumusong o magmaneho sa baha."
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "Contact number?",
+    "location_id": "osm-way-129493352",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Telepono ng Batangas State University (mula sa OpenStreetMap, maaaring luma na): +63 43 980 0385 ext. 1136.\nSa emergency, tumawag sa 911."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "status": "info",
+     "phone": "+63 43 980 0385 ext. 1136"
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "Is it open?",
+    "location_id": "osm-way-129493352",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Walang naka-save na oras ng pagbubukas para sa Batangas State University. Hindi masasabi ng app kung bukas ito ngayon. Tumawag muna kung may numero, o magtanong sa inyong barangay."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "status": "info"
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How do I get there?",
+    "location_id": "osm-way-129493352",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "travel_mode": "drive",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Ruta ng sasakyan papunta sa Batangas State University: 3.2 km, mga 7 min.\n1. Tumungo pa-hilaga sa Roxas Road (256 m)\n2. Dumiretso sa Roxas Road Extension (39 m)\n3. Kumaliwa sa service road (98 m)\n4. Kumanan sa Tolentino Road (88 m)\n5. Kumaliwa sa National Highway 4 (1333 m)\n6. Bahagyang kumaliwa papunta sa P. Burgos Street (423 m)\n7. Kumanan sa C. Tirona Street (101 m)\n8. Kumaliwa sa P. Zamora Street (223 m)\n9. Kumanan sa Rizal Avenue (524 m)\n10. Dumiretso sa Galauran Drive (116 m)\n11. Dumating sa Batangas State University\n\nGumagamit ang ruta ng naka-save na datos ng kalsada mula sa OpenStreetMap at umiiwas sa mga daang iniulat na baha o sarado, pero maaaring kulang o mali ang mga ulat. Hindi nito alam ang ibang baha, pagguho ng lupa, pagsasara o sira. Sundin ang opisyal na abiso at huwag kailanman lumusong o magmaneho sa baha."
+    },
+    {
+     "type": "done",
+     "status": "route",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "route": {
+      "mode": "drive",
+      "distance_m": 3221,
+      "duration_min": 7,
+      "straight_line_m": 2005,
+      "coords": [
+       [
+        121.066,
+        13.7672
+       ],
+       [
+        121.06587,
+        13.767222
+       ],
+       [
+        121.06593,
+        13.767555
+       ],
+       [
+        121.065996,
+        13.767911
+       ],
+       [
+        121.066,
+        13.767936
+       ],
+       [
+        121.066074,
+        13.768293
+       ],
+       [
+        121.066215,
+        13.769072
+       ],
+       [
+        121.066299,
+        13.769501
+       ],
+       [
+        121.066299,
+        13.769501
+       ],
+       [
+        121.066366,
+        13.769848
+       ],
+       [
+        121.066366,
+        13.769848
+       ],
+       [
+        121.066198,
+        13.76987
+       ],
+       [
+        121.065495,
+        13.770096
+       ],
+       [
+        121.065495,
+        13.770096
+       ],
+       [
+        121.065527,
+        13.770625
+       ],
+       [
+        121.065532,
+        13.77069
+       ],
+       [
+        121.06554,
+        13.770759
+       ],
+       [
+        121.065478,
+        13.770774
+       ],
+       [
+        121.065406,
+        13.77079
+       ],
+       [
+        121.065406,
+        13.77079
+       ],
+       [
+        121.065228,
+        13.77047
+       ],
+       [
+        121.065192,
+        13.770408
+       ],
+       [
+        121.065094,
+        13.770217
+       ],
+       [
+        121.064806,
+        13.769759
+       ],
+       [
+        121.064666,
+        13.769554
+       ],
+       [
+        121.064524,
+        13.769335
+       ],
+       [
+        121.0643,
+        13.768993
+       ],
+       [
+        121.064107,
+        13.768692
+       ],
+       [
+        121.064067,
+        13.768635
+       ],
+       [
+        121.063938,
+        13.768453
+       ],
+       [
+        121.063784,
+        13.768224
+       ],
+       [
+        121.06362,
+        13.767992
+       ],
+       [
+        121.063527,
+        13.767861
+       ],
+       [
+        121.063429,
+        13.767725
+       ],
+       [
+        121.06335,
+        13.767632
+       ],
+       [
+        121.063203,
+        13.767464
+       ],
+       [
+        121.063086,
+        13.767324
+       ],
+       [
+        121.062896,
+        13.767106
+       ],
+       [
+        121.062635,
+        13.766832
+       ],
+       [
+        121.062594,
+        13.76679
+       ],
+       [
+        121.062563,
+        13.766762
+       ],
+       [
+        121.062519,
+        13.766723
+       ],
+       [
+        121.062477,
+        13.766681
+       ],
+       [
+        121.062456,
+        13.766659
+       ],
+       [
+        121.062332,
+        13.766536
+       ],
+       [
+        121.062167,
+        13.76637
+       ],
+       [
+        121.061986,
+        13.766189
+       ],
+       [
+        121.061705,
+        13.765922
+       ],
+       [
+        121.061532,
+        13.765754
+       ],
+       [
+        121.061329,
+        13.765562
+       ],
+       [
+        121.06122,
+        13.765479
+       ],
+       [
+        121.061118,
+        13.765409
+       ],
+       [
+        121.060715,
+        13.765166
+       ],
+       [
+        121.060434,
+        13.765006
+       ],
+       [
+        121.060202,
+        13.76487
+       ],
+       [
+        121.060057,
+        13.764781
+       ],
+       [
+        121.059872,
+        13.764668
+       ],
+       [
+        121.059389,
+        13.764378
+       ],
+       [
+        121.059077,
+        13.764192
+       ],
+       [
+        121.058835,
+        13.764047
+       ],
+       [
+        121.058716,
+        13.763972
+       ],
+       [
+        121.058596,
+        13.763889
+       ],
+       [
+        121.05847,
+        13.763801
+       ],
+       [
+        121.058309,
+        13.763673
+       ],
+       [
+        121.0582,
+        13.76358
+       ],
+       [
+        121.058091,
+        13.763479
+       ],
+       [
+        121.057992,
+        13.763373
+       ],
+       [
+        121.057911,
+        13.763278
+       ],
+       [
+        121.057857,
+        13.76321
+       ],
+       [
+        121.057742,
+        13.763056
+       ],
+       [
+        121.057663,
+        13.762941
+       ],
+       [
+        121.057635,
+        13.762895
+       ],
+       [
+        121.057618,
+        13.762867
+       ],
+       [
+        121.057483,
+        13.762643
+       ],
+       [
+        121.05744,
+        13.762582
+       ],
+       [
+        121.057223,
+        13.762271
+       ],
+       [
+        121.057114,
+        13.762146
+       ],
+       [
+        121.057114,
+        13.762146
+       ],
+       [
+        121.057201,
+        13.761695
+       ],
+       [
+        121.057259,
+        13.761426
+       ],
+       [
+        121.057305,
+        13.761213
+       ],
+       [
+        121.057316,
+        13.761163
+       ],
+       [
+        121.057413,
+        13.760732
+       ],
+       [
+        121.057475,
+        13.760436
+       ],
+       [
+        121.057513,
+        13.760244
+       ],
+       [
+        121.057522,
+        13.760202
+       ],
+       [
+        121.057534,
+        13.760153
+       ],
+       [
+        121.057571,
+        13.759991
+       ],
+       [
+        121.057611,
+        13.759811
+       ],
+       [
+        121.057635,
+        13.759707
+       ],
+       [
+        121.057704,
+        13.759405
+       ],
+       [
+        121.057717,
+        13.759348
+       ],
+       [
+        121.057738,
+        13.759254
+       ],
+       [
+        121.057764,
+        13.759141
+       ],
+       [
+        121.057804,
+        13.758945
+       ],
+       [
+        121.057892,
+        13.758474
+       ],
+       [
+        121.057905,
+        13.758402
+       ],
+       [
+        121.057905,
+        13.758402
+       ],
+       [
+        121.057584,
+        13.758347
+       ],
+       [
+        121.056984,
+        13.758232
+       ],
+       [
+        121.056984,
+        13.758232
+       ],
+       [
+        121.057043,
+        13.757723
+       ],
+       [
+        121.057058,
+        13.757601
+       ],
+       [
+        121.057068,
+        13.757543
+       ],
+       [
+        121.057251,
+        13.75623
+       ],
+       [
+        121.057251,
+        13.75623
+       ],
+       [
+        121.056972,
+        13.756203
+       ],
+       [
+        121.056632,
+        13.756164
+       ],
+       [
+        121.056569,
+        13.756158
+       ],
+       [
+        121.056359,
+        13.756125
+       ],
+       [
+        121.056102,
+        13.756085
+       ],
+       [
+        121.056004,
+        13.756069
+       ],
+       [
+        121.055938,
+        13.756055
+       ],
+       [
+        121.055827,
+        13.756034
+       ],
+       [
+        121.055408,
+        13.755957
+       ],
+       [
+        121.055228,
+        13.755924
+       ],
+       [
+        121.054997,
+        13.755882
+       ],
+       [
+        121.054837,
+        13.755852
+       ],
+       [
+        121.054278,
+        13.755742
+       ],
+       [
+        121.053967,
+        13.755681
+       ],
+       [
+        121.053697,
+        13.755626
+       ],
+       [
+        121.053292,
+        13.755552
+       ],
+       [
+        121.05283,
+        13.755466
+       ],
+       [
+        121.052791,
+        13.755459
+       ],
+       [
+        121.052805,
+        13.755398
+       ],
+       [
+        121.052857,
+        13.755264
+       ],
+       [
+        121.052858,
+        13.755257
+       ],
+       [
+        121.052876,
+        13.755178
+       ],
+       [
+        121.052879,
+        13.755159
+       ],
+       [
+        121.052879,
+        13.755159
+       ],
+       [
+        121.052873,
+        13.755074
+       ],
+       [
+        121.052884,
+        13.754985
+       ],
+       [
+        121.053,
+        13.754494
+       ],
+       [
+        121.05301,
+        13.754452
+       ],
+       [
+        121.053039,
+        13.754341
+       ],
+       [
+        121.053054,
+        13.754278
+       ],
+       [
+        121.053072,
+        13.754185
+       ],
+       [
+        121.053082,
+        13.754137
+       ],
+       [
+        121.053128,
+        13.754146
+       ]
+      ],
+      "steps": [
+       {
+        "instruction": "Tumungo pa-hilaga sa Roxas Road",
+        "distance_m": 256,
+        "lat": 13.767222,
+        "lng": 121.06587,
+        "road": "Roxas Road"
+       },
+       {
+        "instruction": "Dumiretso sa Roxas Road Extension",
+        "distance_m": 39,
+        "lat": 13.769501,
+        "lng": 121.066299,
+        "road": "Roxas Road Extension"
+       },
+       {
+        "instruction": "Kumaliwa sa service road",
+        "distance_m": 98,
+        "lat": 13.769848,
+        "lng": 121.066366,
+        "road": "service road"
+       },
+       {
+        "instruction": "Kumanan sa Tolentino Road",
+        "distance_m": 88,
+        "lat": 13.770096,
+        "lng": 121.065495,
+        "road": "Tolentino Road"
+       },
+       {
+        "instruction": "Kumaliwa sa National Highway 4",
+        "distance_m": 1333,
+        "lat": 13.77079,
+        "lng": 121.065406,
+        "road": "National Highway 4"
+       },
+       {
+        "instruction": "Bahagyang kumaliwa papunta sa P. Burgos Street",
+        "distance_m": 423,
+        "lat": 13.762146,
+        "lng": 121.057114,
+        "road": "P. Burgos Street"
+       },
+       {
+        "instruction": "Kumanan sa C. Tirona Street",
+        "distance_m": 101,
+        "lat": 13.758402,
+        "lng": 121.057905,
+        "road": "C. Tirona Street"
+       },
+       {
+        "instruction": "Kumaliwa sa P. Zamora Street",
+        "distance_m": 223,
+        "lat": 13.758232,
+        "lng": 121.056984,
+        "road": "P. Zamora Street"
+       },
+       {
+        "instruction": "Kumanan sa Rizal Avenue",
+        "distance_m": 524,
+        "lat": 13.75623,
+        "lng": 121.057251,
+        "road": "Rizal Avenue"
+       },
+       {
+        "instruction": "Dumiretso sa Galauran Drive",
+        "distance_m": 116,
+        "lat": 13.755159,
+        "lng": 121.052879,
+        "road": "Galauran Drive"
+       },
+       {
+        "instruction": "Dumating sa Batangas State University",
+        "distance_m": 0,
+        "lat": 13.754146,
+        "lng": 121.053128,
+        "road": null
+       }
+      ],
+      "data_date": "2026-10-09",
+      "edges": [
+       2750,
+       4676,
+       4677,
+       34440,
+       46490,
+       46491,
+       46492,
+       46493,
+       46494,
+       46495,
+       54119,
+       67876,
+       67877,
+       67878,
+       67879,
+       67880,
+       67881,
+       67882,
+       67902,
+       67903,
+       68133,
+       68134,
+       68135,
+       68136,
+       68137,
+       68138,
+       68139,
+       68179,
+       68181,
+       68210,
+       68211,
+       68212,
+       68213,
+       68214,
+       68215,
+       68460,
+       68461,
+       68462,
+       68463,
+       68464,
+       68465,
+       68466,
+       68467,
+       68468,
+       68469,
+       68470,
+       68471,
+       68472,
+       68473,
+       71194,
+       71195,
+       71196,
+       71197,
+       72248,
+       75380,
+       75381,
+       75382,
+       76949,
+       80325,
+       80326,
+       113378,
+       113379,
+       113380,
+       115545,
+       115546,
+       115547,
+       115548,
+       115549,
+       115550,
+       115551,
+       141456,
+       141760,
+       141765,
+       141784,
+       158560,
+       158561,
+       160247,
+       160248
+      ],
+      "avoided_reports": [],
+      "through_reports": [],
+      "to_id": "osm-way-129493352",
+      "to_name": "Batangas State University",
+      "warning": "Gumagamit ang ruta ng naka-save na datos ng kalsada mula sa OpenStreetMap at umiiwas sa mga daang iniulat na baha o sarado, pero maaaring kulang o mali ang mga ulat. Hindi nito alam ang ibang baha, pagguho ng lupa, pagsasara o sira. Sundin ang opisyal na abiso at huwag kailanman lumusong o magmaneho sa baha."
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How do I get there?",
+    "location_id": "osm-way-129493352",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Para makakuha ng direksiyon, itakda ang lokasyon mo gamit ang button na \"Itakda ang lokasyon ko\" sa mapa. Saka magtanong ulit o pindutin ang Direksiyon."
+    },
+    {
+     "type": "done",
+     "status": "needs_input",
+     "sources": [],
+     "location_used": null
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "nearest hospital",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Para masagot iyan, itakda ang lokasyon mo gamit ang button na \"Itakda ang lokasyon ko\" sa mapa, saka magtanong ulit."
+    },
+    {
+     "type": "done",
+     "sources": [],
+     "location_used": null,
+     "status": "needs_input"
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How do I stop bleeding?",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "passages",
+     "passages": [
+      {
+       "doc": "first-aid-basics.md",
+       "chunk_id": "first-aid-basics#bleeding",
+       "doc_title": "Basic First Aid",
+       "title": "Bleeding",
+       "text": "Stop bleeding by pressing firmly and directly on the wound with a clean cloth, gauze or bandage, and keep pressing. Wear gloves or clean your hands first if you can. If blood soaks through, add more cloth on top instead of removing the first layer. Go to a health facility if the wound is deep or large, if the bleeding does not stop, or if it is a puncture wound such as from a nail.",
+       "draft": false,
+       "checked_on": "2026-10-27",
+       "source": "Department of Health",
+       "source_url": "https://doh.gov.ph/wp-content/uploads/2023/08/OMNIBUS-HEALTH-GUIDELINES-FOR-ADOLESCENTS-2022.pdf"
+      },
+      {
+       "doc": "first-aid-basics.md",
+       "chunk_id": "first-aid-basics#cuts-and-wounds",
+       "doc_title": "Basic First Aid",
+       "title": "Cuts and wounds",
+       "text": "Once a small cut stops bleeding, rinse it under clean running water, wash it with soap and water, and cover it with a clean gauze pad or adhesive bandage. See a health worker if the wound is deep or large, keeps bleeding, or has a high risk of infection, such as a puncture from a nail or a wound from floodwater or an animal bite.",
+       "draft": false,
+       "checked_on": "2026-10-27",
+       "source": "Department of Health",
+       "source_url": "https://doh.gov.ph/wp-content/uploads/2023/08/OMNIBUS-HEALTH-GUIDELINES-FOR-ADOLESCENTS-2022.pdf"
+      }
+     ]
+    },
+    {
+     "type": "done",
+     "status": "grounded",
+     "sources": [
+      {
+       "doc": "first-aid-basics.md",
+       "chunk_id": "first-aid-basics#bleeding",
+       "title": "Bleeding",
+       "excerpt": "Stop bleeding by pressing firmly and directly on the wound with a clean cloth, gauze or bandage, and keep pressing. Wear gloves or clean your hands first if you can. If blood soaks through, add more cloth on top instead of removing the first layer. Go to a health facility if..."
+      },
+      {
+       "doc": "first-aid-basics.md",
+       "chunk_id": "first-aid-basics#cuts-and-wounds",
+       "title": "Cuts and wounds",
+       "excerpt": "Once a small cut stops bleeding, rinse it under clean running water, wash it with soap and water, and cover it with a clean gauze pad or adhesive bandage. See a health worker if the wound is deep or large, keeps bleeding, or has a high risk of infection, such as a puncture..."
+      }
+     ],
+     "location_used": null,
+     "summary": "unavailable",
+     "summary_error": "no AI",
+     "timing": {
+      "total_ms": 0
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "What number do I call for an emergency in Batangas City?",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "passages",
+     "passages": [
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#batangas-city-emergency-hotlines",
+       "doc_title": "Emergency Hotlines",
+       "title": "Batangas City emergency hotlines",
+       "text": "Batangas City CDRRMO (disaster and rescue): (043) 702-3902. 24/7 Mayor's Action Center hotline: 0999-222-6626; Mayor's Action Center: (043) 786-1920. BFP Batangas City (fire): (043) 425-7163. PNP Batangas City (police): (043) 702-1974. Batangas Medical Center: (043) 723-0911. Nazareth Hospital: (043) 723-4144. City Health Office: (043) 723-8890. City Social Welfare and Development: (043) 723-2357. Philippine Red Cross (Batangas City listing): 0951-282-0000. VAWC Batangas City: 0956-826-7017. Source: Batangas City Government official website, Emergency Hotlines box.",
+       "draft": false,
+       "checked_on": "2026-10-09",
+       "source": "Batangas City Government",
+       "source_url": "https://www.batangascity.gov.ph/web/cdrrmoprofile"
+      },
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#calaca-city-rescue-hotlines",
+       "doc_title": "Emergency Hotlines",
+       "title": "Calaca City rescue hotlines",
+       "text": "Calaca City Disaster Risk Reduction and Management Office (CDRRMO, 24/7 emergency response): (043) 424-1379, 0967-740-3510, 0929-827-1605.",
+       "draft": false,
+       "checked_on": "2026-10-27",
+       "source": "City of Calaca",
+       "source_url": "https://cityofcalaca.gov.ph/city-disaster-risk-reduction-and-management-office/"
+      }
+     ]
+    },
+    {
+     "type": "done",
+     "status": "grounded",
+     "sources": [
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#batangas-city-emergency-hotlines",
+       "title": "Batangas City emergency hotlines",
+       "excerpt": "Batangas City CDRRMO (disaster and rescue): (043) 702-3902. 24/7 Mayor's Action Center hotline: 0999-222-6626; Mayor's Action Center: (043) 786-1920. BFP Batangas City (fire): (043) 425-7163. PNP Batangas City (police): (043) 702-1974. Batangas Medical Center: (043) 723-0911...."
+      },
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#calaca-city-rescue-hotlines",
+       "title": "Calaca City rescue hotlines",
+       "excerpt": "Calaca City Disaster Risk Reduction and Management Office (CDRRMO, 24/7 emergency response): (043) 424-1379, 0967-740-3510, 0929-827-1605."
+      },
+      {
+       "doc": "hotlines.md",
+       "chunk_id": "hotlines#national-emergency-hotline-911",
+       "title": "National emergency hotline 911",
+       "excerpt": "The number to call in an emergency is 911. For any emergency anywhere in the Philippines (police, fire, medical, rescue), call 911. It is the national emergency hotline, free and open 24 hours. It replaced the PNP Patrol 117 line, and since September 2025 the DILG's unified..."
+      }
+     ],
+     "location_used": null,
+     "summary": "unavailable",
+     "summary_error": "no AI",
+     "timing": {
+      "total_ms": 0
+     }
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "What is the capital of France?",
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Hindi ko ito makita sa naka-save na impormasyong pang-emergency sa device na ito, kaya hindi ko ito masasagot nang maaasahan. Para sa kasalukuyang kalagayan o anumang madalian, sundin ang mga opisyal na abiso at lokal na awtoridad, o tumawag sa 911."
+    },
+    {
+     "type": "done",
+     "status": "uncertain",
+     "sources": [],
+     "location_used": null
+    }
+   ]
+  },
+  {
+   "body": {
+    "question": "How do I get there?",
+    "location_id": "osm-way-129493352",
+    "from_pos": {
+     "lat": 13.7672,
+     "lng": 121.066
+    },
+    "lang": "tl"
+   },
+   "events": [
+    {
+     "type": "token",
+     "text": "Ruta ng paglalakad papunta sa Batangas State University: 2.5 km, mga 33 min.\n1. Tumungo pa-timog sa Roxas Road (132 m)\n2. Dumiretso sa service road (60 m)\n3. Kumanan sa daanang pantao (116 m)\n4. Kumaliwa sa Tolentino Road (155 m)\n5. Dumiretso sa P. Herrera Street (546 m)\n6. Kumanan sa C. Tirona Street (704 m)\n7. Kumaliwa sa D. Silang Street (262 m)\n8. Bahagyang kumanan papunta sa Rizal Avenue (271 m)\n9. Dumiretso sa daanang pantao (113 m)\n10. Kumaliwa sa Galauran Drive (106 m)\n11. Dumating sa Batangas State University\n\nGumagamit ang ruta ng naka-save na datos ng kalsada mula sa OpenStreetMap at umiiwas sa mga daang iniulat na baha o sarado, pero maaaring kulang o mali ang mga ulat. Hindi nito alam ang ibang baha, pagguho ng lupa, pagsasara o sira. Sundin ang opisyal na abiso at huwag kailanman lumusong o magmaneho sa baha."
+    },
+    {
+     "type": "done",
+     "status": "route",
+     "sources": [],
+     "location_used": "osm-way-129493352",
+     "route": {
+      "mode": "walk",
+      "distance_m": 2484,
+      "duration_min": 33,
+      "straight_line_m": 2005,
+      "coords": [
+       [
+        121.066,
+        13.7672
+       ],
+       [
+        121.06587,
+        13.767222
+       ],
+       [
+        121.06583,
+        13.767
+       ],
+       [
+        121.065781,
+        13.766699
+       ],
+       [
+        121.065661,
+        13.766043
+       ],
+       [
+        121.065661,
+        13.766043
+       ],
+       [
+        121.065542,
+        13.765518
+       ],
+       [
+        121.065542,
+        13.765518
+       ],
+       [
+        121.065488,
+        13.765533
+       ],
+       [
+        121.065418,
+        13.765549
+       ],
+       [
+        121.065126,
+        13.765601
+       ],
+       [
+        121.065042,
+        13.765572
+       ],
+       [
+        121.064992,
+        13.765263
+       ],
+       [
+        121.064906,
+        13.765276
+       ],
+       [
+        121.064891,
+        13.765279
+       ],
+       [
+        121.064756,
+        13.765291
+       ],
+       [
+        121.064756,
+        13.765291
+       ],
+       [
+        121.06469,
+        13.764927
+       ],
+       [
+        121.064681,
+        13.764871
+       ],
+       [
+        121.064638,
+        13.764605
+       ],
+       [
+        121.064626,
+        13.764525
+       ],
+       [
+        121.064617,
+        13.764469
+       ],
+       [
+        121.064567,
+        13.764187
+       ],
+       [
+        121.064515,
+        13.763909
+       ],
+       [
+        121.064515,
+        13.763909
+       ],
+       [
+        121.064416,
+        13.76353
+       ],
+       [
+        121.064309,
+        13.763144
+       ],
+       [
+        121.064165,
+        13.762647
+       ],
+       [
+        121.064115,
+        13.762448
+       ],
+       [
+        121.06397,
+        13.761998
+       ],
+       [
+        121.063919,
+        13.761849
+       ],
+       [
+        121.063844,
+        13.761635
+       ],
+       [
+        121.063828,
+        13.761592
+       ],
+       [
+        121.063753,
+        13.761364
+       ],
+       [
+        121.063559,
+        13.760799
+       ],
+       [
+        121.063527,
+        13.760709
+       ],
+       [
+        121.063458,
+        13.760506
+       ],
+       [
+        121.063447,
+        13.760474
+       ],
+       [
+        121.063395,
+        13.760324
+       ],
+       [
+        121.063372,
+        13.760259
+       ],
+       [
+        121.063347,
+        13.760188
+       ],
+       [
+        121.063271,
+        13.759977
+       ],
+       [
+        121.063185,
+        13.759722
+       ],
+       [
+        121.063077,
+        13.759368
+       ],
+       [
+        121.063045,
+        13.759187
+       ],
+       [
+        121.063045,
+        13.759187
+       ],
+       [
+        121.061584,
+        13.758964
+       ],
+       [
+        121.06131,
+        13.758924
+       ],
+       [
+        121.060657,
+        13.758832
+       ],
+       [
+        121.059374,
+        13.758623
+       ],
+       [
+        121.059247,
+        13.758604
+       ],
+       [
+        121.058955,
+        13.758565
+       ],
+       [
+        121.058012,
+        13.758417
+       ],
+       [
+        121.057905,
+        13.758402
+       ],
+       [
+        121.057584,
+        13.758347
+       ],
+       [
+        121.056984,
+        13.758232
+       ],
+       [
+        121.056854,
+        13.758215
+       ],
+       [
+        121.056788,
+        13.758221
+       ],
+       [
+        121.056712,
+        13.75824
+       ],
+       [
+        121.05663,
+        13.758281
+       ],
+       [
+        121.05663,
+        13.758281
+       ],
+       [
+        121.056516,
+        13.758123
+       ],
+       [
+        121.056362,
+        13.75789
+       ],
+       [
+        121.056225,
+        13.75768
+       ],
+       [
+        121.05616,
+        13.757569
+       ],
+       [
+        121.056113,
+        13.75747
+       ],
+       [
+        121.056078,
+        13.757402
+       ],
+       [
+        121.056049,
+        13.757312
+       ],
+       [
+        121.056018,
+        13.75715
+       ],
+       [
+        121.055999,
+        13.757
+       ],
+       [
+        121.055993,
+        13.756941
+       ],
+       [
+        121.055988,
+        13.756868
+       ],
+       [
+        121.055985,
+        13.75678
+       ],
+       [
+        121.055988,
+        13.75667
+       ],
+       [
+        121.055988,
+        13.756581
+       ],
+       [
+        121.055997,
+        13.756267
+       ],
+       [
+        121.056,
+        13.756183
+       ],
+       [
+        121.056004,
+        13.756069
+       ],
+       [
+        121.056004,
+        13.756069
+       ],
+       [
+        121.055935,
+        13.756004
+       ],
+       [
+        121.055837,
+        13.755966
+       ],
+       [
+        121.055417,
+        13.755889
+       ],
+       [
+        121.055395,
+        13.755886
+       ],
+       [
+        121.055343,
+        13.755877
+       ],
+       [
+        121.055205,
+        13.755852
+       ],
+       [
+        121.055006,
+        13.755816
+       ],
+       [
+        121.054847,
+        13.755788
+       ],
+       [
+        121.054704,
+        13.755759
+       ],
+       [
+        121.054564,
+        13.755731
+       ],
+       [
+        121.054297,
+        13.755678
+       ],
+       [
+        121.053985,
+        13.755616
+       ],
+       [
+        121.05371,
+        13.755566
+       ],
+       [
+        121.053619,
+        13.755548
+       ],
+       [
+        121.053577,
+        13.755541
+       ],
+       [
+        121.053577,
+        13.755541
+       ],
+       [
+        121.053593,
+        13.755483
+       ],
+       [
+        121.053526,
+        13.75546
+       ],
+       [
+        121.053082,
+        13.755368
+       ],
+       [
+        121.053082,
+        13.75534
+       ],
+       [
+        121.053081,
+        13.75528
+       ],
+       [
+        121.053071,
+        13.755187
+       ],
+       [
+        121.053071,
+        13.755117
+       ],
+       [
+        121.052873,
+        13.755074
+       ],
+       [
+        121.052873,
+        13.755074
+       ],
+       [
+        121.052884,
+        13.754985
+       ],
+       [
+        121.053,
+        13.754494
+       ],
+       [
+        121.05301,
+        13.754452
+       ],
+       [
+        121.053039,
+        13.754341
+       ],
+       [
+        121.053054,
+        13.754278
+       ],
+       [
+        121.053072,
+        13.754185
+       ],
+       [
+        121.053082,
+        13.754137
+       ],
+       [
+        121.053128,
+        13.754146
+       ]
+      ],
+      "steps": [
+       {
+        "instruction": "Tumungo pa-timog sa Roxas Road",
+        "distance_m": 132,
+        "lat": 13.767222,
+        "lng": 121.06587,
+        "road": "Roxas Road"
+       },
+       {
+        "instruction": "Dumiretso sa service road",
+        "distance_m": 60,
+        "lat": 13.766043,
+        "lng": 121.065661,
+        "road": "service road"
+       },
+       {
+        "instruction": "Kumanan sa daanang pantao",
+        "distance_m": 116,
+        "lat": 13.765518,
+        "lng": 121.065542,
+        "road": "footpath"
+       },
+       {
+        "instruction": "Kumaliwa sa Tolentino Road",
+        "distance_m": 155,
+        "lat": 13.765291,
+        "lng": 121.064756,
+        "road": "Tolentino Road"
+       },
+       {
+        "instruction": "Dumiretso sa P. Herrera Street",
+        "distance_m": 546,
+        "lat": 13.763909,
+        "lng": 121.064515,
+        "road": "P. Herrera Street"
+       },
+       {
+        "instruction": "Kumanan sa C. Tirona Street",
+        "distance_m": 704,
+        "lat": 13.759187,
+        "lng": 121.063045,
+        "road": "C. Tirona Street"
+       },
+       {
+        "instruction": "Kumaliwa sa D. Silang Street",
+        "distance_m": 262,
+        "lat": 13.758281,
+        "lng": 121.05663,
+        "road": "D. Silang Street"
+       },
+       {
+        "instruction": "Bahagyang kumanan papunta sa Rizal Avenue",
+        "distance_m": 271,
+        "lat": 13.756069,
+        "lng": 121.056004,
+        "road": "Rizal Avenue"
+       },
+       {
+        "instruction": "Dumiretso sa daanang pantao",
+        "distance_m": 113,
+        "lat": 13.755541,
+        "lng": 121.053577,
+        "road": "footpath"
+       },
+       {
+        "instruction": "Kumaliwa sa Galauran Drive",
+        "distance_m": 106,
+        "lat": 13.755074,
+        "lng": 121.052873,
+        "road": "Galauran Drive"
+       },
+       {
+        "instruction": "Dumating sa Batangas State University",
+        "distance_m": 0,
+        "lat": 13.754146,
+        "lng": 121.053128,
+        "road": null
+       }
+      ],
+      "data_date": "2026-10-09",
+      "edges": [
+       9770,
+       9771,
+       9772,
+       9773,
+       9774,
+       9775,
+       9950,
+       9951,
+       9952,
+       9953,
+       9954,
+       9955,
+       9956,
+       9957,
+       35234,
+       35235,
+       35236,
+       35237,
+       46489,
+       46490,
+       54080,
+       54081,
+       67884,
+       67885,
+       67886,
+       67887,
+       67888,
+       68139,
+       68140,
+       68141,
+       68142,
+       68143,
+       68187,
+       68188,
+       68189,
+       68192,
+       68211,
+       68212,
+       68213,
+       68214,
+       68215,
+       71070,
+       71071,
+       75008,
+       75038,
+       75039,
+       75184,
+       75185,
+       75378,
+       75379,
+       80330,
+       80339,
+       80340,
+       80343,
+       112143,
+       112231,
+       117181,
+       139557,
+       155720,
+       156406,
+       159008,
+       159009,
+       159011,
+       160245,
+       160246,
+       180561,
+       180562
+      ],
+      "avoided_reports": [],
+      "through_reports": [],
+      "to_id": "osm-way-129493352",
+      "to_name": "Batangas State University",
+      "warning": "Gumagamit ang ruta ng naka-save na datos ng kalsada mula sa OpenStreetMap at umiiwas sa mga daang iniulat na baha o sarado, pero maaaring kulang o mali ang mga ulat. Hindi nito alam ang ibang baha, pagguho ng lupa, pagsasara o sira. Sundin ang opisyal na abiso at huwag kailanman lumusong o magmaneho sa baha."
+     }
+    }
+   ]
   }
  ],
  "normalize": [
@@ -4900,6 +7526,14 @@
    "how to stop bleeding please help"
   ],
   [
+   "Paano patigilin ang pagdurugo?",
+   "paano patigilin ang pagdurugo?"
+  ],
+  [
+   "ano gagawin pag dumudugo ang sugat",
+   "ano gagawin pag dumudugo ang sugat"
+  ],
+  [
    "How do I treat a burn?",
    "how do i treat a burn?"
   ],
@@ -5407,6 +8041,7 @@
      "road_blocked"
     ],
     "text": "1 report on P. Burgos Street:\n- Road flooded: unverified, 25 min old, 1 report.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "1 ulat sa P. Burgos Street:\n- Baha ang daan: hindi pa kumpirmado, 25 min na, 1 ulat.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-flood"
     ],
@@ -5425,6 +8060,7 @@
      "road_blocked"
     ],
     "text": "2 reports within 3 km of you:\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "2 ulat sa loob ng 3 km mula sa iyo:\n- Baha ang daan sa P. Burgos Street: hindi pa kumpirmado, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-flood",
      "r-block"
@@ -5440,6 +8076,7 @@
      "road_blocked"
     ],
     "text": "2 reports in the area:\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "2 ulat sa lugar:\n- Baha ang daan sa P. Burgos Street: hindi pa kumpirmado, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-flood",
      "r-block"
@@ -5455,6 +8092,7 @@
      "road_blocked"
     ],
     "text": "1 report on Rizal Avenue:\n- Road blocked: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "1 ulat sa Rizal Avenue:\n- Sarado ang daan: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-block"
     ],
@@ -5470,6 +8108,7 @@
      "center_open"
     ],
     "text": "1 report near Balimbing Elementary School:\n- Evacuation center full: verified by a responder, 40 min old, 1 report.\n\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "1 ulat malapit sa Balimbing Elementary School:\n- Puno ang evacuation center: beripikado ng responder, 40 min na, 1 ulat.\n\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-center"
     ],
@@ -5485,6 +8124,7 @@
      "road_blocked"
     ],
     "text": "No road reports near Balimbing Elementary School in the last 2 hours. That does not mean the roads are safe.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "Walang ulat tungkol sa kalsada malapit sa Balimbing Elementary School sa nakaraang 2 oras. Hindi ibig sabihin nito na ligtas ang mga daan.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [],
     "location_used": "osm-way-1415839221"
    },
@@ -5500,6 +8140,7 @@
      "power_out"
     ],
     "text": "1 report within 3 km of you:\n- Power out, 140 m from you: unverified, 5 min old, 1 report.\n\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "1 ulat sa loob ng 3 km mula sa iyo:\n- Walang kuryente, 140 m mula sa iyo: hindi pa kumpirmado, 5 min na, 1 ulat.\n\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-power"
     ],
@@ -5517,6 +8158,7 @@
      "water_available"
     ],
     "text": "No drinking water reports within 3 km of you in the last 6 hours.\n\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "Walang ulat tungkol sa inuming tubig sa loob ng 3 km mula sa iyo sa nakaraang 6 oras.\n\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [],
     "location_used": null
    },
@@ -5538,6 +8180,7 @@
      "medical_need"
     ],
     "text": "3 reports within 3 km of you:\n- Power out, 140 m from you: unverified, 5 min old, 1 report.\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "3 ulat sa loob ng 3 km mula sa iyo:\n- Walang kuryente, 140 m mula sa iyo: hindi pa kumpirmado, 5 min na, 1 ulat.\n- Baha ang daan sa P. Burgos Street: hindi pa kumpirmado, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-power",
      "r-flood",
@@ -5563,6 +8206,7 @@
      "medical_need"
     ],
     "text": "No reports within 3 km of you in the last 6 hours. That does not mean the roads are safe.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "Walang ulat sa loob ng 3 km mula sa iyo sa nakaraang 6 oras. Hindi ibig sabihin nito na ligtas ang mga daan.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [],
     "location_used": null
    }

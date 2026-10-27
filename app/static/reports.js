@@ -4,7 +4,8 @@
 // waits in an outbox on this phone and is sent when the hub is back (store-and-forward).
 // The last list from the hub is kept, so the map and the assistant can still show it
 // offline, marked with how long ago it was synced.
-import { CENTER_KINDS, REPORT_KINDS, ROAD_KINDS, TRUST_LABEL, fmtAge } from "./report-kinds.js";
+import { CENTER_KINDS, REPORT_KINDS, ROAD_KINDS, fmtAge, trustLabel } from "./report-kinds.js";
+import { getLang, roadName, t } from "./i18n.js";
 import { reportImg } from "./icons.js";
 import { icon, iconLabel } from "./ui-icons.js";
 
@@ -38,11 +39,13 @@ function meters(a, b) {
   return Math.hypot((a.lng - b.lng) * 111_320 * Math.cos(lat), (a.lat - b.lat) * 110_540);
 }
 
+// The hub words its error messages in the app's language (X-Lang).
 async function fetchJSON(url, opts = {}) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
-    const resp = await fetch(url, { ...opts, signal: ctrl.signal, cache: "no-store" });
+    const headers = { ...opts.headers, "X-Lang": getLang() };
+    const resp = await fetch(url, { ...opts, headers, signal: ctrl.signal, cache: "no-store" });
     let body = null;
     try { body = await resp.json(); } catch { /* empty body */ }
     return { ok: resp.ok, status: resp.status, body };
@@ -114,7 +117,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       if (res.status === 429 || res.status >= 500) return failed;
       outbox = outbox.filter((x) => x.id !== o.id);
       saveOutbox();
-      if (!res.ok) failed.push(`${REPORT_KINDS[o.kind].label}: ${detail(res, "not accepted by the hub")}`);
+      if (!res.ok) failed.push(`${REPORT_KINDS[o.kind].label}: ${detail(res, t("rep.not_accepted"))}`);
     }
     return failed;
   }
@@ -124,7 +127,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
     syncing = (async () => {
       try {
         const failed = outbox.length ? await flush() : [];
-        if (failed.length) message(`Not sent: ${failed.join("; ")}`, true);
+        if (failed.length) message(t("rep.not_sent", { list: failed.join("; ") }), true);
         const res = await fetchJSON("/api/reports");
         if (res.ok && Array.isArray(res.body)) {
           hubUp = true;
@@ -147,10 +150,12 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
   }
 
   // ---- posting ---------------------------------------------------------------
-  function message(text, warn = false) {
+  // `key` names the message, so code can check what is showing without comparing text.
+  function message(text, warn = false, key = null) {
     const el = $("report-msg");
     el.hidden = !text;
     el.textContent = text ?? "";
+    el.dataset.msg = key ?? "";
     el.classList.toggle("warn", warn);
   }
 
@@ -168,9 +173,10 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
     const o = { id: randomId(), kind, lat: loc ? loc.lat : pos.lat, lng: loc ? loc.lng : pos.lng, location_id: loc?.id ?? null, created: Date.now() };
     outbox.push(o);
     saveOutbox();
-    message(hubUp ? "Sending…" : "Saved on this phone. It will be sent when the hub is reachable.");
+    if (hubUp) message(t("rep.sending"), false, "sending");
+    else message(t("rep.saved_outbox"));
     render();
-    sync().then(() => { if (!outbox.some((x) => x.id === o.id) && $("report-msg").textContent === "Sending…") message("Sent. Thank you."); });
+    sync().then(() => { if (!outbox.some((x) => x.id === o.id) && $("report-msg").dataset.msg === "sending") message(t("rep.sent")); });
   }
 
   function choose(kind) {
@@ -181,14 +187,12 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       queue(kind, sel, sel);
       return;
     }
-    const hint = CENTER_KINDS.has(kind) ? "Tap the evacuation center on the map."
-      : ROAD_KINDS.has(kind) ? "Tap the road itself where it is flooded or blocked."
-      : "Tap the map where it is.";
+    const hint = t(CENTER_KINDS.has(kind) ? "rep.hint_center" : ROAD_KINDS.has(kind) ? "rep.hint_road" : "rep.hint_any");
     message(hint);
     pickOnMap(hint, (pos) => {
       if (CENTER_KINDS.has(kind)) {
         const loc = nearestCenter(pos);
-        if (!loc) { message("No evacuation center there. Tap closer to a green evacuation center pin.", true); return; }
+        if (!loc) { message(t("rep.no_center"), true); return; }
         queue(kind, pos, loc);
       } else {
         queue(kind, pos);
@@ -202,7 +206,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
     box.replaceChildren();
     const title = document.createElement("p");
     title.className = "report-kinds-title";
-    title.textContent = "What do you want to report?";
+    title.textContent = t("rep.chooser");
     box.append(title);
     for (const [kind, k] of Object.entries(REPORT_KINDS)) {
       const b = document.createElement("button");
@@ -217,7 +221,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
     const cancel = document.createElement("button");
     cancel.type = "button";
     cancel.className = "link-btn";
-    cancel.textContent = "Cancel";
+    cancel.textContent = t("rep.cancel");
     cancel.addEventListener("click", () => { box.hidden = true; message(null); cancelPick(); });
     box.append(cancel);
     box.hidden = false;
@@ -226,17 +230,17 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
 
   // ---- voting and responders -------------------------------------------------
   async function vote(r, v) {
-    if (!hubUp) { message("Confirming or disputing needs the hub. Try again when connected.", true); return; }
+    if (!hubUp) { message(t("rep.vote_needs_hub"), true); return; }
     try {
       const res = await fetchJSON(`/api/reports/${encodeURIComponent(r.id)}/vote`, {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ device, vote: v }),
       });
-      if (!res.ok) { message(detail(res, "Could not record that."), true); return; }
+      if (!res.ok) { message(detail(res, t("rep.vote_failed")), true); return; }
       votes[r.id] = v;
       store.set(KEYS.votes, votes);
     } catch {
       hubUp = false;
-      message("The hub is not reachable right now.", true);
+      message(t("rep.hub_unreachable"), true);
     }
     sync();
   }
@@ -246,10 +250,10 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       const res = await fetchJSON(`/api/reports/${encodeURIComponent(r.id)}${action === "verify" ? "/verify" : ""}`, {
         method: action === "verify" ? "POST" : "DELETE", headers: { "X-Responder-Pin": pin ?? "" },
       });
-      if (!res.ok) message(detail(res, "Not allowed."), true);
+      if (!res.ok) message(detail(res, t("rep.not_allowed")), true);
       if (res.status === 403) setPin(null);
     } catch {
-      message("The hub is not reachable right now.", true);
+      message(t("rep.hub_unreachable"), true);
     }
     sync();
   }
@@ -257,7 +261,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
   function setPin(value) {
     pin = value;
     try { value ? sessionStorage.setItem("bb.pin", value) : sessionStorage.removeItem("bb.pin"); } catch { /* no storage */ }
-    $("responder-btn").textContent = value ? "Responder mode on (tap to turn off)" : "I'm a responder";
+    $("responder-btn").textContent = t(value ? "reports.responder_on" : "reports.responder");
     render();
   }
 
@@ -273,32 +277,32 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       const res = await fetchJSON("/api/reports/responder", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin: value }),
       });
-      if (!res.ok) { message(detail(res, "Wrong PIN."), true); return; }
+      if (!res.ok) { message(detail(res, t("rep.wrong_pin")), true); return; }
       $("responder-form").hidden = true;
       $("responder-pin").value = "";
-      message("Responder mode on: you can verify or remove reports.");
+      message(t("rep.responder_on_msg"));
       setPin(value);
     } catch {
-      message("Responder mode needs the hub.", true);
+      message(t("rep.responder_needs_hub"), true);
     }
   });
 
   // ---- rendering ---------------------------------------------------------------
   function where(r) {
     if (r.location_name) return r.location_name;
-    if (r.road_name) return `on ${r.road_name}`;
+    if (r.road_name) return t("rep.on_road", { road: roadName(getLang(), r.road_name) });
     const pos = getPos();
     if (pos) {
       const d = meters(pos, r);
-      return d < 1000 ? `${Math.round(d)} m from you` : `${(d / 1000).toFixed(1)} km from you`;
+      return t("rep.from_you", { d: d < 1000 ? `${Math.round(d)} m` : `${(d / 1000).toFixed(1)} km` });
     }
-    return `at ${r.lat.toFixed(4)}, ${r.lng.toFixed(4)}`;
+    return t("rep.at", { lat: r.lat.toFixed(4), lng: r.lng.toFixed(4) });
   }
 
   function trustLine(r) {
-    if (r.pending) return `not sent yet · made ${fmtAge(r.age_min)}`;
-    const parts = [TRUST_LABEL[r.trust], fmtAge(r.age_min), r.reports === 1 ? "1 report" : `${r.reports} reports`];
-    if (r.disputes) parts.push(`${r.disputes} disputed`);
+    if (r.pending) return t("rep.not_sent_yet", { age: fmtAge(r.age_min) });
+    const parts = [trustLabel(r.trust), fmtAge(r.age_min), t("rep.count", { n: r.reports })];
+    if (r.disputes) parts.push(t("rep.disputed", { n: r.disputes }));
     return parts.join(" · ");
   }
 
@@ -319,17 +323,17 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
 
     const syncEl = $("reports-sync");
     syncEl.replaceChildren();
-    if (hubUp) syncEl.append(icon("check", 13), " Connected to the hub");
-    else if (cache.synced_at) syncEl.append(icon("warning", 13), ` No hub. Showing the copy from ${fmtAge(Math.floor((Date.now() - cache.synced_at) / 60000))}.`);
-    else syncEl.append(icon("warning", 13), " No hub. Reports appear when this phone reaches the hub.");
-    if (outbox.length) syncEl.append(document.createElement("br"), `${outbox.length} waiting to send`);
+    if (hubUp) syncEl.append(icon("check", 13), ` ${t("rep.connected")}`);
+    else if (cache.synced_at) syncEl.append(icon("warning", 13), ` ${t("rep.copy_from", { age: fmtAge(Math.floor((Date.now() - cache.synced_at) / 60000)) })}`);
+    else syncEl.append(icon("warning", 13), ` ${t("rep.no_hub_yet")}`);
+    if (outbox.length) syncEl.append(document.createElement("br"), t("rep.waiting", { n: outbox.length }));
 
     const ul = $("report-list");
     ul.replaceChildren();
     if (!list.length) {
       const li = document.createElement("li");
       li.className = "fac-empty";
-      li.textContent = "No reports right now. That does not mean everything is safe.";
+      li.textContent = t("rep.none");
       ul.append(li);
     }
     for (const r of list) {
@@ -355,12 +359,12 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
         const actions = document.createElement("div");
         actions.className = "report-actions";
         actions.append(
-          smallBtn(r.confirms ? `Still true (${r.confirms})` : "Still true", "thumbsUp", () => vote(r, "confirm"), votes[r.id] === "confirm"),
-          smallBtn(r.disputes ? `Not true (${r.disputes})` : "Not true", "thumbsDown", () => vote(r, "dispute"), votes[r.id] === "dispute"),
+          smallBtn(r.confirms ? t("rep.still_true_n", { n: r.confirms }) : t("rep.still_true"), "thumbsUp", () => vote(r, "confirm"), votes[r.id] === "confirm"),
+          smallBtn(r.disputes ? t("rep.not_true_n", { n: r.disputes }) : t("rep.not_true"), "thumbsDown", () => vote(r, "dispute"), votes[r.id] === "dispute"),
         );
         if (pin) {
-          if (r.trust !== "verified") actions.append(smallBtn("Verify", "check", () => responderAction(r, "verify")));
-          actions.append(smallBtn("Remove", "close", () => responderAction(r, "remove")));
+          if (r.trust !== "verified") actions.append(smallBtn(t("rep.verify"), "check", () => responderAction(r, "verify")));
+          actions.append(smallBtn(t("rep.remove"), "close", () => responderAction(r, "remove")));
         }
         li.append(actions);
       }
@@ -382,7 +386,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
 
   // Short lines for a place's card, e.g. "Evacuation center full · unverified · 40 min ago".
   function forPlace(id) {
-    return current().filter((r) => r.location_id === id).map((r) => `${r.label} · ${trustLine(r)}`);
+    return current().filter((r) => r.location_id === id).map((r) => `${REPORT_KINDS[r.kind].label} · ${trustLine(r)}`);
   }
 
   $("report-new").addEventListener("click", openChooser);

@@ -128,7 +128,7 @@ try {
     }
     return page;
   };
-  const setup = (extra = "") => `(() => { localStorage.setItem('bb.theme', 'dark'); localStorage.setItem('bb.saver', 'off');
+  const setup = (extra = "") => `(() => { localStorage.setItem('bb.lang', 'en'); localStorage.setItem('bb.theme', 'dark'); localStorage.setItem('bb.saver', 'off');
     localStorage.setItem('bb.legend', 'closed'); localStorage.setItem('bb.userPos', JSON.stringify(${JSON.stringify(NEAR_BMC)})); ${extra} return true; })()`;
 
   // Phone first: it must save its offline copy (about 46 MB) before the hub goes away.

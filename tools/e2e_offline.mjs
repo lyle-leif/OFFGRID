@@ -109,6 +109,9 @@ try {
   const target = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/new?${encodeURIComponent(APP)}`, { method: "PUT" })).json();
   const page = await connect(target.webSocketDebuggerUrl);
   await page.send("Runtime.enable");
+  // A first visit asks for the language; these checks read the English wording.
+  await waitFor(() => page.evaluate("document.readyState === 'complete' && location.origin !== 'null'"), 30000, "first page");
+  await page.evaluate("localStorage.setItem('bb.lang', 'en'); location.reload(); true");
   console.log(`Edge ${version.Browser}, ${BASE}, profile ${profile}`);
   check("secure context (needed for offline copy and GPS)", await page.evaluate(`window.isSecureContext`));
 
@@ -187,6 +190,16 @@ try {
     return 'TIMEOUT';
   })()`, 60000);
   check("turn-by-turn directions on the phone", /Walk|Drive/.test(route) && !route.startsWith("No route"), route);
+
+  // The same phone with the Tagalog interface: the phone's own answers are in Tagalog too.
+  await page.evaluate("localStorage.setItem('bb.lang', 'tl'); true");
+  await page.send("Page.reload", {});
+  await sleep(2500);
+  await waitFor(() => page.evaluate(`window.__map && window.__map.loaded() ? true : false`), 60000, "map in Tagalog");
+  const tl = await page.evaluate(ASK("nearest hospital"), 120000);
+  check("Tagalog answer on the phone", tl.includes("Pinakamalapit na") && tl.includes("sa kalsada")
+    && (await page.evaluate("document.querySelector('#tab-list .tab-label').textContent")) === "Mga lugar", tl.replace(/\s+/g, " ").slice(0, 110));
+  await page.evaluate("localStorage.setItem('bb.lang', 'en'); true");
 
   // ---- 3. The hub comes back: the waiting report is sent ----
   server = startServer();

@@ -91,7 +91,7 @@ try {
     }
     return page;
   };
-  const setup = (theme, extra = "") => `(() => { localStorage.setItem('bb.theme', '${theme}'); localStorage.setItem('bb.saver', 'off');
+  const setup = (theme, extra = "") => `(() => { localStorage.setItem('bb.lang', 'en'); localStorage.setItem('bb.theme', '${theme}'); localStorage.setItem('bb.saver', 'off');
     localStorage.setItem('bb.legend', 'closed'); localStorage.setItem('bb.userPos', JSON.stringify(${JSON.stringify(NEAR_BMC)})); ${extra} return true; })()`;
 
   // Phone first: it must save its offline copy before the hub goes away.

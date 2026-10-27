@@ -12,6 +12,7 @@ from app.routes import place_answers
 from app.routes.reports import active_public
 from app.routes.directions import compute_route
 from app.services import intents, llm, report_answers
+from app.services.i18n import t
 from app.services.verify import unsupported_facts
 from app.services.retrieval import Hit
 
@@ -19,11 +20,7 @@ router = APIRouter(prefix="/api/assistant")
 PASSAGES_SHOWN = 2  # guide sections shown word-for-word above the AI summary
 log = logging.getLogger("offgrid.assistant")
 
-NOT_COVERED = (
-    "I can't find this in the saved emergency information on this device, so I can't answer it "
-    "reliably. For current conditions or anything urgent, follow official announcements and "
-    "local authorities, or call 911."
-)
+NOT_COVERED = t("en", "ans.not_covered")
 
 SYSTEM_PROMPT = """You are OFFGRID, an offline emergency information assistant.
 Rules:
@@ -41,10 +38,12 @@ def _event(obj: dict) -> bytes:
     return (json.dumps(obj, ensure_ascii=False) + "\n").encode("utf-8")
 
 
-def _location_block(loc: Location) -> str:
+def _location_block(loc: Location, lang: str = "en") -> str:
+    """The place record as "field: value" lines. The AI always gets English; `lang` is for
+    showing it to the person (battery saver, no guide passage)."""
     fields = {
         "name": loc.name,
-        "type": loc.type.replace("_", " "),
+        "type": loc.type.replace("_", " ") if lang == "en" else t(lang, f"plabel.{loc.type}", n=1),
         "address": loc.address,
         "description": loc.description,
         "coordinates": f"{loc.lat:.5f}, {loc.lng:.5f}",
@@ -54,12 +53,10 @@ def _location_block(loc: Location) -> str:
         "source": loc.source,
         "verified_on": loc.verified_on,
         "note": (
-            "SAMPLE record for testing, not a real facility" if loc.is_sample
-            else "Community-mapped record (OpenStreetMap), not an official government list; details may be outdated"
-            if loc.osm_url else None
+            t(lang, "loc.sample_note") if loc.is_sample else t(lang, "loc.osm_note") if loc.osm_url else None
         ),
     }
-    return "\n".join(f"{k}: {v}" for k, v in fields.items() if v)
+    return "\n".join(f"{t(lang, 'loc.' + k)}: {v}" for k, v in fields.items() if v)
 
 
 def build_messages(
@@ -155,46 +152,45 @@ def looks_like_refusal(answer: str, valid_ids: set[str]) -> bool:
 is_direction_question = intents.is_direction_question
 
 
-def report_lines(r: dict) -> list[str]:
+def report_lines(r: dict, lang: str = "en") -> list[str]:
     """What a route did about reported flooded or blocked roads."""
     out = []
     if n := len(r.get("avoided_reports", [])):
-        out.append(f"This route goes around {n} road{'s' if n > 1 else ''} people reported flooded or blocked.")
+        out.append(t(lang, "ans.around", n=n))
     if n := len(r.get("through_reports", [])):
-        out.append(f"Warning: this route uses {n} road{'s' if n > 1 else ''} people reported flooded or blocked. "
-                   "Check before you go.")
+        out.append(t(lang, "ans.through", n=n))
     return out
 
 
-def format_route(r: dict) -> str:
-    how = "Walking" if r["mode"] == "walk" else "Driving"
-    km = r["distance_m"] / 1000
-    lines = [f"{how} route to {r['to_name']}: {km:.1f} km, about {r['duration_min']} min."]
+def format_route(r: dict, lang: str = "en") -> str:
+    head = "ans.route_head_walk" if r["mode"] == "walk" else "ans.route_head_drive"
+    lines = [t(lang, head, name=r["to_name"], km=f"{r['distance_m'] / 1000:.1f}", min=r["duration_min"])]
     for i, step in enumerate(r["steps"], 1):
-        dist = f" ({step['distance_m']} m)" if step["distance_m"] else ""
-        lines.append(f"{i}. {step['instruction']}{dist}")
+        dist = t(lang, "ans.step_dist", m=step["distance_m"]) if step["distance_m"] else ""
+        lines.append(t(lang, "ans.step_line", i=i, step=step["instruction"], dist=dist))
     lines.append("")
-    lines += report_lines(r)
+    lines += report_lines(r, lang)
     lines.append(r["warning"])
     return "\n".join(lines)
 
 
 def directions_stream(body: AskRequest, request: Request, loc: Location | None):
     """Direction questions are answered from the road graph, never by the language model."""
+    lang = body.lang
     if not loc or not body.from_pos:
         missing = []
         if not loc:
-            missing.append("select the place you want to go to (on the map or in the Facilities list)")
+            missing.append(t(lang, "ans.dir_missing_place"))
         if not body.from_pos:
-            missing.append("set your location with the \"Set my location\" button on the map")
-        text = "To get directions, " + " and ".join(missing) + ". Then ask again or press Directions."
+            missing.append(t(lang, "ans.needs_position"))
+        text = t(lang, "ans.dir_wrap", missing=t(lang, "ans.and").join(missing))
         return [_event({"type": "token", "text": text}),
                 _event({"type": "done", "status": "needs_input", "sources": [], "location_used": None})]
     try:
-        r = compute_route(request, body.from_pos.lat, body.from_pos.lng, loc.id, body.travel_mode)
+        r = compute_route(request, body.from_pos.lat, body.from_pos.lng, loc.id, body.travel_mode, lang=lang)
     except HTTPException as e:
         return [_event({"type": "error", "message": e.detail})]
-    return [_event({"type": "token", "text": format_route(r)}),
+    return [_event({"type": "token", "text": format_route(r, lang)}),
             _event({"type": "done", "status": "route", "sources": [], "location_used": loc.id, "route": r})]
 
 
@@ -205,7 +201,7 @@ async def ask(body: AskRequest, request: Request):
     if body.location_id:
         loc = state.locations.get(body.location_id)
         if loc is None:
-            raise HTTPException(404, f"Unknown location_id '{body.location_id}'")
+            raise HTTPException(404, t(body.lang, "rerr.unknown_location", id=body.location_id))
 
     # Fix typos and text-speak first ("neerest hospitl" -> "nearest hospital"); everything
     # below works on the cleaned-up question. The AI still sees what the person typed too.
@@ -242,7 +238,7 @@ async def ask(body: AskRequest, request: Request):
     if kinds:
         place = {"id": loc.id, "name": loc.name, "lat": loc.lat, "lng": loc.lng} if loc else None
         pos = (body.from_pos.lat, body.from_pos.lng) if body.from_pos else None
-        text, done = report_answers.answer(body.question, kinds, active_public(request), place, pos)
+        text, done = report_answers.answer(body.question, kinds, active_public(request), place, pos, body.lang)
         log.info("ask q=%r reports=%s status=%s n=%d", body.question[:80], kinds, done["status"], len(done["reports"]))
         events = [_event({"type": "token", "text": text}), _event({"type": "done", "sources": [], **done})]
 
@@ -266,7 +262,7 @@ async def ask(body: AskRequest, request: Request):
              [(h.chunk.chunk_id, round(h.score, 2), h.matched_terms) for h in hits])
 
     async def gate_stream():
-        yield _event({"type": "token", "text": NOT_COVERED})
+        yield _event({"type": "token", "text": t(body.lang, "ans.not_covered")})
         yield _event({"type": "done", "status": "uncertain", "sources": [], "location_used": None})
 
     async def answer_stream():
@@ -294,7 +290,7 @@ async def ask(body: AskRequest, request: Request):
         if not body.use_ai:
             # Battery saver: no model call at all.
             if not passages:  # location-only question: the saved record is the answer
-                yield _event({"type": "token", "text": _location_block(loc)})
+                yield _event({"type": "token", "text": _location_block(loc, body.lang)})
             log.info("ask answered from guide text only (battery saver)")
             yield _event({**done, "summary": "skipped", "timing": {"total_ms": _ms(t0)}})
             return
@@ -317,7 +313,7 @@ async def ask(body: AskRequest, request: Request):
             return
         except Exception:
             log.exception("unexpected error while streaming")
-            yield _event({"type": "error", "message": "Unexpected server error while generating the answer."})
+            yield _event({"type": "error", "message": t(body.lang, "ans.server_error")})
             return
         timing = {"ai_ms": _ms(t_ai), "total_ms": _ms(t0)}
 

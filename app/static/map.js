@@ -3,24 +3,30 @@
 // out, map pins with an icon per type from zoom 12. Light and dark map styles; our own
 // layers (facilities, situation reports, route, GPS accuracy) are re-added whenever the style changes.
 /* global maplibregl, pmtiles */
+import { t } from "./i18n.js";
 import { loadPinImage, loadReportImage } from "./icons.js";
 import { REPORT_KINDS } from "./report-kinds.js";
 import { icon } from "./ui-icons.js";
 
-export const TYPE_STYLE = {
-  evacuation_center: { color: "#4cae4f", label: "Evacuation center" },
-  hospital: { color: "#e5484d", label: "Hospital" },
-  health_center: { color: "#d6336c", label: "Clinic / health center" },
-  rescue: { color: "#7048e8", label: "Rescue / DRRM" },
-  fire_station: { color: "#f76707", label: "Fire station" },
-  police: { color: "#3b82f6", label: "Police" },
-  pharmacy: { color: "#0ca5a5", label: "Pharmacy" },
-  town_hall: { color: "#475569", label: "Town / city hall" },
-  barangay_hall: { color: "#8b95a1", label: "Barangay hall" },
-  market: { color: "#c08a16", label: "Market / grocery" },
-  drinking_water: { color: "#15aabf", label: "Drinking water" },
-  relief_point: { color: "#f59f00", label: "Relief point" },
+const TYPE_COLOR = {
+  evacuation_center: "#4cae4f",
+  hospital: "#e5484d",
+  health_center: "#d6336c",
+  rescue: "#7048e8",
+  fire_station: "#f76707",
+  police: "#3b82f6",
+  pharmacy: "#0ca5a5",
+  town_hall: "#475569",
+  barangay_hall: "#8b95a1",
+  market: "#c08a16",
+  drinking_water: "#15aabf",
+  relief_point: "#f59f00",
 };
+// { color, label } per facility type; the label is read in the app's language (type.*).
+export const TYPE_STYLE = Object.fromEntries(Object.entries(TYPE_COLOR).map(([type, color]) => [type, {
+  color,
+  get label() { return t(`type.${type}`); },
+}]));
 
 // Types hidden until the user turns them on (many points, less urgent).
 export const DEFAULT_OFF = new Set(["barangay_hall", "market"]);
@@ -105,8 +111,8 @@ class CompassControl {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "offgrid-compass";
-    btn.setAttribute("aria-label", "Compass: tap to face north");
-    btn.title = "Tap to face north (rotate the map with right-drag, Ctrl-drag or two fingers)";
+    btn.setAttribute("aria-label", t("map.compass"));
+    btn.title = t("map.compass_title");
     btn.innerHTML = `
       <svg viewBox="0 0 40 40" width="36" height="36" aria-hidden="true">
         <g class="cmp-dial">
@@ -149,8 +155,8 @@ class LocateControl {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "offgrid-locate";
-    btn.setAttribute("aria-label", "Show my location");
-    btn.title = "Show my location (GPS)";
+    btn.setAttribute("aria-label", t("map.locate"));
+    btn.title = t("map.locate_title");
     btn.append(icon("gps", 18));
     btn.addEventListener("click", () => this._onLocate());
     this._btn = btn;
@@ -185,6 +191,7 @@ export async function createMap(container, { onSelect, onReport, onLoad, onReady
     pitchWithRotate: false,
     touchPitch: false,
     attributionControl: { compact: true },
+    locale: { "NavigationControl.ZoomIn": t("map.zoom_in"), "NavigationControl.ZoomOut": t("map.zoom_out") },
   });
   // Open the app with ?debug to inspect the map from the browser console (window.__map).
   if (new URLSearchParams(window.location.search).has("debug")) window.__map = map;
@@ -458,7 +465,7 @@ export async function createMap(container, { onSelect, onReport, onLoad, onReady
       meCone.hidden = true;
       const dot = document.createElement("div");
       dot.className = "me-marker";
-      dot.title = "Your position (drag to move)";
+      dot.title = t("map.you");
       el.append(meCone, dot);
       me = new maplibregl.Marker({ element: el, draggable: true, rotationAlignment: "map", pitchAlignment: "map" })
         .setLngLat([pos.lng, pos.lat]).addTo(map);

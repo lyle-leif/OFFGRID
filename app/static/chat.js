@@ -1,3 +1,4 @@
+import { getLang, roadName, t } from "./i18n.js";
 import { icon, iconLabel } from "./ui-icons.js";
 
 // Chat UI: streams NDJSON events from /api/assistant/ask and renders answer + sources.
@@ -45,19 +46,16 @@ function renderSources(sources) {
   return wrap;
 }
 
-// The exact guide sections that answer the question, shown before any AI text.
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
 // Under each guide section: which official source it was checked against (and when), or
 // that it is still a draft. Also used by the Hotlines tab.
 export function trustNote(p) {
   const div = el("div", p.draft ? "trust draft" : "trust");
   if (p.draft) {
-    div.append(icon("warning", 13), " Draft, not yet checked against official sources");
+    div.append(icon("warning", 13), ` ${t("trust.draft")}`);
     return div;
   }
   const d = /^(\d{4})-(\d{2})/.exec(p.checked_on || "");
-  div.append(icon("check", 13), " Checked against ");
+  div.append(icon("check", 13), ` ${t("trust.checked")} `);
   if (p.source_url) {
     const a = el("a", null, p.source);
     a.href = p.source_url;
@@ -67,10 +65,11 @@ export function trustNote(p) {
   } else {
     div.append(p.source);
   }
-  if (d) div.append(` · ${MONTHS[Number(d[2]) - 1]} ${d[1]}`);
+  if (d) div.append(` · ${t(`month.${Number(d[2])}`)} ${d[1]}`);
   return div;
 }
 
+// The exact guide sections that answer the question, shown before any AI text.
 function renderPassages(passages) {
   const wrap = el("div", "passages");
   for (const p of passages) {
@@ -97,13 +96,14 @@ export function createChat({
       const icon = placeIcon?.(p.type);
       const info = el("div", "pr-info");
       info.append(el("div", "pr-name", p.name));
-      const how = p.mode === "drive" ? "drive" : "walk";
-      const dist = p.distance_m < 1000 ? `${p.distance_m} m` : `${(p.distance_m / 1000).toFixed(1)} km`;
-      info.append(el("div", "pr-meta", p.by_road ? `${dist} · ~${p.duration_min} min ${how}` : `${dist} straight line`));
-      const show = el("button", "btn secondary pr-btn", "Show");
+      const d = p.distance_m < 1000 ? `${p.distance_m} m` : `${(p.distance_m / 1000).toFixed(1)} km`;
+      info.append(el("div", "pr-meta", p.by_road
+        ? t(p.mode === "drive" ? "pr.by_road_drive" : "pr.by_road_walk", { d, min: p.duration_min })
+        : t("pr.straight", { d })));
+      const show = el("button", "btn secondary pr-btn", t("btn.show"));
       show.type = "button";
       show.addEventListener("click", () => onShowPlace?.(p.id));
-      const go = el("button", "btn pr-btn", "Route");
+      const go = el("button", "btn pr-btn", t("btn.route"));
       go.type = "button";
       go.addEventListener("click", () => onRoutePlace?.(p.id));
       if (icon) card.append(icon);
@@ -119,9 +119,11 @@ export function createChat({
       const card = el("div", "place-result report-result");
       const icon = reportIcon?.(r.kind);
       const info = el("div", "pr-info");
-      info.append(el("div", "pr-name", r.road_name ? `${r.label} · ${r.road_name}` : r.location_name ? `${r.label} · ${r.location_name}` : r.label));
-      info.append(el("div", "pr-meta", `${r.trust} · ${r.reports} report${r.reports > 1 ? "s" : ""}`));
-      const show = el("button", "btn secondary pr-btn", "Show");
+      const kind = t(`kind.${r.kind}`);
+      const where = r.road_name ? roadName(getLang(), r.road_name) : r.location_name;
+      info.append(el("div", "pr-name", where ? `${kind} · ${where}` : kind));
+      info.append(el("div", "pr-meta", t("pr.reports", { trust: t(`trustlabel.${r.trust}`), n: r.reports })));
+      const show = el("button", "btn secondary pr-btn", t("btn.show"));
       show.type = "button";
       show.addEventListener("click", () => onShowReport?.(r));
       if (icon) card.append(icon);
@@ -145,7 +147,7 @@ export function createChat({
     send.disabled = v;
     input.disabled = v;
     send.classList.toggle("busy", v);
-    send.setAttribute("aria-label", v ? "Answering" : "Ask");
+    send.setAttribute("aria-label", t(v ? "chat.answering" : "chat.send"));
   }
 
   async function ask(question) {
@@ -156,7 +158,7 @@ export function createChat({
     messages.append(user);
 
     const bot = el("div", "msg bot");
-    const label = el("span", "label", loc ? `About: ${loc.name}` : "Assistant");
+    const label = el("span", "label", loc ? t("chat.about", { name: loc.name }) : t("chat.label"));
     const body = el("div", "typing");
     bot.append(label, body);
     messages.append(bot);
@@ -178,33 +180,31 @@ export function createChat({
       };
       switch (ev.summary) {
         case "verified":
-          iconLabel(summaryHead, "sparkle", "AI summary · checked against the guide", 13);
+          iconLabel(summaryHead, "sparkle", t("sum.verified"), 13);
           summaryHead.classList.add("ok");
           break;
         case "dropped":
           summaryHead?.remove();
           body.replaceWith(note("warning",
-            passageText
-              ? `AI summary hidden: it mentioned details not in the guide (${(ev.unsupported ?? []).join(", ")}). The guide text above is the answer.`
-              : `The AI answer was hidden because it mentioned details not in the saved information (${(ev.unsupported ?? []).join(", ")}).`,
+            t(passageText ? "sum.dropped_passages" : "sum.dropped", { list: (ev.unsupported ?? []).join(", ") }),
             "warn"));
           text = "";
           break;
         case "skipped":
           summaryHead?.remove();
-          if (passageText) body.replaceWith(note("battery", "Battery saver is on: showing the guide text only (no AI)."));
+          if (passageText) body.replaceWith(note("battery", t("sum.skipped")));
           break;
         case "unavailable":
           summaryHead?.remove();
-          body.replaceWith(note("warning", "The AI isn't available right now. The guide text above is the answer."));
+          body.replaceWith(note("warning", t("sum.unavailable")));
           break;
         case "refused":
           summaryHead?.remove();
-          body.replaceWith(note("warning", "The closest guide section is shown above, but it may not answer this question."));
+          body.replaceWith(note("warning", t("sum.refused")));
           break;
         case "offline":
           summaryHead?.remove();
-          if (passageText) body.replaceWith(note("panel", "Answered on this phone (no hub): guide text only. The AI summary needs the hub."));
+          if (passageText) body.replaceWith(note("panel", t("sum.offline")));
           break;
         default:
           break;
@@ -215,11 +215,11 @@ export function createChat({
     function handle(ev) {
       if (ev.type === "passages") {
         // Guide text first: exact, instant, and it doesn't depend on the AI.
-        label.textContent = loc ? `About: ${loc.name} · from the guide` : "From the guide";
+        label.textContent = loc ? t("label.about_guide", { name: loc.name }) : t("label.guide");
         passageText = ev.passages.map((x) => x.text).join("\n\n");
         bot.insertBefore(renderPassages(ev.passages), body);
         summaryHead = el("div", "summary-head");
-        iconLabel(summaryHead, "sparkle", "AI summary · checking against the guide…", 13);
+        iconLabel(summaryHead, "sparkle", t("sum.checking"), 13);
         bot.insertBefore(summaryHead, body);
         body.classList.add("summary-body");
         scroll();
@@ -233,21 +233,21 @@ export function createChat({
         renderAnswer(body, text, new Set((ev.sources ?? []).map((s) => s.chunk_id)));
         applySummaryState(ev);
         if (ev.status === "route") {
-          label.textContent = "From saved road data";
+          label.textContent = t("label.road");
           bot.classList.add("route");
           onRoute?.(ev.route);
         } else if (ev.status === "places") {
-          label.textContent = "From saved map data";
+          label.textContent = t("label.map");
           bot.classList.add("route");
           if (ev.places?.length) bot.append(renderPlaces(ev.places));
         } else if (ev.status === "reports") {
-          label.textContent = offline ? "From reports saved on this phone" : "From local reports";
+          label.textContent = t(offline ? "label.reports_phone" : "label.reports");
           bot.classList.add("uncertain");
           if (ev.reports?.length) bot.append(renderReports(ev.reports));
         } else if (ev.status === "info") {
-          label.textContent = loc ? `About: ${loc.name} (saved data)` : "Saved data";
+          label.textContent = loc ? t("label.about_saved", { name: loc.name }) : t("label.saved");
           if (ev.phone) {
-            const line = el("div", "call-911", "Call: ");
+            const line = el("div", "call-911", `${t("label.call")} `);
             ev.phone.split(/;\s*/).forEach((num, i) => {
               if (i) line.append(", ");
               const a = el("a", null, num);
@@ -257,11 +257,11 @@ export function createChat({
             bot.append(line);
           }
         } else if (ev.status === "needs_input") {
-          label.textContent = "Need a bit more";
+          label.textContent = t("label.need_more");
         }
         if (ev.status === "uncertain") {
           bot.classList.add("uncertain");
-          label.textContent = "Not in saved information";
+          label.textContent = t("label.not_saved");
         }
         if (ev.status === "grounded") {
           const kept = ev.summary === "verified" ? text : passageText || text;
@@ -269,7 +269,7 @@ export function createChat({
         }
         if (ev.sources?.some((s) => s.doc === "hotlines.md")) {
           // Small models don't reliably lead with 911, so the app adds it itself.
-          const line = el("div", "call-911", "Emergency anywhere in the Philippines: ");
+          const line = el("div", "call-911", `${t("label.911")} `);
           const a = el("a", null, "911");
           a.href = "tel:911";
           line.append(a);
@@ -277,7 +277,7 @@ export function createChat({
         }
         if (ev.sources?.length) bot.append(renderSources(ev.sources));
         else if (ev.status === "grounded" && ev.location_used) {
-          bot.append(el("div", "sources", "Based on the saved location record only."));
+          bot.append(el("div", "sources", t("label.record_only")));
         }
         return true;
       } else if (ev.type === "error") {
@@ -293,6 +293,7 @@ export function createChat({
       from_pos: getPosition?.() ?? null,
       travel_mode: getMode?.() ?? "walk",
       use_ai: getUseAi?.() ?? true,
+      lang: getLang(),
     };
     try {
       let resp = null;
@@ -319,7 +320,7 @@ export function createChat({
         onHubState?.(true);
         if (!resp.ok) {
           const detail = await resp.json().catch(() => ({}));
-          const msg = typeof detail.detail === "string" ? detail.detail : "The request was not accepted. Check your question and try again.";
+          const msg = typeof detail.detail === "string" ? detail.detail : t("err.not_accepted");
           throw new Error(msg);
         }
         const reader = resp.body.getReader();
@@ -338,16 +339,14 @@ export function createChat({
           }
         }
       }
-      if (!finished) throw new Error("The answer was cut off. Please try again.");
+      if (!finished) throw new Error(t("err.cut_off"));
     } catch (err) {
       body.classList.remove("typing");
       bot.classList.add("error");
-      label.textContent = "Something went wrong";
-      const msg = err instanceof TypeError || err.name === "AbortError"
-        ? "Cannot reach the OFFGRID hub, and this phone has no saved copy yet. Connect to the hub's Wi-Fi once to save it."
-        : err.message;
+      label.textContent = t("err.label");
+      const msg = err instanceof TypeError || err.name === "AbortError" ? t("err.no_hub_copy") : err.message;
       body.textContent = text ? `${text}\n\n${msg}` : msg;
-      const retry = el("button", "btn secondary retry", "Try again");
+      const retry = el("button", "btn secondary retry", t("err.retry"));
       retry.type = "button";
       retry.addEventListener("click", () => { bot.remove(); user.remove(); ask(question); });
       bot.append(retry);
@@ -380,7 +379,7 @@ export function createChat({
 
   function reset() {
     setLastTurn(null);
-    messages.append(el("div", "topic-break", "New topic"));
+    messages.append(el("div", "topic-break", t("chat.new_topic")));
     scroll();
   }
 

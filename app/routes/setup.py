@@ -3,6 +3,9 @@
 Served over plain http on the hub's setup port (8080), because a phone can't open the
 secure address until it trusts the hub. From other devices, that port serves only this page
 and the certificate; everything else redirects here (see main.py).
+
+In Tagalog or English (setup.* in app/static/lang/<lang>.json): ?lang=tl|en, else the
+browser's language. The texts are trusted HTML from those files; values are escaped here.
 """
 
 import base64
@@ -15,11 +18,22 @@ from pathlib import Path
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, Response
 
+from app.services.i18n import LANGS, t
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 CA_CRT = ROOT / "certs" / "offgrid-ca.crt"
 HTTPS_PORT = int(os.getenv("BB_HTTPS_PORT", "8443"))
 
 router = APIRouter()
+LANG_NAMES = {"tl": ("Tagalog", "fil"), "en": ("English", "en")}
+
+
+def page_lang(request: Request) -> str:
+    asked = request.query_params.get("lang")
+    if asked in LANGS:
+        return asked
+    accept = (request.headers.get("accept-language") or "").lower()
+    return "tl" if re.search(r"(^|[\s,])(fil|tl)\b", accept) else "en"
 
 
 def ca_fingerprint() -> str | None:
@@ -36,7 +50,7 @@ def ca_fingerprint() -> str | None:
 @router.get("/offgrid-ca.crt")
 def ca_certificate():
     if not CA_CRT.exists():
-        return Response("The hub isn't set up yet. Run start_hub.bat on the laptop.", status_code=404)
+        return Response(t("en", "setup.cert_missing"), status_code=404)
     return Response(CA_CRT.read_bytes(), media_type="application/x-x509-ca-cert",
                     headers={"Content-Disposition": 'attachment; filename="offgrid-ca.crt"'})
 
@@ -45,38 +59,34 @@ def ca_certificate():
 def setup_page(request: Request):
     host = (request.headers.get("host") or request.url.hostname or "").split(":")[0]
     app_url = f"https://{host}:{HTTPS_PORT}/"
+    lang = page_lang(request)
     fp = ca_fingerprint()
     if fp is None:
-        body = "<p class='warn'>The hub isn't set up yet. On the laptop, run <b>start_hub.bat</b>, then reload this page.</p>"
+        body = f"<p class='warn'>{t(lang, 'setup.not_ready')}</p>"
     else:
         short = fp.replace(":", "")[:16]
         body = f"""
 <ol class="steps">
-  <li><b>Save the hub's certificate</b><br>
-    <a class="btn" href="/offgrid-ca.crt" download>Download certificate</a>
-    <p class="small">Compare this code with the one on the hub laptop's screen. They must match:<br>
+  <li><b>{t(lang, "setup.s1")}</b><br>
+    <a class="btn" href="/offgrid-ca.crt" download>{t(lang, "setup.download")}</a>
+    <p class="small">{t(lang, "setup.compare")}<br>
     <code>{html.escape(short[:4])} {html.escape(short[4:8])} {html.escape(short[8:12])} {html.escape(short[12:16])}…</code></p></li>
-  <li><b>Install it (Android)</b><br>
-    Open <b>Settings → Security</b> (or <b>Security &amp; privacy</b>) → <b>More security settings</b> →
-    <b>Encryption &amp; credentials</b> → <b>Install a certificate</b> → <b>CA certificate</b> →
-    <b>Install anyway</b>, and choose <b>offgrid-ca.crt</b> from Downloads.
-    <p class="small">On Android 8–9: Settings → Security &amp; location → Encryption &amp; credentials →
-    Install from storage. Android may ask you to set a screen lock first; that's normal.</p>
-    <p class="small"><b>iPhone (Safari)</b>, two steps, both needed:<br>
-    1. Settings → <b>Profile Downloaded</b> (or General → VPN &amp; Device Management) → <b>Install</b>.<br>
-    2. Settings → General → About → <b>Certificate Trust Settings</b> → turn on <b>OFFGRID Hub</b>.</p></li>
-  <li><b>Open OFFGRID</b><br>
-    <a class="btn" href="{html.escape(app_url)}">Open {html.escape(app_url)}</a>
-    <p class="small"><b>Android (Chrome):</b> menu (⋮) → <b>Install app</b> or <b>Add to Home screen</b>.<br>
-    <b>iPhone (Safari):</b> Share button → <b>Add to Home Screen</b> → Add, then open OFFGRID <b>from the new icon</b>.</p>
-    <p class="small">Keep it open until it says <b>“Saved on this phone”</b> (about 46 MB, a minute or two on hub Wi-Fi).
-    After that OFFGRID works on this phone with no hub and no internet.</p></li>
+  <li><b>{t(lang, "setup.s2")}</b><br>
+    {t(lang, "setup.android")}
+    <p class="small">{t(lang, "setup.android8")}</p>
+    <p class="small">{t(lang, "setup.iphone")}</p></li>
+  <li><b>{t(lang, "setup.s3")}</b><br>
+    <a class="btn" href="{html.escape(app_url)}">{t(lang, "setup.open", url=html.escape(app_url))}</a>
+    <p class="small">{t(lang, "setup.install")}</p>
+    <p class="small">{t(lang, "setup.keep_open")}</p></li>
 </ol>
-<p class="small">This certificate only works for private network addresses (like 192.168.x.x),
-so it can't be used to fake real websites. You can remove it any time in the same Settings screen.</p>"""
+<p class="small">{t(lang, "setup.cert_note")}</p>"""
+    switch = " · ".join(
+        f"<b>{name}</b>" if code == lang else f'<a href="/setup?lang={code}" hreflang="{tag}">{name}</a>'
+        for code, (name, tag) in LANG_NAMES.items())
     return f"""<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OFFGRID setup</title>
+<html lang="{LANG_NAMES[lang][1]}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{t(lang, "setup.title")}</title>
 <style>
   body {{ font-family: system-ui, sans-serif; margin: 0; padding: 20px 16px 40px; background: #0b1220; color: #e2e8f0; line-height: 1.5; }}
   main {{ max-width: 560px; margin: 0 auto; }}
@@ -86,10 +96,11 @@ so it can't be used to fake real websites. You can remove it any time in the sam
           color: #fff; text-decoration: none; font-weight: 600; word-break: break-all; }}
   .small {{ font-size: 13.5px; color: #94a3b8; margin: 6px 0 0; }} code {{ font-size: 16px; color: #fff; letter-spacing: .05em; }}
   .warn {{ color: #ffb3b3; }}
+  .langs {{ margin: 0 0 14px; font-size: 14px; color: #94a3b8; }} .langs a {{ color: #e2e8f0; }}
 </style></head>
 <body><main>
-<h1>Set up OFFGRID on this phone</h1>
-<p class="lead">One time only, while you're on the hub's Wi-Fi. Then OFFGRID keeps working even when the hub
-and the internet are gone.</p>
+<p class="langs">{switch}</p>
+<h1>{t(lang, "setup.h1")}</h1>
+<p class="lead">{t(lang, "setup.lead")}</p>
 {body}
 </main></body></html>"""
