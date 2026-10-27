@@ -9,7 +9,7 @@ An offline emergency map and AI assistant for all of Batangas, Philippines.</p>
 OFFGRID keeps working when the power and the internet are gone. A laptop runs a small AI model **locally** (no cloud) and acts as a **hub** for the neighborhood. Phones connect to it over local Wi-Fi once, save a full offline copy, and from then on keep working **on their own**, even when the hub is switched off.
 
 > **Information aid only.** OFFGRID does not replace official alerts, emergency services or local authorities. In an emergency, call **911**.
-> Facilities come from OpenStreetMap (community-mapped, **not an official government list**). Hotlines come from official sources. Some guide sections are still drafts (see [Data and sources](#data-and-sources)).
+> Facilities come from OpenStreetMap (community-mapped, **not an official government list**). Hotlines come from official sources. Every guide section shows whether it was checked against an official source or is still a draft (see [Data and sources](#data-and-sources)).
 
 ---
 
@@ -291,7 +291,8 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 | "Is it safe to walk through floodwater?" | Flood-safety guide text plus a checked AI summary |
 | "What should I pack for a baby when evacuating?" | When to evacuate, plus the go-bag section for infants |
 | "Is the road flooded?" / "Any reports near me?" | Current situation reports, with their trust labels and age |
-| "What does signal no. 3 mean?" | PAGASA wind signals (the verified section) |
+| "What does signal no. 3 mean?" | PAGASA wind signals (checked against PAGASA) |
+| "Ano gagawin kapag may lindol?" / "What does Taal alert level 3 mean?" | Drop, cover and hold / Taal alert levels (checked against PHIVOLCS) |
 | "Batangas PDRRMO number" | Official hotline |
 
 The full question bank, with what answers each one, is in [data/suggested_questions.md](data/suggested_questions.md).
@@ -374,21 +375,22 @@ Imported from **OpenStreetMap** (© OpenStreetMap contributors, ODbL) on 2026-10
 - To refresh, while online: `.venv\Scripts\python tools\import_osm.py`.
 
 ### Hotlines: `data/guides/hotlines.md`
-Copied on 2026-10-09 from:
-- **National numbers:** DZRH News list, 7 Jan 2026
-- **Batangas PDRRMO:** [portal.batangas.gov.ph/contact-us](https://portal.batangas.gov.ph/contact-us/)
-- **Batangas City:** [batangascity.gov.ph](https://www.batangascity.gov.ph/web/cdrrmoprofile)
-- **Lipa City:** [lipa.gov.ph/for-residents](https://lipa.gov.ph/for-residents/)
+Every number is copied from an official source, named under each section in the app:
+- **National (911, NDRRMC, PNP, BFP, PAGASA, Red Cross):** Executive Order No. 56 / DILG for 911 (it replaced PNP Patrol 117), the government's [PH Emergency Hotlines](https://ehotlines.e.gov.ph/) directory, and [redcross.org.ph](https://redcross.org.ph/contact-us/).
+- **Batangas PDRRMO, Batangas City, Lipa City:** their official websites (2026-10-09).
+- **Calaca City, Nasugbu, Lemery, San Juan, Alitagtag, Balete, Talisay:** each town's official website (2026-10-27). Office lines only.
 
-Each section names its source. Other towns have no verified list yet.
+Other towns have no verified list yet; the app says so and points to 911, the PDRRMO and the municipal hall.
 
 ### Roads: `data/roads.json.gz`
 19,325 km of OpenStreetMap roads and paths (158k junctions), imported 2026-10-09 by `tools/import_roads.py`. If the file is missing, the app still runs without directions.
 
 ### Guides: `data/guides/*.md`
-Six guides: typhoon preparation, flood safety, first aid, go bag, power outage, hotlines. Each `##` section is a citable chunk.
-- The PAGASA **wind signal** section was checked against PAGASA's official TCWS table (press release, 23 Mar 2022).
-- The other sections are **drafts** of general guidance. Check them against NDRRMC, DOH and Philippine Red Cross material before real use.
+Eight guides: typhoon preparation, flood safety, first aid, go bag, power outage, **earthquake and tsunami**, **Taal Volcano and ashfall**, and hotlines. Each `##` section is a citable chunk.
+- **Every section shows its trust status in the app:** "✓ Checked against *source* · *month*" (linked), or "⚠ Draft, not yet checked against official sources".
+- **47 of 59 sections are checked** against official Philippine sources: PAGASA, PHIVOLCS, DOH, the Office of Civil Defense, DOE, BFP, and the Senate climate committee's disaster handbook made with NDRRMC and PAGASA. Text is paraphrased; hotline numbers are copied exactly.
+- **12 sections are still drafts** (for example CPR, broken bones, and the floodwater depth figures, which come from US sources).
+- The full list, with sources, dates and what changed, is in [docs/content_review.md](docs/content_review.md). To mark a section checked, add `<!-- checked: YYYY-MM-DD | source: Name | url: link -->` under its heading.
 
 ### Map assets (all local)
 
@@ -408,8 +410,8 @@ The showreel's voice-over and sound effects were generated with [ElevenLabs](htt
 
 ## Known limits
 
-- **Guides are mostly drafts.** Only the wind-signal section is verified.
+- **Some guide sections are still drafts** (12 of 59). The app labels them, and "checked" means compared with an official source, not a medical endorsement.
 - **Facility data is community-mapped,** not an official list, and may be out of date.
 - **Routes and reports can be wrong or missing.** Every route says so: OFFGRID only knows about the floods and closures people reported.
 - **AI summaries are most reliable in English.** For Filipino questions the guide text is always shown.
-- **Content gaps:** earthquake and Taal Volcano guides, the official LGU evacuation list, and hotlines for towns other than Batangas City and Lipa.
+- **Content gaps:** the official evacuation-center list (a request to the Batangas PDRRMO is drafted in [docs/pdrrmo_request_letter.md](docs/pdrrmo_request_letter.md)), hotlines for the remaining towns, and the current Taal alert level (only PHIVOLCS can say which level is in force).

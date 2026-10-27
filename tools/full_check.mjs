@@ -535,6 +535,11 @@ try {
   const off = await ask(phone, "nearest evacuation center");
   check("phone, hub off: answers from the saved copy", off.includes("by road") && (await phone.evaluate("[...document.querySelectorAll('#messages .msg.bot')].pop().classList.contains('offline-answer')")), off.split("\n")[1]);
   check("phone, hub off: the pill says On this phone", (await phone.evaluate("document.getElementById('status-text').textContent")) === "On this phone");
+  // Guide answers on the phone show whether each section was checked against an official source.
+  await ask(phone, "what should i do during an earthquake");
+  const trust = await phone.evaluate(`(() => { const t = [...document.querySelectorAll('#messages .msg.bot')].pop().querySelector('.passage .trust');
+    return t ? t.textContent.trim() : ''; })()`);
+  check("phone, hub off: guide sections show their official source", /Checked against DOST-PHIVOLCS/.test(trust), trust);
   await js(phone, `window.__map.jumpTo({ center: [${FLOOD_AT.lng}, ${FLOOD_AT.lat}], zoom: 16.5 }); return true;`);
   await sheetTo(phone, "peek");
   await tap(phone, "#report-btn", "Report");

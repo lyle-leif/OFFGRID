@@ -146,7 +146,7 @@ try {
   check("hotlines available", hotlines >= 5, `${hotlines} sections`);
 
   const guide = await page.evaluate(ASK("How do I stop bleeding?"));
-  check("guide answer on the phone", guide.includes("Press firmly") && guide.includes("on this phone"), guide.replace(/\s+/g, " ").slice(0, 110));
+  check("guide answer on the phone", /press(ing)? firmly/i.test(guide) && guide.includes("on this phone"), guide.replace(/\s+/g, " ").slice(0, 110));
 
   const notCovered = await page.evaluate(ASK("What is the capital of France?"));
   check("still refuses what the guides don't cover", notCovered.includes("can't find this"), "");
