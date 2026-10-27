@@ -23,7 +23,7 @@ STOPWORDS = set(
     ang ng sa mga na ay at si ni kay ko mo ka ako ikaw siya kami tayo kayo sila ito iyan iyon
     po ba pa lang din rin naman kung para may wala walang ano anong paano saan kailan bakit
     dapat kailangan gagawin gawin nga yung yun kapag tuwing bang bago ako akin namin natin
-    someone somebody anyone think pwede puwede pede
+    someone somebody anyone think pwede puwede pede ngayon ibig
     """.split()
 )
 
@@ -159,6 +159,13 @@ SYNONYM_WORDS: dict[str, list[str]] = {
     "kuryente": ["power", "electrical", "electricity"],
     "evacuate": ["evacuation", "evacuating"], "evacuating": ["evacuate", "evacuation"],
     "evacuation": ["evacuate"], "lumikas": ["evacuate", "evacuation"], "likas": ["evacuate"],
+    # earthquakes, tsunamis, Taal Volcano
+    "lindol": ["earthquake"], "lumindol": ["earthquake"], "yanig": ["earthquake", "shaking"],
+    "pagyanig": ["earthquake", "shaking"], "quake": ["earthquake"], "drill": ["practice"],
+    "bulkan": ["volcano"], "volcanic": ["volcano", "eruption"], "pagputok": ["eruption"],
+    "erupt": ["eruption"], "abo": ["ash", "ashfall"], "ash": ["ashfall"], "ashfall": ["ash"],
+    "senyales": ["sign", "warning"], "palatandaan": ["sign", "warning"], "alon": ["wave"],
+    "sabihin": ["mean", "meaning"],
     # supplies
     "gamot": ["medicine"], "medication": ["medicine"], "tubig": ["water"], "inumin": ["drinking", "water"],
     "drink": ["drinking"], "inom": ["drinking", "water"], "uminom": ["drinking", "water"],

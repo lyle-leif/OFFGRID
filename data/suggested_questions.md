@@ -93,6 +93,25 @@ Questions people ask during a disaster or while running errands, and what answer
 | Signs of heat exhaustion? | Guide |
 | Possible broken bone, what do I do? | Guide |
 
+## Earthquake and tsunami (lindol)
+
+| Question | Answered by |
+|---|---|
+| What should I do during an earthquake? / Ano gagawin kapag may lindol? | Guide (PHIVOLCS) |
+| Is it safe to go back inside after an earthquake? | Guide (PHIVOLCS) |
+| How do I prepare my home for an earthquake? | Guide (PHIVOLCS) |
+| What are the signs of a tsunami? / Ano ang senyales ng tsunami? | Guide (PHIVOLCS) |
+| What does intensity 5 mean? | Guide (PHIVOLCS) |
+
+## Taal Volcano and ashfall (bulkan, abo)
+
+| Question | Answered by |
+|---|---|
+| What does Taal alert level 3 mean? / Ano ang alert level 2 ng Taal? | Guide (PHIVOLCS) |
+| When must we evacuate because of Taal? | Guide (PHIVOLCS) |
+| What mask should I use for ashfall? / May abo, ano gagawin? | Guide (DOH) |
+| Ash on my skin is itchy | Guide (DOH) |
+
 ## Hotlines
 
 | Question | Answered by |
@@ -116,6 +135,6 @@ Questions people ask during a disaster or while running errands, and what answer
 ## Known gaps (answered "not in saved information")
 
 - **Live conditions**: flooded roads, open/closed right now, hospital capacity, current typhoon signal, when power returns.
-- **Earthquakes**, **Taal Volcano / ashfall**, **landslides**, **tsunami**: no guide saved yet. These would be the next guides to add (PHIVOLCS sources).
+- **Landslides** (beyond checking slopes after an earthquake) and **the current Taal alert level**: not saved. The Taal guide explains what each level means, but only PHIVOLCS can say which level is in force now.
 - **ATMs, gas stations, churches**: visible as map landmarks, but not in the searchable facility list.
 - **Drinking-water refill points**: none mapped in OpenStreetMap for this area.

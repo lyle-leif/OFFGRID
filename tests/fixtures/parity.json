@@ -3,30 +3,30 @@
   {
    "q": "What should I bring for my baby when evacuating?",
    "evidence": [
-    "typhoon-prep#when-to-evacuate",
     "go-bag#infants-and-young-children",
+    "typhoon-prep#when-to-evacuate",
     "go-bag#older-adults-persons-with-disabilities-and-pets",
     "go-bag#light-power-and-communication"
    ],
    "top": [
     [
-     "typhoon-prep#when-to-evacuate",
-     7.193415,
+     "go-bag#infants-and-young-children",
+     7.660049,
      2
     ],
     [
-     "go-bag#infants-and-young-children",
-     7.099293,
+     "typhoon-prep#when-to-evacuate",
+     7.124825,
      2
     ],
     [
      "go-bag#older-adults-persons-with-disabilities-and-pets",
-     4.518743,
+     4.809001,
      2
     ],
     [
      "go-bag#light-power-and-communication",
-     4.017853,
+     4.204735,
      2
     ]
    ]
@@ -35,29 +35,29 @@
    "q": "How much water should I pack in my go-bag?",
    "evidence": [
     "go-bag#water-and-food",
-    "typhoon-prep#when-to-evacuate",
     "go-bag#older-adults-persons-with-disabilities-and-pets",
+    "typhoon-prep#when-to-evacuate",
     "go-bag#clothes-and-protection"
    ],
    "top": [
     [
      "go-bag#water-and-food",
-     4.708578,
-     4
-    ],
-    [
-     "typhoon-prep#when-to-evacuate",
-     4.697116,
+     5.910255,
      4
     ],
     [
      "go-bag#older-adults-persons-with-disabilities-and-pets",
-     4.551899,
+     5.555,
+     4
+    ],
+    [
+     "typhoon-prep#when-to-evacuate",
+     5.492941,
      4
     ],
     [
      "go-bag#clothes-and-protection",
-     4.302172,
+     5.023882,
      3
     ]
    ]
@@ -71,22 +71,22 @@
    "top": [
     [
      "flood-safety#walking-or-driving-through-floodwater",
-     11.474271,
+     12.822601,
      3
     ],
     [
      "flood-safety#health-risks-after-floods",
-     6.520496,
+     7.358109,
      2
     ],
     [
      "typhoon-prep#after-the-typhoon",
-     4.452336,
+     4.851129,
      2
     ],
     [
      "flood-safety#clean-drinking-water",
-     3.064673,
+     3.498887,
      1
     ]
    ]
@@ -99,21 +99,21 @@
    "top": [
     [
      "first-aid-basics#burns",
-     6.827562,
+     7.337272,
      1
     ],
     [
      "hotlines#other-towns-and-barangays",
-     3.148514,
+     3.464622,
      1
     ],
     [
-     "first-aid-basics#before-helping-anyone",
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
      0.0,
      0
     ],
     [
-     "first-aid-basics#bleeding",
+     "earthquake#after-an-earthquake-aftershocks-and-damaged-buildings",
      0.0,
      0
     ]
@@ -122,55 +122,57 @@
   {
    "q": "Can I run a generator inside the house?",
    "evidence": [
-    "power-outage#generators-and-carbon-monoxide"
+    "power-outage#generators-and-carbon-monoxide",
+    "earthquake#earthquake-intensity-what-the-numbers-mean"
    ],
    "top": [
     [
      "power-outage#generators-and-carbon-monoxide",
-     14.321215,
+     13.973306,
      4
     ],
     [
+     "earthquake#earthquake-intensity-what-the-numbers-mean",
+     7.318524,
+     3
+    ],
+    [
      "typhoon-prep#during-the-typhoon",
-     6.167146,
+     5.406789,
      2
     ],
     [
      "typhoon-prep#when-a-typhoon-is-approaching",
-     4.447478,
+     4.42035,
      2
-    ],
-    [
-     "typhoon-prep#after-the-typhoon",
-     3.635549,
-     1
     ]
    ]
   },
   {
    "q": "What does typhoon signal number 3 mean?",
    "evidence": [
-    "typhoon-prep#understanding-warnings"
+    "typhoon-prep#understanding-warnings",
+    "earthquake#earthquake-intensity-what-the-numbers-mean"
    ],
    "top": [
     [
      "typhoon-prep#understanding-warnings",
-     9.659379,
+     10.28252,
      5
     ],
     [
+     "earthquake#earthquake-intensity-what-the-numbers-mean",
+     5.655434,
+     2
+    ],
+    [
      "flood-safety#if-you-are-trapped-by-rising-water",
-     3.869232,
+     4.299334,
      1
     ],
     [
-     "go-bag#water-and-food",
-     3.856161,
-     1
-    ],
-    [
-     "typhoon-prep#during-the-typhoon",
-     3.039338,
+     "taal-volcano#taal-volcano-alert-levels-3-to-5-evacuation",
+     3.796147,
      1
     ]
    ]
@@ -183,22 +185,22 @@
    "top": [
     [
      "power-outage#food-safety-without-refrigeration",
-     10.291061,
+     11.564716,
      3
     ],
     [
      "power-outage#heat-during-outages",
-     5.843345,
+     5.208774,
      2
     ],
     [
      "power-outage#appliances-and-power-surges",
-     4.614808,
+     4.250925,
      2
     ],
     [
-     "typhoon-prep#during-the-typhoon",
-     3.781018,
+     "go-bag#water-and-food",
+     3.259097,
      1
     ]
    ]
@@ -211,22 +213,22 @@
    "top": [
     [
      "flood-safety#health-risks-after-floods",
-     6.237344,
+     6.350964,
      2
     ],
     [
      "flood-safety#warning-signs-of-flooding",
-     3.651225,
+     3.725944,
      1
     ],
     [
-     "typhoon-prep#when-a-typhoon-is-approaching",
-     2.116578,
+     "earthquake#tsunami-warning-signs-shake-drop-roar",
+     3.265564,
      1
     ],
     [
-     "first-aid-basics#dehydration-and-heat-exhaustion",
-     2.075281,
+     "taal-volcano#ashfall-protecting-your-health",
+     2.742568,
      1
     ]
    ]
@@ -239,21 +241,21 @@
    "top": [
     [
      "first-aid-basics#bleeding",
-     9.231816,
+     9.45547,
      2
     ],
     [
-     "first-aid-basics#before-helping-anyone",
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
+     3.21147,
+     1
+    ],
+    [
+     "earthquake#after-an-earthquake-aftershocks-and-damaged-buildings",
      0.0,
      0
     ],
     [
-     "first-aid-basics#cuts-and-wounds",
-     0.0,
-     0
-    ],
-    [
-     "first-aid-basics#burns",
+     "earthquake#preparing-your-home-for-earthquakes",
      0.0,
      0
     ]
@@ -269,22 +271,22 @@
    "top": [
     [
      "typhoon-prep#before-typhoon-season",
-     7.752305,
+     8.038647,
      3
     ],
     [
      "typhoon-prep#when-to-evacuate",
-     6.971074,
+     7.124825,
      2
     ],
     [
      "typhoon-prep#after-the-typhoon",
-     5.649249,
+     6.064055,
      2
     ],
     [
-     "first-aid-basics#before-helping-anyone",
-     3.132122,
+     "typhoon-prep#during-the-typhoon",
+     3.514822,
      1
     ]
    ]
@@ -299,22 +301,22 @@
    "top": [
     [
      "power-outage#saving-phone-battery",
-     5.569665,
+     6.464522,
      2
     ],
     [
      "go-bag#documents-and-money",
-     4.179583,
+     4.875548,
      2
     ],
     [
      "power-outage#preparing-for-brownouts",
-     4.12306,
+     4.810379,
      2
     ],
     [
      "go-bag#light-power-and-communication",
-     2.279982,
+     2.698976,
      1
     ]
    ]
@@ -328,23 +330,23 @@
    "top": [
     [
      "go-bag#what-a-go-bag-is",
-     6.245033,
+     6.620026,
      3
     ],
     [
      "power-outage#preparing-for-brownouts",
-     5.343864,
+     4.915388,
+     1
+    ],
+    [
+     "earthquake#preparing-your-home-for-earthquakes",
+     4.877845,
      1
     ],
     [
      "typhoon-prep#before-typhoon-season",
-     4.533387,
+     4.66572,
      3
-    ],
-    [
-     "flood-safety#warning-signs-of-flooding",
-     2.51477,
-     1
     ]
    ]
   },
@@ -356,22 +358,22 @@
    "top": [
     [
      "go-bag#infants-and-young-children",
-     7.099293,
+     7.660049,
      2
     ],
     [
      "power-outage#heat-during-outages",
-     3.15405,
+     3.492464,
      1
     ],
     [
      "go-bag#older-adults-persons-with-disabilities-and-pets",
-     2.423017,
+     2.826277,
      1
     ],
     [
      "go-bag#water-and-food",
-     2.389163,
+     2.788575,
      1
     ]
    ]
@@ -384,22 +386,22 @@
    "top": [
     [
      "go-bag#infants-and-young-children",
-     5.664374,
+     6.213582,
      2
     ],
     [
      "power-outage#lighting-safely",
-     2.808877,
+     3.1471,
      1
     ],
     [
      "go-bag#older-adults-persons-with-disabilities-and-pets",
-     2.423017,
+     2.826277,
      1
     ],
     [
-     "first-aid-basics#burns",
-     2.413679,
+     "go-bag#water-and-food",
+     2.788575,
      1
     ]
    ]
@@ -412,22 +414,22 @@
    "top": [
     [
      "typhoon-prep#during-the-typhoon",
-     6.864591,
+     6.012306,
      2
     ],
     [
-     "power-outage#heat-during-outages",
-     3.346202,
-     1
-    ],
-    [
      "typhoon-prep#after-the-typhoon",
-     3.021437,
+     3.495233,
      1
     ],
     [
      "typhoon-prep#before-typhoon-season",
-     2.951893,
+     3.41901,
+     1
+    ],
+    [
+     "typhoon-prep#when-a-typhoon-is-approaching",
+     3.310713,
      1
     ]
    ]
@@ -442,22 +444,22 @@
    "top": [
     [
      "flood-safety#walking-or-driving-through-floodwater",
-     7.193591,
+     8.070758,
      2
     ],
     [
      "flood-safety#health-risks-after-floods",
-     5.894844,
+     6.658533,
      2
     ],
     [
      "typhoon-prep#after-the-typhoon",
-     4.452336,
+     4.851129,
      2
     ],
     [
-     "flood-safety#clean-drinking-water",
-     3.064673,
+     "flood-safety#electrical-safety-in-floods",
+     3.514822,
      1
     ]
    ]
@@ -465,30 +467,30 @@
   {
    "q": "What do elderly people need to pack?",
    "evidence": [
-    "power-outage#heat-during-outages",
     "go-bag#water-and-food",
     "go-bag#older-adults-persons-with-disabilities-and-pets",
-    "typhoon-prep#when-a-typhoon-is-approaching"
+    "power-outage#heat-during-outages",
+    "taal-volcano#dangers-during-a-taal-eruption"
    ],
    "top": [
     [
-     "power-outage#heat-during-outages",
-     6.914239,
-     2
-    ],
-    [
      "go-bag#water-and-food",
-     6.849817,
+     7.626856,
      3
     ],
     [
      "go-bag#older-adults-persons-with-disabilities-and-pets",
-     6.408518,
+     7.260354,
      2
     ],
     [
-     "typhoon-prep#when-a-typhoon-is-approaching",
-     4.009341,
+     "power-outage#heat-during-outages",
+     6.254993,
+     2
+    ],
+    [
+     "taal-volcano#dangers-during-a-taal-eruption",
+     4.218381,
      2
     ]
    ]
@@ -501,22 +503,22 @@
    "top": [
     [
      "first-aid-basics#bleeding",
-     13.377598,
+     14.019576,
      3
     ],
     [
      "first-aid-basics#cuts-and-wounds",
-     4.905559,
+     5.369064,
+     1
+    ],
+    [
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
+     3.21147,
      1
     ],
     [
      "first-aid-basics#before-helping-anyone",
-     2.842116,
-     1
-    ],
-    [
-     "hotlines#philippine-red-cross-national-hotline",
-     2.6537,
+     3.182688,
      1
     ]
    ]
@@ -531,22 +533,22 @@
    "top": [
     [
      "first-aid-basics#burns",
-     7.107322,
+     7.893093,
      2
     ],
     [
      "power-outage#heat-during-outages",
-     5.282508,
+     6.058699,
      2
     ],
     [
      "first-aid-basics#dehydration-and-heat-exhaustion",
-     4.946426,
+     5.776484,
      2
     ],
     [
      "flood-safety#clean-drinking-water",
-     0.572634,
+     1.112348,
      1
     ]
    ]
@@ -557,27 +559,27 @@
     "hotlines#national-emergency-hotline-911",
     "hotlines#philippine-red-cross-national-hotline",
     "hotlines#batangas-city-emergency-hotlines",
-    "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa"
+    "hotlines#lipa-city-emergency-hotlines"
    ],
    "top": [
     [
      "hotlines#national-emergency-hotline-911",
-     6.066988,
+     7.887596,
      3
     ],
     [
      "hotlines#philippine-red-cross-national-hotline",
-     5.110346,
+     6.490011,
      3
     ],
     [
      "hotlines#batangas-city-emergency-hotlines",
-     4.750914,
+     6.217326,
      3
     ],
     [
-     "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
-     4.400269,
+     "hotlines#lipa-city-emergency-hotlines",
+     5.779477,
      3
     ]
    ]
@@ -591,23 +593,23 @@
    "top": [
     [
      "hotlines#batangas-city-emergency-hotlines",
-     12.87118,
+     13.61366,
      4
     ],
     [
      "hotlines#lipa-city-emergency-hotlines",
-     7.84164,
-     3
-    ],
-    [
-     "hotlines#power-and-water-utilities-in-lipa",
-     5.887555,
+     8.556774,
      3
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     5.652968,
+     6.536868,
      2
+    ],
+    [
+     "hotlines#power-and-water-utilities-in-lipa",
+     6.29602,
+     3
     ]
    ]
   },
@@ -622,22 +624,22 @@
    "top": [
     [
      "hotlines#lipa-city-emergency-hotlines",
-     9.231453,
+     10.429936,
      3
     ],
     [
      "hotlines#power-and-water-utilities-in-lipa",
-     6.412552,
+     7.191552,
      2
     ],
     [
      "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
-     5.531489,
+     6.34524,
      2
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     5.068897,
+     5.950943,
      2
     ]
    ]
@@ -647,27 +649,28 @@
    "evidence": [
     "hotlines#batangas-province-pdrrmo-and-provincial-offices",
     "hotlines#other-towns-and-barangays",
-    "hotlines#batangas-city-emergency-hotlines"
+    "hotlines#batangas-city-emergency-hotlines",
+    "hotlines#national-emergency-hotline-911"
    ],
    "top": [
     [
      "hotlines#batangas-province-pdrrmo-and-provincial-offices",
-     11.455321,
+     12.526869,
      4
     ],
     [
      "hotlines#other-towns-and-barangays",
-     8.747672,
+     9.718381,
      4
     ],
     [
      "hotlines#batangas-city-emergency-hotlines",
-     8.562844,
+     9.565727,
      3
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     5.688182,
+     6.779536,
      2
     ]
    ]
@@ -683,22 +686,22 @@
    "top": [
     [
      "hotlines#lipa-city-emergency-hotlines",
-     9.635818,
+     10.841139,
      3
     ],
     [
      "hotlines#power-and-water-utilities-in-lipa",
-     6.412552,
+     7.191552,
      2
     ],
     [
      "hotlines#national-agencies-ndrrmc-pnp-bfp-pagasa",
-     5.691144,
+     6.551158,
      2
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     5.652968,
+     6.536868,
      2
     ]
    ]
@@ -712,22 +715,22 @@
    "top": [
     [
      "hotlines#power-and-water-utilities-in-lipa",
-     7.793865,
+     8.997979,
      3
     ],
     [
      "hotlines#lipa-city-emergency-hotlines",
-     7.691173,
+     8.632502,
      2
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     2.844091,
+     3.389768,
      1
     ],
     [
      "power-outage#heat-during-outages",
-     2.497143,
+     2.990612,
      1
     ]
    ]
@@ -742,22 +745,22 @@
    "top": [
     [
      "hotlines#philippine-red-cross-national-hotline",
-     10.455481,
+     11.869774,
      3
     ],
     [
      "hotlines#lipa-city-emergency-hotlines",
-     5.720891,
+     6.674524,
      3
     ],
     [
      "hotlines#batangas-city-emergency-hotlines",
-     5.228046,
+     6.138066,
      3
     ],
     [
      "hotlines#national-emergency-hotline-911",
-     2.844091,
+     3.389768,
      1
     ]
    ]
@@ -768,22 +771,22 @@
    "top": [
     [
      "flood-safety#warning-signs-of-flooding",
-     6.380221,
+     7.178692,
      2
     ],
     [
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
+     3.778221,
+     1
+    ],
+    [
      "go-bag#clothes-and-protection",
-     3.305133,
+     3.652244,
      1
     ],
     [
      "flood-safety#clean-drinking-water",
-     3.266021,
-     1
-    ],
-    [
-     "flood-safety#electrical-safety-in-floods",
-     3.039338,
+     3.610944,
      1
     ]
    ]
@@ -793,22 +796,22 @@
    "evidence": [],
    "top": [
     [
-     "first-aid-basics#before-helping-anyone",
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
      0.0,
      0
     ],
     [
-     "first-aid-basics#bleeding",
+     "earthquake#after-an-earthquake-aftershocks-and-damaged-buildings",
      0.0,
      0
     ],
     [
-     "first-aid-basics#cuts-and-wounds",
+     "earthquake#preparing-your-home-for-earthquakes",
      0.0,
      0
     ],
     [
-     "first-aid-basics#burns",
+     "earthquake#tsunami-warning-signs-shake-drop-roar",
      0.0,
      0
     ]
@@ -819,22 +822,22 @@
    "evidence": [],
    "top": [
     [
-     "first-aid-basics#before-helping-anyone",
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
      0.0,
      0
     ],
     [
-     "first-aid-basics#bleeding",
+     "earthquake#after-an-earthquake-aftershocks-and-damaged-buildings",
      0.0,
      0
     ],
     [
-     "first-aid-basics#cuts-and-wounds",
+     "earthquake#preparing-your-home-for-earthquakes",
      0.0,
      0
     ],
     [
-     "first-aid-basics#burns",
+     "earthquake#tsunami-warning-signs-shake-drop-roar",
      0.0,
      0
     ]
@@ -846,21 +849,21 @@
    "top": [
     [
      "flood-safety#walking-or-driving-through-floodwater",
-     3.118672,
+     3.432962,
      1
     ],
     [
      "hotlines#batangas-city-emergency-hotlines",
-     2.171781,
+     2.416977,
      1
     ],
     [
-     "first-aid-basics#before-helping-anyone",
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
      0.0,
      0
     ],
     [
-     "first-aid-basics#bleeding",
+     "earthquake#after-an-earthquake-aftershocks-and-damaged-buildings",
      0.0,
      0
     ]
@@ -871,48 +874,22 @@
    "evidence": [],
    "top": [
     [
-     "first-aid-basics#before-helping-anyone",
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
      0.0,
      0
     ],
     [
-     "first-aid-basics#bleeding",
+     "earthquake#after-an-earthquake-aftershocks-and-damaged-buildings",
      0.0,
      0
     ],
     [
-     "first-aid-basics#cuts-and-wounds",
+     "earthquake#preparing-your-home-for-earthquakes",
      0.0,
      0
     ],
     [
-     "first-aid-basics#burns",
-     0.0,
-     0
-    ]
-   ]
-  },
-  {
-   "q": "earthquake drill procedure",
-   "evidence": [],
-   "top": [
-    [
-     "first-aid-basics#before-helping-anyone",
-     0.0,
-     0
-    ],
-    [
-     "first-aid-basics#bleeding",
-     0.0,
-     0
-    ],
-    [
-     "first-aid-basics#cuts-and-wounds",
-     0.0,
-     0
-    ],
-    [
-     "first-aid-basics#burns",
+     "earthquake#tsunami-warning-signs-shake-drop-roar",
      0.0,
      0
     ]
@@ -923,22 +900,22 @@
    "evidence": [],
    "top": [
     [
-     "first-aid-basics#before-helping-anyone",
+     "earthquake#during-an-earthquake-drop-cover-and-hold",
      0.0,
      0
     ],
     [
-     "first-aid-basics#bleeding",
+     "earthquake#after-an-earthquake-aftershocks-and-damaged-buildings",
      0.0,
      0
     ],
     [
-     "first-aid-basics#cuts-and-wounds",
+     "earthquake#preparing-your-home-for-earthquakes",
      0.0,
      0
     ],
     [
-     "first-aid-basics#burns",
+     "earthquake#tsunami-warning-signs-shake-drop-roar",
      0.0,
      0
     ]
@@ -3972,7 +3949,7 @@
      "summary": "unavailable",
      "summary_error": "no AI",
      "timing": {
-      "total_ms": 2
+      "total_ms": 0
      }
     }
    ]
@@ -4036,7 +4013,7 @@
      "summary": "unavailable",
      "summary_error": "no AI",
      "timing": {
-      "total_ms": 1
+      "total_ms": 0
      }
     }
    ]
@@ -5004,6 +4981,138 @@
   [
    "red cros number",
    "red cross number"
+  ],
+  [
+   "What should I do during an earthquake?",
+   "what should i do during an earthquake?"
+  ],
+  [
+   "ano gagawin kapag may lindol",
+   "ano gagawin kapag may lindol"
+  ],
+  [
+   "what to do in an earthqake",
+   "what to do in an earthquake"
+  ],
+  [
+   "drop cover and hold",
+   "drop cover and hold"
+  ],
+  [
+   "may lindol ngayon ano gagawin ko",
+   "may lindol ngayon ano gagawin ko"
+  ],
+  [
+   "What should I do after an earthquake?",
+   "what should i do after an earthquake?"
+  ],
+  [
+   "is it safe to go back inside after an earthquake",
+   "is it safe to go back inside after an earthquake"
+  ],
+  [
+   "aftershocks after earthquake",
+   "aftershocks after earthquake"
+  ],
+  [
+   "my house has cracks after the earthquake",
+   "my house has cracks after the earthquake"
+  ],
+  [
+   "How do I prepare my home for an earthquake?",
+   "how do i prepare my home for an earthquake?"
+  ],
+  [
+   "earthquake drill procedure",
+   "earthquake drill procedure"
+  ],
+  [
+   "paano maghanda sa lindol",
+   "paano maghanda sa lindol"
+  ],
+  [
+   "What are the signs of a tsunami?",
+   "what are the signs of a tsunami?"
+  ],
+  [
+   "tsunami warning signs",
+   "tsunami warning signs"
+  ],
+  [
+   "ano ang senyales ng tsunami",
+   "ano ang senyales ng tsunami"
+  ],
+  [
+   "tsunmi signs",
+   "tsunami signs"
+  ],
+  [
+   "the sea suddenly went down after the earthquake",
+   "the sea suddenly went down after the earthquake"
+  ],
+  [
+   "What does intensity 5 mean?",
+   "what does intensity 5 mean?"
+  ],
+  [
+   "earthquake intensity scale",
+   "earthquake intensity scale"
+  ],
+  [
+   "ano ibig sabihin ng intensity 7",
+   "ano ibig sabihin ng intensity 7"
+  ],
+  [
+   "What does Taal alert level 3 mean?",
+   "what does taal alert level 3 mean?"
+  ],
+  [
+   "taal volcano alert level",
+   "taal volcano alert level"
+  ],
+  [
+   "ano ang alert level 2 ng taal",
+   "ano ang alert level 2 ng taal"
+  ],
+  [
+   "taal alret level 4",
+   "taal alert level 4"
+  ],
+  [
+   "bulkang taal alert level",
+   "bulkan taal alert level"
+  ],
+  [
+   "When must we evacuate because of Taal Volcano?",
+   "when must we evacuate because of taal volcano?"
+  ],
+  [
+   "taal volcano evacuation lakeshore",
+   "taal volcano evacuation lakeshore"
+  ],
+  [
+   "What mask should I use for ashfall?",
+   "what mask should i use for ashfall?"
+  ],
+  [
+   "ashfall what to do",
+   "ashfall what to do"
+  ],
+  [
+   "may abo ano gagawin",
+   "may abo ano gagawin"
+  ],
+  [
+   "ashfal mask",
+   "ashfall mask"
+  ],
+  [
+   "volcanic ash protection",
+   "volcanic ash protection"
+  ],
+  [
+   "ash on my skin is itchy",
+   "ash on my skin is itchy"
   ],
   [
    "What is the capital of France?",

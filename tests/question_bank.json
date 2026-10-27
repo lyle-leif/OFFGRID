@@ -849,6 +849,129 @@
    ]
   },
   {
+   "name": "During an earthquake",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "earthquake#during-an-earthquake-drop-cover-and-hold"
+    ]
+   },
+   "qs": [
+    "What should I do during an earthquake?",
+    "ano gagawin kapag may lindol",
+    "what to do in an earthqake",
+    "drop cover and hold",
+    "may lindol ngayon ano gagawin ko"
+   ]
+  },
+  {
+   "name": "After an earthquake",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "earthquake#after-an-earthquake-aftershocks-and-damaged-buildings"
+    ]
+   },
+   "qs": [
+    "What should I do after an earthquake?",
+    "is it safe to go back inside after an earthquake",
+    "aftershocks after earthquake",
+    "my house has cracks after the earthquake"
+   ]
+  },
+  {
+   "name": "Earthquake preparation",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "earthquake#preparing-your-home-for-earthquakes",
+     "earthquake#during-an-earthquake-drop-cover-and-hold"
+    ]
+   },
+   "qs": [
+    "How do I prepare my home for an earthquake?",
+    "earthquake drill procedure",
+    "paano maghanda sa lindol"
+   ]
+  },
+  {
+   "name": "Tsunami",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "earthquake#tsunami-warning-signs-shake-drop-roar"
+    ]
+   },
+   "qs": [
+    "What are the signs of a tsunami?",
+    "tsunami warning signs",
+    "ano ang senyales ng tsunami",
+    "tsunmi signs",
+    "the sea suddenly went down after the earthquake"
+   ]
+  },
+  {
+   "name": "Earthquake intensity",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "earthquake#earthquake-intensity-what-the-numbers-mean"
+    ]
+   },
+   "qs": [
+    "What does intensity 5 mean?",
+    "earthquake intensity scale",
+    "ano ibig sabihin ng intensity 7"
+   ]
+  },
+  {
+   "name": "Taal alert levels",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "taal-volcano#"
+    ]
+   },
+   "qs": [
+    "What does Taal alert level 3 mean?",
+    "taal volcano alert level",
+    "ano ang alert level 2 ng taal",
+    "taal alret level 4",
+    "bulkang taal alert level"
+   ]
+  },
+  {
+   "name": "Taal evacuation",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "taal-volcano#taal-volcano-alert-levels-3-to-5-evacuation"
+    ]
+   },
+   "qs": [
+    "When must we evacuate because of Taal Volcano?",
+    "taal volcano evacuation lakeshore"
+   ]
+  },
+  {
+   "name": "Ashfall",
+   "ctx": {},
+   "expect": {
+    "chunks": [
+     "taal-volcano#ashfall-protecting-your-health",
+     "taal-volcano#ashfall-on-the-skin"
+    ]
+   },
+   "qs": [
+    "What mask should I use for ashfall?",
+    "ashfall what to do",
+    "may abo ano gagawin",
+    "ashfal mask",
+    "volcanic ash protection",
+    "ash on my skin is itchy"
+   ]
+  },
+  {
    "name": "Off-topic (must say not covered)",
    "ctx": {},
    "expect": {

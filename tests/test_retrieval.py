@@ -55,7 +55,6 @@ UNCOVERED = [
     "Who won the basketball game last night?",
     "Is Sample Hospital A open now?",
     "How do I bake a chocolate cake?",
-    "earthquake drill procedure",
     "Where can I buy rice cheaply?",
 ]
 
