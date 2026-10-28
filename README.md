@@ -11,7 +11,10 @@ An offline emergency map and AI assistant for all of Batangas, Philippines.</p>
 
 **Try it now, free, no setup:** [lyle-leif.github.io/OFFGRID](https://lyle-leif.github.io/OFFGRID/) (see [Published website](#published-website-github-pages)).
 
-OFFGRID keeps working when the power and the internet are gone. A laptop runs a small AI model **locally** (no cloud) and acts as a **hub** for the neighborhood. Phones connect to it over local Wi-Fi once, save a full offline copy, and from then on keep working **on their own**, even when the hub is switched off.
+OFFGRID keeps working when the power and the internet are gone. There are two ways to get it, and both save a full offline copy on the phone that keeps working **on its own**:
+
+- **The website** ([lyle-leif.github.io/OFFGRID](https://lyle-leif.github.io/OFFGRID/)): open it once with internet and install it. Situation reports are shared **online in real time**, and responders log in to verify them.
+- **A barangay hub:** a laptop runs a small AI model **locally** (no cloud) and serves the app over local Wi-Fi, with no internet at all. Phones set up from it keep working even when the hub is switched off.
 
 > **Information aid only.** OFFGRID does not replace official alerts, emergency services or local authorities. In an emergency, call **911**.
 > Facilities come from OpenStreetMap (community-mapped, **not an official government list**). Hotlines come from official sources. Every guide section shows whether it was checked against an official source or is still a draft (see [Data and sources](#data-and-sources)).
@@ -98,10 +101,12 @@ Both are made from the real app, recorded with the internet blocked.
 | **Understands typos and Taglish** | "how do i stop bleding", "is it safe to wlak thru flood water", "saan ang pinakamalapit na ospital" all work. Spelling is fixed by code before the search, on the laptop and on the phone. |
 | **Nearest places, by road** | "Nearest hospital?", "Saan may botika?", "How far is it?". Answered from the map data, never invented by the AI. |
 | **Offline directions** | Walking or driving routes with turn-by-turn steps and GPS tracking, computed on the device. Routes **steer around roads people reported as flooded or blocked**. |
-| **Situation reports** | Anyone can report a flooded or blocked road, a full or open evacuation center, drinking water, a power outage or a medical need. Reports are labelled *unverified*, *confirmed* or *verified by a responder*, and expire on their own. No names or phone numbers are collected. |
-| **Hotlines** | Official numbers: national, Batangas PDRRMO, Batangas City, Lipa City. |
+| **Situation reports** | Anyone can report a flooded or blocked road, a full or open evacuation center, drinking water, a power outage or a medical need. On the website they are shared **online** (everyone sees them within about 20 seconds); with a hub, over its local Wi-Fi. Reports are labelled *unverified*, *confirmed* or *verified by a responder*, and expire on their own. A report made with no signal waits on the phone and is sent later. No names or phone numbers are collected. |
+| **Responders** | Barangay and rescue staff verify or remove reports: on the website with a **personal account** (every action is logged), on a hub with its PIN. |
+| **Hotlines** | Official numbers: 911 and national lines, the Batangas PDRRMO, Batangas City, Lipa City, Calaca, Nasugbu, Lemery, San Juan, Alitagtag, Balete and Talisay. |
 | **Battery saver** | Skips the AI and shows the guide text only. It turns on by itself at 20% battery when not charging. |
-| **Works with the hub off** | Each phone keeps the map, guides, hotlines, search, nearest places and the router (about 46 MB). Only the AI summary and live report sharing need the hub. |
+| **Works with no internet and no hub** | Each phone keeps the map, guides, hotlines, search, nearest places, the router and its last copy of the reports (about 46 MB). Only the AI summary needs a hub; sharing new reports needs the internet (website) or the hub. |
+| **Free** | The website runs on GitHub Pages and the online reports on Cloudflare's free plan (no card). The hub runs on a laptop you already have. |
 
 ---
 
@@ -194,9 +199,23 @@ The setup page shows `127.0.0.1` because the shot was taken on the laptop; on a 
         No internet needed after setup.                 Hub off?  The phone keeps working.
 ```
 
+```
+          GITHUB PAGES (free)                                         PHONES
+   ┌──────────────────────────────┐   install once, updates   ┌───────────────────────────┐
+   │ the same app, "website mode" │ ───────────────────────▶ │ OFFGRID app (works alone   │
+   │ lyle-leif.github.io/OFFGRID  │                           │ after the first visit)     │
+   └──────────────────────────────┘                           │  • map, guides, router     │
+   ┌──────────────────────────────┐   reports, every 20 s     │  • reports outbox + copy   │
+   │ CLOUDFLARE WORKER + D1 (free)│ ◀───────────────────────▶ │  • responder login         │
+   │ online reports, accounts,    │      when online          └───────────────────────────┘
+   │ audit log                    │
+   └──────────────────────────────┘                     No signal?  The phone keeps working.
+```
+
 - **Order of an answer:** location questions ("nearest hospital", "how far") and current-conditions questions ("is the road flooded?") are answered from data, never by the AI. Direction questions go to the router. Everything else searches the guides; if nothing matches, OFFGRID says so instead of guessing. The AI only ever sees the guide sections shown on screen.
 - **The phone engine** in `app/static/offline/` is a JavaScript port of the hub's search, spelling fixer, answers and router. Parity tests check that it gives the same answers as the hub.
-- **Reports are shared only through the hub.** A phone that is offline keeps its reports in an outbox and sends them when it next reaches the hub.
+- **Reports travel through the hub (local Wi-Fi) or, on the website, through the online reports service** (a Cloudflare Worker that follows exactly the same rules as the hub; tests compare the two). A phone that is offline keeps its reports in an outbox and sends them when it's back.
+- **The website** is the same app with no hub behind it: everything is answered on the phone, and reports go to the online service.
 
 ---
 
@@ -318,12 +337,12 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 ## Using OFFGRID
 
 - **First open:** choose **Tagalog** or **English**. It is asked once per phone (and once more inside an iPhone home-screen app, which keeps its own settings).
-- **Top bar:** the status pill (*Offline-ready*, *AI warming up*, *AI offline*, or *On this phone* when there is no hub), **Settings** (the gear: change the language; the app restarts in it, keeping your position, theme and waiting reports) and the light/dark toggle.
+- **Top bar:** the status pill (with a hub: *Offline-ready*, *AI warming up*, *AI offline*, or *On this phone* when the hub is out of reach; on the website: *Online*, or *Offline* when there's no signal), **Settings** (the gear: change the language; the app restarts in it, keeping your position, theme and waiting reports) and the light/dark toggle.
 - **Map buttons:** *Move my location* (tap the map where you are), *Use GPS* (zooms to you), *Report*, *Legend*. The compass appears when the map is rotated; tap it to face north again.
 - **Panel tabs** (a floating card on the laptop, a bottom sheet on phones):
   - **Assistant:** ask anything. Tap a suggestion chip or type. *New topic* clears the follow-up context. *Battery saver* skips the AI.
   - **Places:** search and filter facilities, tap one for details, **Directions** (Walk or Drive), or **Ask** about it.
-  - **Reports:** **Report something**, choose what, tap the spot on the map. Others can tap **Still true** or **Not true**. *I'm a responder* takes the hub PIN.
+  - **Reports:** **Report something**, choose what, tap the spot on the map. Others can tap **Still true** or **Not true**. *I'm a responder*: on the website, your name and password (accounts are made by the admin with `tools/cloud_admin.mjs`); on a hub, the hub's PIN.
   - **Hotlines:** official emergency numbers.
 
 **Questions to try**
@@ -349,8 +368,11 @@ The full question bank, with what answers each one, is in [data/suggested_questi
 
 **Tests**
 ```powershell
-.venv\Scripts\python -m pytest -q          # Python and Node parity tests; no Ollama needed (the AI is mocked)
-node tools\e2e_offline.mjs                 # headless Edge: save the copy, stop the hub, check everything still works
+.venv\Scripts\python -m pytest -q          # 523 tests: Python, Node parity, the online-reports Worker; no Ollama needed (the AI is mocked)
+node tools\e2e_offline.mjs                 # headless Edge: save the copy, stop the hub, check everything still works (16 checks)
+node tools\full_check.mjs                  # every control, tapped like a finger, on a phone and a laptop (87 checks, ~8 min)
+node tools\site_check.mjs                  # the website build, served like GitHub Pages, then offline (20 checks)
+node tools\site_check.mjs --cloud          # ...plus the online reports, run locally (28 checks)
 .venv\Scripts\python tools\check_questions.py        # 267-question bank -> docs/question_report.md
 .venv\Scripts\python tools\check_questions.py --ai --sample 40   # also check real AI summaries
 node tools\screenshots.mjs                 # retake the README screenshots (Ollama running)
@@ -417,6 +439,7 @@ After changing answer logic, also run `.venv\Scripts\python tools\make_parity_fi
 | `GET /api/hotlines` | Hotline sections |
 | `GET/POST /api/reports`, `POST /api/reports/{id}/vote` | List, post and confirm/dispute situation reports |
 | `POST /api/reports/responder`, `POST /api/reports/{id}/verify`, `DELETE /api/reports/{id}` | Responder sign-in (PIN), verify, remove |
+| **Online reports** (`cloud/`, https://offgrid.offgrid-batangas.workers.dev/) | The same `GET/POST /api/reports`, `vote`, `verify` and `DELETE` (with `Authorization: Bearer <token>`), plus `POST /api/login` `{name, password}` → `{token}`, `POST /api/logout`, `GET /api/health`. Only the website may call it (CORS). |
 | `GET /setup`, `GET /offgrid-ca.crt` | Phone setup page (`?lang=tl\|en`, otherwise the browser's language) and the hub certificate |
 
 ---
@@ -484,5 +507,6 @@ The showreel's voice-over and sound effects were generated with [ElevenLabs](htt
 - **Routes and reports can be wrong or missing.** Every route says so: OFFGRID only knows about the floods and closures people reported.
 - **AI summaries are most reliable in English.** For Filipino questions the guide text is always shown.
 - **The website version has no AI summaries** (they need a local hub). **Photos on reports** are the next step of the redevelopment.
+- **Online reports run on Cloudflare's free plan:** about 100,000 requests a day, far more than a barangay needs. If it were ever reached, sharing would pause until the next day (nothing is charged; phones keep their copy and outbox). Reports on the website and on a hub are separate for now; connecting the two comes later.
 - **Guides and hotlines are in English only,** also with the Tagalog interface: they are copied from official sources, and translating them is separate work. The Tagalog interface text has not yet been reviewed by a native speaker ([docs/translation_review.md](docs/translation_review.md)).
-- **Content gaps:** the official evacuation-center list (a request to the Batangas PDRRMO is drafted in [docs/pdrrmo_request_letter.md](docs/pdrrmo_request_letter.md)), hotlines for the remaining towns, and the current Taal alert level (only PHIVOLCS can say which level is in force).
+- **Content gaps:** the official evacuation-center list (a request was sent to the Batangas PDRRMO on 28 October 2026 and is awaiting a reply; [docs/pdrrmo_request_letter.md](docs/pdrrmo_request_letter.md)), hotlines for the remaining towns, and the current Taal alert level (only PHIVOLCS can say which level is in force).
