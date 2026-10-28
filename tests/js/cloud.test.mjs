@@ -148,3 +148,36 @@ test("nothing personal is stored", async () => {
   ]);
   assert.ok(!dump.includes("my-phone-id-123") && !dump.includes("203.0.113.7"), dump);
 });
+
+test("Reports v2: details per kind, Iba pa needs a note, notes public only once approved", async () => {
+  const { env, post, call, clock } = setup();
+  assert.equal((await post({ kind: "power_out", lat: 13.7, lng: 121.0, details: ["knee"] })).body.detail, EN["apierr.bad_details"]);
+  const tl = await post({ kind: "other", lat: 13.7, lng: 121.0 }, { headers: { "X-Lang": "tl" } });
+  assert.equal(tl.body.detail, TL["apierr.note_required"]);
+  const r = (await post({ kind: "other", lat: 13.7, lng: 121.0, note: "Bumagsak na poste, tawag 0917 123 4567", on_site: true, acc_bucket: 20 })).body;
+  assert.deepEqual([r.note, r.on_site, r.acc_bucket], [null, true, 20]); // waiting for a responder
+  const publicView = async () => Object.fromEntries((await call("GET", "/api/reports")).body.map((x) => [x.id, x]));
+  assert.equal((await publicView())[r.id].note, null);
+  assert.equal((await call("POST", `/api/reports/${r.id}/note`, { body: { action: "approve" } })).status, 401);
+
+  const password = await addAccount(env, "Maria Santos", clock.now);
+  const token = (await call("POST", "/api/login", { body: { name: "Maria Santos", password } })).body.token;
+  const auth = { Authorization: `Bearer ${token}` };
+  const asResponder = Object.fromEntries((await call("GET", "/api/reports", { headers: auth })).body.map((x) => [x.id, x]));
+  assert.equal(asResponder[r.id].note, "Bumagsak na poste, tawag [tinanggal]");
+  assert.equal(asResponder[r.id].note_status, "pending");
+  assert.equal((await call("POST", `/api/reports/${r.id}/note`, { body: { action: "approve" }, headers: auth })).status, 200);
+  assert.equal((await publicView())[r.id].note, "Bumagsak na poste, tawag [tinanggal]");
+  await call("POST", `/api/reports/${r.id}/note`, { body: { action: "hide" }, headers: auth });
+  assert.equal((await publicView())[r.id].note, null);
+  const { results } = await env.DB.prepare("SELECT action FROM audit WHERE report_id = ?").bind(r.id).all();
+  assert.deepEqual(results.map((a) => a.action), ["note_approve", "note_hide"]);
+
+  const flood = (await post({ kind: "road_flooded", ...ROAD, details: ["knee", "no_cars"], note: "gago" })).body;
+  assert.deepEqual(flood.details, ["knee", "no_cars"]);
+  const f = (await call("GET", "/api/reports", { headers: auth })).body.find((x) => x.id === flood.id);
+  assert.equal(f.flagged, true);
+  clock.now += 2 * 3600 + 1; // the flood report expires: its note is deleted, not just hidden
+  await call("GET", "/api/reports");
+  assert.equal((await env.DB.prepare("SELECT note FROM reports WHERE id = ?").bind(flood.id).first()).note, null);
+});

@@ -7,7 +7,8 @@ export const DATA = {
   "center_open",
   "water_available",
   "power_out",
-  "medical_need"
+  "medical_need",
+  "other"
  ],
  "ttl_h": {
   "road_flooded": 2,
@@ -16,7 +17,8 @@ export const DATA = {
   "center_open": 6,
   "water_available": 6,
   "power_out": 6,
-  "medical_need": 2
+  "medical_need": 2,
+  "other": 3
  },
  "kind_label": {
   "road_flooded": "Road flooded",
@@ -25,7 +27,8 @@ export const DATA = {
   "center_open": "Evacuation center open",
   "water_available": "Drinking water available",
   "power_out": "Power out",
-  "medical_need": "Medical help needed"
+  "medical_need": "Medical help needed",
+  "other": "Something else"
  },
  "bbox": {
   "min_lng": 120.55,
@@ -964,7 +967,9 @@ export const DATA = {
    "apierr.bad_request": "That request was not accepted.",
    "apierr.login_wrong": "Wrong name or password.",
    "apierr.login_locked": "Too many wrong tries. Wait 10 minutes and try again.",
-   "apierr.need_login": "Log in as a responder first."
+   "apierr.need_login": "Log in as a responder first.",
+   "apierr.bad_details": "Those details don't fit this kind of report.",
+   "apierr.note_required": "Describe what you see for “Something else”."
   },
   "tl": {
    "rerr.unknown_location": "Hindi kilalang location_id '{id}'",
@@ -978,7 +983,89 @@ export const DATA = {
    "apierr.bad_request": "Hindi tinanggap ang kahilingang iyon.",
    "apierr.login_wrong": "Mali ang pangalan o password.",
    "apierr.login_locked": "Masyadong maraming maling subok. Maghintay ng 10 minuto at subukan ulit.",
-   "apierr.need_login": "Mag-log in muna bilang responder."
+   "apierr.need_login": "Mag-log in muna bilang responder.",
+   "apierr.bad_details": "Hindi tugma ang mga detalyeng iyon sa ganitong ulat.",
+   "apierr.note_required": "Ilarawan ang nakikita mo para sa “Iba pa”."
   }
+ },
+ "details": {
+  "road_flooded": [
+   "ankle",
+   "knee",
+   "waist",
+   "no_cars"
+  ],
+  "road_blocked": [
+   "tree",
+   "landslide",
+   "vehicle",
+   "debris"
+  ],
+  "center_full": [
+   "turning_away",
+   "no_water",
+   "no_food"
+  ],
+  "center_open": [
+   "room_left",
+   "no_water",
+   "no_food"
+  ],
+  "water_available": [
+   "free",
+   "for_sale"
+  ],
+  "power_out": [
+   "whole_area",
+   "some_houses",
+   "wires_down"
+  ],
+  "medical_need": [
+   "injured",
+   "sick",
+   "pregnant_elderly"
+  ],
+  "other": []
+ },
+ "words": {
+  "danger": [
+   "naiipit",
+   "naipit",
+   "nakaipit",
+   "nalulunod",
+   "nalunod",
+   "lumulubog",
+   "hindi makahinga",
+   "di makahinga",
+   "walang malay",
+   "nawalan ng malay",
+   "tulungan niyo",
+   "tulong po",
+   "saklolo",
+   "trapped",
+   "drowning",
+   "can't breathe",
+   "cannot breathe",
+   "unconscious",
+   "help us"
+  ],
+  "flag": [
+   "putang ina",
+   "putangina",
+   "tangina",
+   "gago",
+   "gaga",
+   "tanga",
+   "bobo",
+   "ulol",
+   "tarantado",
+   "leche",
+   "hayop ka",
+   "fuck",
+   "shit",
+   "bitch",
+   "stupid",
+   "idiot"
+  ]
  }
 };

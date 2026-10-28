@@ -8,9 +8,15 @@ their own (see config.REPORT_TTL_H) and are deleted a day after that.
 Trust labels: "verified" (a responder with the hub PIN checked it), "confirmed" (2+
 other people confirmed it) or "unverified". A report with clearly more disputes than
 confirms is hidden.
+
+Reports v2: one-tap details, an optional note in the reporter's own words, and whether it
+was marked by GPS on site. A note is shown to the public only after a responder approves it,
+and is deleted as soon as the report expires. The online reports (cloud/src/reports.js)
+follow the same rules; tests/test_cloud.py compares the two.
 """
 
 import hashlib
+import json
 import secrets
 import sqlite3
 import threading
@@ -28,6 +34,7 @@ KIND_LABEL = {
     "water_available": "Drinking water available",
     "power_out": "Power out",
     "medical_need": "Medical help needed",
+    "other": "Something else",
 }
 ROAD_KINDS = {"road_flooded", "road_blocked"}
 CENTER_KINDS = {"center_full", "center_open"}
@@ -43,7 +50,9 @@ CREATE TABLE IF NOT EXISTS reports (
     location_id TEXT, edge_id INTEGER, road_name TEXT,
     created_at REAL NOT NULL, expires_at REAL NOT NULL,
     confirms INTEGER NOT NULL DEFAULT 0, disputes INTEGER NOT NULL DEFAULT 0,
-    verified INTEGER NOT NULL DEFAULT 0, removed INTEGER NOT NULL DEFAULT 0
+    verified INTEGER NOT NULL DEFAULT 0, removed INTEGER NOT NULL DEFAULT 0,
+    details TEXT, note TEXT, note_status TEXT NOT NULL DEFAULT 'none', flagged INTEGER NOT NULL DEFAULT 0,
+    on_site INTEGER NOT NULL DEFAULT 0, acc_bucket INTEGER
 );
 CREATE TABLE IF NOT EXISTS votes (
     report_id TEXT NOT NULL, device_hash TEXT NOT NULL, vote TEXT NOT NULL,
@@ -51,7 +60,11 @@ CREATE TABLE IF NOT EXISTS votes (
 );
 """
 _COLS = ["id", "kind", "lat", "lng", "location_id", "edge_id", "road_name", "created_at", "expires_at",
-         "confirms", "disputes", "verified", "removed"]
+         "confirms", "disputes", "verified", "removed",
+         "details", "note", "note_status", "flagged", "on_site", "acc_bucket"]
+# Reports v2 columns, added to hub databases made before them.
+_V2_COLUMNS = {"details": "TEXT", "note": "TEXT", "note_status": "TEXT NOT NULL DEFAULT 'none'",
+               "flagged": "INTEGER NOT NULL DEFAULT 0", "on_site": "INTEGER NOT NULL DEFAULT 0", "acc_bucket": "INTEGER"}
 
 
 def ttl_s(kind: str) -> float:
@@ -76,6 +89,10 @@ class ReportStore:
         with self._lock:
             self._db.execute("PRAGMA journal_mode=WAL")
             self._db.executescript(_SCHEMA)
+            have = {row[1] for row in self._db.execute("PRAGMA table_info(reports)")}
+            for col, decl in _V2_COLUMNS.items():
+                if col not in have:
+                    self._db.execute(f"ALTER TABLE reports ADD COLUMN {col} {decl}")
             row = self._db.execute("SELECT value FROM meta WHERE key='salt'").fetchone()
             if row is None:
                 row = (secrets.token_hex(16),)
@@ -98,7 +115,8 @@ class ReportStore:
 
     def add(self, report_id: str, kind: str, lat: float, lng: float, device: str, age_s: float = 0,
             now: float | None = None, location_id: str | None = None, edge_id: int | None = None,
-            road_name: str | None = None) -> tuple[dict, bool]:
+            road_name: str | None = None, details: list[str] | None = None, note: str | None = None,
+            flagged: bool = False, on_site: bool = False, acc_bucket: int | None = None) -> tuple[dict, bool]:
         """Store a report. Posting the same id again (a phone retrying) changes nothing.
         `age_s` is how long ago the phone made it (by its own clock), for reports queued
         offline; phone clocks may be wrong, so only the elapsed time is trusted."""
@@ -112,7 +130,9 @@ class ReportStore:
             self._purge(now)
             self._db.execute(
                 f"INSERT INTO reports ({','.join(_COLS)}) VALUES ({','.join('?' * len(_COLS))})",
-                (report_id, kind, lat, lng, location_id, edge_id, road_name, created, created + ttl, 0, 0, 0, 0),
+                (report_id, kind, lat, lng, location_id, edge_id, road_name, created, created + ttl, 0, 0, 0, 0,
+                 json.dumps(details or []), note, "pending" if note else "none", int(bool(note and flagged)),
+                 int(on_site), acc_bucket if on_site else None),
             )
             # The reporter can't confirm or dispute their own report.
             self._db.execute("INSERT INTO votes VALUES (?, ?, 'own')", (report_id, self._hash(device)))
@@ -152,10 +172,18 @@ class ReportStore:
             self._db.execute(f"UPDATE reports SET {flag} = 1 WHERE id=?", (report_id,))
             return self._get(report_id)
 
+    def set_note(self, report_id: str, status: str) -> dict | None:
+        """status: 'approved' (the public may read the note) or 'hidden' (responder actions)."""
+        assert status in ("approved", "hidden")
+        with self._lock:
+            self._db.execute("UPDATE reports SET note_status = ? WHERE id = ? AND note IS NOT NULL", (status, report_id))
+            return self._get(report_id)
+
     def active(self, now: float | None = None) -> list[dict]:
         """Reports still in force and not hidden, newest first."""
         now = time.time() if now is None else now
         with self._lock:
+            self._clear_notes(now)
             rows = self._db.execute(
                 f"SELECT {','.join(_COLS)} FROM reports WHERE expires_at > ? AND removed = 0 "
                 "ORDER BY created_at DESC", (now,)).fetchall()
@@ -169,16 +197,22 @@ class ReportStore:
                 out.setdefault(r["edge_id"], r["id"])
         return out
 
+    def _clear_notes(self, now: float) -> None:
+        """Notes go as soon as their report expires (the report itself is kept a day longer)."""
+        self._db.execute("UPDATE reports SET note = NULL WHERE expires_at <= ? AND note IS NOT NULL", (now,))
+
     def _purge(self, now: float) -> None:
+        self._clear_notes(now)
         old = now - KEEP_EXPIRED_S
         self._db.execute("DELETE FROM votes WHERE report_id IN (SELECT id FROM reports WHERE expires_at < ?)", (old,))
         self._db.execute("DELETE FROM reports WHERE expires_at < ?", (old,))
 
 
-def public(r: dict, now: float | None = None, location_name: str | None = None) -> dict:
-    """What phones get. Ages, not timestamps, because phone clocks may be wrong."""
+def public(r: dict, now: float | None = None, location_name: str | None = None, responder: bool = False) -> dict:
+    """What phones get. Ages, not timestamps, because phone clocks may be wrong. A note is
+    included once a responder approved it; responders also see notes still waiting."""
     now = time.time() if now is None else now
-    return {
+    out = {
         "id": r["id"], "kind": r["kind"], "label": KIND_LABEL[r["kind"]],
         "lat": round(r["lat"], 6), "lng": round(r["lng"], 6),
         "location_id": r["location_id"], "location_name": location_name,
@@ -188,7 +222,15 @@ def public(r: dict, now: float | None = None, location_name: str | None = None) 
         "ttl_min": int(ttl_s(r["kind"]) // 60),
         "confirms": r["confirms"], "disputes": r["disputes"], "reports": 1 + r["confirms"],
         "trust": trust(r),
+        "details": json.loads(r.get("details") or "[]"),
+        "on_site": bool(r.get("on_site")),
+        "acc_bucket": r.get("acc_bucket"),
+        "note": r.get("note") if r.get("note_status") == "approved" or responder else None,
     }
+    if responder:
+        out["note_status"] = r.get("note_status") or "none"
+        out["flagged"] = bool(r.get("flagged"))
+    return out
 
 
 class Limiter:

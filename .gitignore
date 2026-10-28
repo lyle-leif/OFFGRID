@@ -19,5 +19,6 @@ _site/
 
 # Online reports: local test database and Cloudflare tool caches
 cloud/local/*.db
+.wrangler/
 cloud/.wrangler/
 cloud/node_modules/

@@ -69,7 +69,7 @@ Both are made from the real app, recorded with the internet blocked.
 - Tagalog or English (asked the first time; change it in **Settings**, the gear).
 - **After the first visit it works with no internet at all**, like a phone whose hub is off.
 
-**Shared situation reports, online:** report a flooded or blocked road, a full or open evacuation center, drinking water, a power outage or a medical need. Everyone using the website sees it within about 20 seconds, and directions go around reported roads. With no signal, your report waits on the phone and is sent when you're back online. Barangay responders log in to verify or remove reports (see [Online reports](#online-reports-cloudflare-free)).
+**Shared situation reports, online:** report a flooded or blocked road, a full or open evacuation center, drinking water, a power outage, a medical need, or **something else** in your own words. Tap a detail ("knee-deep"), add a short note, and mark the place with **"I'm here (GPS)"** or on the map. Everyone using the website sees it within about 20 seconds, and directions go around reported roads. With no signal, your report waits on the phone and is sent when you're back online. Barangay responders log in to verify or remove reports (see [Online reports](#online-reports-cloudflare-free)).
 
 **What the website doesn't have yet** (it works with a local OFFGRID hub, and is part of the redevelopment)
 - **AI summaries:** you get the exact guide text, and the app's own answers for places, directions and hotlines.
@@ -101,7 +101,7 @@ Both are made from the real app, recorded with the internet blocked.
 | **Understands typos and Taglish** | "how do i stop bleding", "is it safe to wlak thru flood water", "saan ang pinakamalapit na ospital" all work. Spelling is fixed by code before the search, on the laptop and on the phone. |
 | **Nearest places, by road** | "Nearest hospital?", "Saan may botika?", "How far is it?". Answered from the map data, never invented by the AI. |
 | **Offline directions** | Walking or driving routes with turn-by-turn steps and GPS tracking, computed on the device. Routes **steer around roads people reported as flooded or blocked**. |
-| **Situation reports** | Anyone can report a flooded or blocked road, a full or open evacuation center, drinking water, a power outage or a medical need. On the website they are shared **online** (everyone sees them within about 20 seconds); with a hub, over its local Wi-Fi. Reports are labelled *unverified*, *confirmed* or *verified by a responder*, and expire on their own. A report made with no signal waits on the phone and is sent later. No names or phone numbers are collected. |
+| **Situation reports** | Anyone can report a flooded or blocked road, a full or open evacuation center, drinking water, a power outage, a medical need, or *something else*. One-tap details ("knee-deep", "cars can't pass"), an optional note in your own words (shown to everyone only after a responder approves it), and **"I'm here" by GPS** (an on-site badge) or a tap on the map. Words like "naiipit" or "trapped" show **"Call 911 now"** before sending. On the website they are shared **online** (everyone sees them within about 20 seconds); with a hub, over its local Wi-Fi. Reports are labelled *unverified*, *confirmed* or *verified by a responder*, and expire on their own. A report made with no signal waits on the phone and is sent later. No names or phone numbers are collected. |
 | **Responders** | Barangay and rescue staff verify or remove reports: on the website with a **personal account** (every action is logged), on a hub with its PIN. |
 | **Hotlines** | Official numbers: 911 and national lines, the Batangas PDRRMO, Batangas City, Lipa City, Calaca, Nasugbu, Lemery, San Juan, Alitagtag, Balete and Talisay. |
 | **Battery saver** | Skips the AI and shows the guide text only. It turns on by itself at 20% battery when not charging. |
@@ -342,7 +342,7 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 - **Panel tabs** (a floating card on the laptop, a bottom sheet on phones):
   - **Assistant:** ask anything. Tap a suggestion chip or type. *New topic* clears the follow-up context. *Battery saver* skips the AI.
   - **Places:** search and filter facilities, tap one for details, **Directions** (Walk or Drive), or **Ask** about it.
-  - **Reports:** **Report something**, choose what, tap the spot on the map. Others can tap **Still true** or **Not true**. *I'm a responder*: on the website, your name and password (accounts are made by the admin with `tools/cloud_admin.mjs`); on a hub, the hub's PIN.
+  - **Reports:** **Report something** → choose what → tap up to 2 details → (optional) **"What do you see?"** (140 characters; required for *Something else*) → **I'm here (GPS)** or **Mark on the map**. Others can tap **Still true** or **Not true**. Notes are shown to everyone only after a responder taps **Approve note** (or **Hide note**). *I'm a responder*: on the website, your name and password (accounts are made by the admin with `tools/cloud_admin.mjs`); on a hub, the hub's PIN.
   - **Hotlines:** official emergency numbers.
 
 **Questions to try**
@@ -360,7 +360,9 @@ Do this once per phone, while near the hub. It takes about 2 minutes.
 
 The full question bank, with what answers each one, is in [data/suggested_questions.md](data/suggested_questions.md).
 
-**Report kinds and how long they last:** road flooded or blocked (2 h); evacuation center full or open (6 h); drinking water (6 h); power out (6 h); medical need (2 h). A confirmation restarts the clock, up to 3 lifetimes. A report gets the *confirmed* label after 2 confirmations, and is hidden when disputes reach confirmations + 2. Limits: 10 reports per phone and 30 per network address per hour.
+**Report kinds and how long they last:** road flooded or blocked (2 h); evacuation center full or open (6 h); drinking water (6 h); power out (6 h); medical need (2 h); something else (3 h, needs a note). A confirmation restarts the clock, up to 3 lifetimes. A report gets the *confirmed* label after 2 confirmations, and is hidden when disputes reach confirmations + 2. Limits: 10 reports per phone and 30 per network address per hour.
+
+**Notes, checked by code (no AI):** phone numbers, emails and links are replaced with "[tinanggal]"; notes are cut at 140 characters and deleted as soon as the report expires; the AI never sees them. **For barangays:** the details for each kind are in [data/report_details.json](data/report_details.json), and the word lists in [data/report_words.json](data/report_words.json): `danger` words make the phone show "Call 911 now" (it can still send), `flag` words mark a note for a responder to check (never blocked). After editing either file, run `tools/build_phone_pack.py`, and `node tools/cloud_admin.mjs deploy` for the online reports.
 
 ---
 

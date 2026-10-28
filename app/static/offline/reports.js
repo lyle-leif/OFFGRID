@@ -14,8 +14,9 @@ const GROUPS = [
   [["water_available"], "water"],
   [["power_out"], "power"],
   [["medical_need"], "medical"],
+  [["other"], "other"],
 ];
-const TTL_H = { road_flooded: 2, road_blocked: 2, center_full: 6, center_open: 6, water_available: 6, power_out: 6, medical_need: 2 };
+const TTL_H = { road_flooded: 2, road_blocked: 2, center_full: 6, center_open: 6, water_available: 6, power_out: 6, medical_need: 2, other: 3 };
 const ROAD_SUFFIX = /\s+(street|st|road|rd|avenue|ave|highway|hwy|boulevard|blvd|drive|dr|extension|ext)$/;
 
 const fmtM = (m) => (m < 1000 ? `${pyRound(m)} m` : `${(m / 1000).toFixed(1)} km`);
@@ -87,8 +88,11 @@ export function answerReports(question, kinds, reports, place = null, pos = null
       else if (r.location_name && !(place && r.location_id === place.id)) where = t("rans.where_at", { place: r.location_name });
       else if (pos && !place) where = t("rans.where_from", { d: fmtM(meters([r.lat, r.lng], pos)) });
       const disputed = r.disputes ? t("rans.disputed", { n: r.disputes }) : "";
+      // The one-tap details and the GPS badge; a reporter's note is never quoted here.
+      const chips = (r.details ?? []).map((d) => t(`detail.${d}`));
       lines.push(t("rans.line", {
-        label: t(`kind.${r.kind}`), where, trust: t(`rans.trust.${r.trust}`), age: fmtOld(r.age_min, lang),
+        label: t(`kind.${r.kind}`), details: chips.length ? t("rans.details", { list: chips.join(", ") }) : "", where,
+        trust: t(`rans.trust.${r.trust}`), onsite: r.on_site ? t("rans.onsite") : "", age: fmtOld(r.age_min, lang),
         count: t("rans.count", { n: r.reports }), disputed,
       }));
     }

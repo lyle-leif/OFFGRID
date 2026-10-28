@@ -162,6 +162,8 @@ try {
   const queued = await page.evaluate(`(async () => {
     document.getElementById('report-new').click();
     [...document.querySelectorAll('.report-kind')].find((b) => b.textContent.includes('Power out')).click();
+    for (let i = 0; i < 20 && !document.querySelector('.report-form [data-where="map"]'); i++) await new Promise((r) => setTimeout(r, 100));
+    document.querySelector('.report-form [data-where="map"]').click(); // the report form: "Mark on the map"
     const m = window.__map;
     m.fire('click', { lngLat: { lat: 13.758, lng: 121.06 }, point: m.project([121.06, 13.758]), originalEvent: {} });
     await new Promise((r) => setTimeout(r, 500));

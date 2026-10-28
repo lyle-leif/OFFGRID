@@ -8,6 +8,7 @@
 import { CENTER_KINDS, REPORT_KINDS, ROAD_KINDS, fmtAge, trustLabel } from "./report-kinds.js";
 import { getLang, roadName, t } from "./i18n.js";
 import { CLOUD, SITE, url } from "./mode.js";
+import { hasWord, MAX_NOTE } from "./offline/notes.js";
 import { reportImg } from "./icons.js";
 import { icon, iconLabel } from "./ui-icons.js";
 
@@ -17,6 +18,14 @@ const CENTER_PICK_M = 300; // a "center full/open" pin snaps to an evacuation ce
 const ONLINE = Boolean(SITE && CLOUD); // the website with online reports
 const NO_REPORTS = SITE && !CLOUD; // the website without them: reports need a hub
 const TOKEN_KEY = ONLINE ? "bb.token" : "bb.pin";
+const NOTICE_KEY = "bb.note_notice"; // the one-time "who reads notes" notice was shown
+const GPS_FIX = { maxAcc: 50, maxAgeMs: 60_000, timeoutMs: 30_000 }; // "Nandito ako": good enough to say "on site"
+
+// The one-tap details per kind and the danger words (pack/report_*.json), loaded once.
+let formData = null;
+const loadFormData = () => (formData ??= Promise.all(["pack/report_details.json", "pack/report_words.json"]
+  .map((f) => fetch(url(f)).then((r) => r.json()))).then(([details, words]) => ({ details, words }))
+  .catch(() => ({ details: {}, words: { danger: [] } })));
 
 const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
@@ -61,7 +70,8 @@ async function fetchJSON(path, opts = {}) {
 
 const detail = (res, fallback) => (typeof res.body?.detail === "string" ? res.body.detail : fallback);
 
-export function createReports({ getMapApi, getPos, getSelected, getLocations, pickOnMap, cancelPick, showTab, onChange, snapRoad }) {
+// getFix(options) -> { fix: {lat, lng, acc} } or { error: "off" | "weak" | "outside" }: one GPS fix for "Nandito ako".
+export function createReports({ getMapApi, getPos, getSelected, getLocations, pickOnMap, cancelPick, showTab, onChange, snapRoad, getFix }) {
   const $ = (id) => document.getElementById(id);
   const device = deviceId();
   let outbox = Array.isArray(store.get(KEYS.outbox)) ? store.get(KEYS.outbox) : [];
@@ -112,6 +122,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
         id: o.id, kind: o.kind, lat: o.lat, lng: o.lng, location_id: o.location_id ?? null, device,
         age_s: Math.max(0, Math.round((Date.now() - o.created) / 1000)),
         ...(o.edge_id != null ? { edge_id: o.edge_id, road_name: o.road_name } : {}), // snapped on this phone (online)
+        details: o.details ?? [], note: o.note ?? null, on_site: Boolean(o.on_site), acc_bucket: o.on_site ? o.acc_bucket ?? null : null,
       };
       let res;
       try {
@@ -134,7 +145,8 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       try {
         const failed = outbox.length ? await flush() : [];
         if (failed.length) message(t("rep.not_sent", { list: failed.join("; ") }), true);
-        const res = await fetchJSON("api/reports");
+        // Responders also get the notes still waiting for their approval.
+        const res = await fetchJSON("api/reports", pin ? { headers: authHeaders() } : {});
         if (res.ok && Array.isArray(res.body)) {
           hubUp = true;
           cache = { synced_at: Date.now(), reports: res.body };
@@ -180,8 +192,9 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
   }
 
   // `road`: { edge_id, road_name } when this phone snapped the report to a road (online).
-  function queue(kind, pos, loc = null, road = null) {
-    const o = { id: randomId(), kind, lat: loc ? loc.lat : pos.lat, lng: loc ? loc.lng : pos.lng, location_id: loc?.id ?? null, created: Date.now() };
+  // `extra`: what the form adds (details, note, on_site, acc_bucket).
+  function queue(kind, pos, loc = null, road = null, extra = {}) {
+    const o = { id: randomId(), kind, lat: loc ? loc.lat : pos.lat, lng: loc ? loc.lng : pos.lng, location_id: loc?.id ?? null, created: Date.now(), ...extra };
     if (road) Object.assign(o, { edge_id: road.edge_id, road_name: road.road_name });
     outbox.push(o);
     saveOutbox();
@@ -191,30 +204,154 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
     sync().then(() => { if (!outbox.some((x) => x.id === o.id) && $("report-msg").dataset.msg === "sending") message(t("rep.sent")); });
   }
 
-  function choose(kind) {
-    $("report-kinds").hidden = true;
-    const sel = getSelected();
-    const isCenter = (l) => l && (l.type === "evacuation_center" || (l.also ?? []).includes("evacuation_center"));
-    if (CENTER_KINDS.has(kind) && isCenter(sel)) {
-      queue(kind, sel, sel);
-      return;
+  const isCenter = (l) => l && (l.type === "evacuation_center" || (l.also ?? []).includes("evacuation_center"));
+
+  // Put the report where it was marked: on an evacuation center (center kinds), on the road
+  // (road kinds; the online reports have no road network, so this phone snaps it), or as is.
+  // Returns false (with a message) when there's nothing suitable there.
+  async function place(kind, pos, extra, onSite) {
+    if (CENTER_KINDS.has(kind)) {
+      const loc = nearestCenter(pos);
+      if (!loc) { message(t(onSite ? "rep.no_center_here" : "rep.no_center"), true); return false; }
+      queue(kind, pos, loc, null, extra);
+    } else if (ROAD_KINDS.has(kind)) {
+      const road = await snapRoad?.(pos.lat, pos.lng); // null: no road within 60 m; undefined: no road data here
+      if (road === null || (ONLINE && !road)) { message(t(onSite ? "rep.no_road_here" : "apierr.pin_on_road"), true); return false; }
+      queue(kind, road ? road.point : pos, null, road ?? null, extra);
+    } else {
+      queue(kind, pos, null, null, extra);
     }
-    const hint = t(CENTER_KINDS.has(kind) ? "rep.hint_center" : ROAD_KINDS.has(kind) ? "rep.hint_road" : "rep.hint_any");
-    message(hint);
-    pickOnMap(hint, async (pos) => {
-      if (CENTER_KINDS.has(kind)) {
-        const loc = nearestCenter(pos);
-        if (!loc) { message(t("rep.no_center"), true); return; }
-        queue(kind, pos, loc);
-      } else if (ONLINE && ROAD_KINDS.has(kind)) {
-        // The online reports have no road network: snap to the road here, as the hub would.
-        const road = await snapRoad?.(pos.lat, pos.lng);
-        if (!road) { message(t("apierr.pin_on_road"), true); return; }
-        queue(kind, road.point, null, road);
-      } else {
-        queue(kind, pos);
+    return true;
+  }
+
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  // The report form: one-tap details, "Ano ang nakikita mo?", then where: "Nandito ako" by GPS,
+  // or a tap on the map (or the evacuation center that is open on screen).
+  async function choose(kind) {
+    const box = $("report-kinds");
+    const { details, words } = await loadFormData();
+    const k = REPORT_KINDS[kind];
+    const form = el("div", "report-form");
+    form.dataset.kind = kind;
+    const head = el("p", "report-form-head");
+    head.append(reportImg(kind, k.color, 24), el("span", null, k.label));
+    form.append(head);
+
+    const picked = new Set();
+    const chipIds = details[kind] ?? [];
+    if (chipIds.length) {
+      form.append(el("p", "report-form-label", t("rep.form_details")));
+      const chips = el("div", "rep-chips");
+      for (const id of chipIds) {
+        const b = el("button", "rep-chip", t(`detail.${id}`));
+        b.type = "button";
+        b.dataset.detail = id;
+        b.setAttribute("aria-pressed", "false");
+        b.addEventListener("click", () => {
+          if (picked.has(id)) picked.delete(id);
+          else if (picked.size < 2) picked.add(id);
+          for (const c of chips.children) c.setAttribute("aria-pressed", String(picked.has(c.dataset.detail)));
+        });
+        chips.append(b);
+      }
+      form.append(chips);
+    }
+
+    const required = kind === "other";
+    const label = el("label", "report-form-label", t(required ? "rep.form_note" : "rep.form_note_optional"));
+    label.htmlFor = "report-note";
+    const note = el("textarea", "report-note");
+    Object.assign(note, { id: "report-note", rows: 2, maxLength: MAX_NOTE, placeholder: t("rep.form_note_ph") });
+    const count = el("span", "report-note-count", t("rep.chars", { n: 0 }));
+    const hint = el("p", "report-form-hint", t("rep.form_note_hint"));
+    hint.append(" ", count);
+    const notice = el("p", "report-notice", t("rep.note_notice"));
+    notice.hidden = true;
+    const danger = el("div", "report-danger");
+    danger.setAttribute("role", "alert");
+    danger.hidden = true;
+    const call = el("a", "btn report-danger-call", t("rep.danger_call"));
+    call.href = "tel:911";
+    danger.append(el("span", null, t("rep.danger")), call);
+    note.addEventListener("focus", () => {
+      let seen = null;
+      try { seen = localStorage.getItem(NOTICE_KEY); } catch { /* no storage */ }
+      if (!seen) {
+        notice.hidden = false;
+        try { localStorage.setItem(NOTICE_KEY, "1"); } catch { /* no storage */ }
       }
     });
+    note.addEventListener("input", () => {
+      count.textContent = t("rep.chars", { n: note.value.length });
+      danger.hidden = !hasWord(note.value, words.danger ?? []); // a warning only: sending is still allowed
+    });
+    form.append(label, note, hint, notice, danger);
+
+    const extra = (onSite, acc = null) => ({
+      details: [...picked], note: note.value.trim() || null, on_site: onSite, acc_bucket: onSite ? (acc <= 20 ? 20 : 50) : null,
+    });
+    const ready = () => {
+      if (required && !note.value.trim()) { message(t("rep.form_note_required"), true); note.focus(); return false; }
+      return true;
+    };
+    const done = () => { box.hidden = true; };
+
+    form.append(el("p", "report-form-label", t("rep.form_where")));
+    const where = el("div", "report-where");
+    const sel = getSelected();
+    if (CENTER_KINDS.has(kind) && isCenter(sel)) {
+      // The evacuation center open on screen is the place.
+      const send = el("button", "btn", t("rep.send_for", { name: sel.name }));
+      send.type = "button";
+      send.dataset.where = "selected";
+      send.addEventListener("click", () => { if (ready()) { done(); queue(kind, sel, sel, null, extra(false)); } });
+      where.append(send);
+    }
+    if (getFix) {
+      const gps = el("button", "btn", t("rep.where_gps"));
+      gps.type = "button";
+      gps.dataset.where = "gps";
+      gps.addEventListener("click", async () => {
+        if (!ready()) return;
+        message(t("rep.gps_wait"));
+        gps.disabled = true;
+        const r = await getFix(GPS_FIX);
+        gps.disabled = false;
+        if (!r.fix) {
+          message(t(r.error === "off" ? "rep.gps_off" : r.error === "outside" ? "gps.outside" : "rep.gps_weak"), true);
+          return; // the form stays open: "Markahan sa mapa" is right there
+        }
+        if (await place(kind, r.fix, extra(true, r.fix.acc), true)) done();
+      });
+      where.append(gps);
+    }
+    const map = el("button", `btn${getFix ? " secondary" : ""}`, t("rep.where_map"));
+    map.type = "button";
+    map.dataset.where = "map";
+    map.addEventListener("click", () => {
+      if (!ready()) return;
+      const pickHint = t(CENTER_KINDS.has(kind) ? "rep.hint_center" : ROAD_KINDS.has(kind) ? "rep.hint_road" : "rep.hint_any");
+      const data = extra(false);
+      done();
+      message(pickHint);
+      pickOnMap(pickHint, (pos) => place(kind, pos, data, false));
+    });
+    where.append(map);
+    form.append(where);
+
+    const cancel = el("button", "link-btn", t("rep.cancel"));
+    cancel.type = "button";
+    cancel.addEventListener("click", () => { done(); message(null); cancelPick(); });
+    form.append(cancel);
+    box.replaceChildren(form);
+    box.hidden = false;
+    message(null);
   }
 
   function openChooser() {
@@ -257,6 +394,19 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       store.set(KEYS.votes, votes);
     } catch {
       hubUp = false;
+      message(t(ONLINE ? "rep.offline_now" : "rep.hub_unreachable"), true);
+    }
+    sync();
+  }
+
+  async function noteAction(r, action) {
+    try {
+      const res = await fetchJSON(`api/reports/${encodeURIComponent(r.id)}/note`, {
+        method: "POST", headers: { "Content-Type": "application/json", ...authHeaders() }, body: JSON.stringify({ action }),
+      });
+      if (!res.ok) message(detail(res, t("rep.not_allowed")), true);
+      if (res.status === 401 || res.status === 403) setPin(null);
+    } catch {
       message(t(ONLINE ? "rep.offline_now" : "rep.hub_unreachable"), true);
     }
     sync();
@@ -398,6 +548,17 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       meta.className = `fac-meta trust-${r.pending ? "pending" : r.trust}`;
       meta.textContent = trustLine(r);
       info.append(name, meta);
+      // Reports v2: the one-tap details, how it was placed, and an approved note.
+      const chips = (r.details ?? []).map((d) => t(`detail.${d}`));
+      const badge = el("div", `rep-badge${r.on_site ? " on-site" : ""}`, [...chips, t(r.on_site ? "rep.on_site" : "rep.marked")].join(" · "));
+      info.append(badge);
+      if (r.note && !r.pending) {
+        const status = r.note_status ?? "approved"; // the public only ever gets approved notes
+        const key = status === "pending" ? "rep.note_pending" : status === "hidden" ? "rep.note_hidden" : "rep.said";
+        const n = el("div", `rep-note note-${status}`, t(key, { note: r.note }));
+        if (r.flagged && status !== "approved") n.append(" ", el("span", "rep-flag", `(${t("rep.flagged")})`));
+        info.append(n);
+      }
       row.append(reportImg(r.kind, k.color, 26), info);
       row.addEventListener("click", () => getMapApi()?.flyTo(r.lat, r.lng));
       li.append(row);
@@ -409,6 +570,8 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
           smallBtn(r.disputes ? t("rep.not_true_n", { n: r.disputes }) : t("rep.not_true"), "thumbsDown", () => vote(r, "dispute"), votes[r.id] === "dispute"),
         );
         if (pin) {
+          if (r.note && r.note_status !== "approved") actions.append(smallBtn(t("rep.approve_note"), "check", () => noteAction(r, "approve")));
+          if (r.note && r.note_status !== "hidden") actions.append(smallBtn(t("rep.hide_note"), "close", () => noteAction(r, "hide")));
           if (r.trust !== "verified") actions.append(smallBtn(t("rep.verify"), "check", () => responderAction(r, "verify")));
           actions.append(smallBtn(t("rep.remove"), "close", () => responderAction(r, "remove")));
         }

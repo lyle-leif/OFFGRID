@@ -8,12 +8,14 @@
 // evacuation center. Nothing here costs money: on the free plan, going over a daily limit only
 // makes requests fail until the next day, and phones keep reports in their outbox meanwhile.
 
+import { cleanNote, hasWord } from "../../app/static/offline/notes.js";
 import { audit, login, logout, sessionName } from "./auth.js";
 import { DATA } from "./data.js";
 import { CENTER_KINDS, ROAD_KINDS, ReportStore, publicReport } from "./reports.js";
 
 const TOKEN = /^[A-Za-z0-9-]{8,64}$/;
 const LIMITS = { device: [10, 3600], ip: [30, 3600], login: [10, 600] }; // [count, seconds], as on the hub
+const ROUTE = /^\/api\/reports\/([A-Za-z0-9-]{8,64})(\/vote|\/verify|\/note)?$/;
 const DEFAULT_ORIGINS = ["https://lyle-leif.github.io"];
 const LOCAL_ORIGIN = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 
@@ -36,6 +38,9 @@ function corsHeaders(request, env) {
 }
 
 const isNum = (v) => typeof v === "number" && Number.isFinite(v);
+// One-tap details: at most 2, each allowed for the kind (data/report_details.json).
+const validDetails = (kind, d) => Array.isArray(d) && d.length <= 2 && new Set(d).size === d.length
+  && d.every((x) => (DATA.details[kind] ?? []).includes(x));
 const optStr = (v, max) => v === undefined || v === null || (typeof v === "string" && v.length <= max);
 
 async function readJson(request) {
@@ -57,12 +62,14 @@ export async function handle(request, env, now) {
   const send = (body, status = 200) => Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
   const fail = (status, key, vars) => send({ detail: text(lang, key, vars) }, status);
   const path = url.pathname.replace(/\/+$/, "");
-  const m = /^\/api\/reports\/([A-Za-z0-9-]{8,64})(\/vote|\/verify)?$/.exec(path);
+  const m = ROUTE.exec(path);
 
   if (path === "/api/health" && request.method === "GET") return send({ backend: "ok", cloud: true });
 
   if (path === "/api/reports" && request.method === "GET") {
-    return send((await store.active(now)).map((r) => publicReport(r, now)));
+    // Logged-in responders also see notes waiting for approval.
+    const responder = Boolean(await sessionName(db, request.headers.get("Authorization"), now));
+    return send((await store.active(now)).map((r) => publicReport(r, now, responder)));
   }
 
   if (path === "/api/reports" && request.method === "POST") {
@@ -70,11 +77,17 @@ export async function handle(request, env, now) {
     if (!b || !TOKEN.test(b.id ?? "") || !DATA.kinds.includes(b.kind) || !isNum(b.lat) || !isNum(b.lng) || !TOKEN.test(b.device ?? "")
         || !(b.age_s === undefined || (isNum(b.age_s) && b.age_s >= 0 && b.age_s <= 7 * 86400))
         || !optStr(b.location_id, 64) || !optStr(b.road_name, 120)
-        || !(b.edge_id === undefined || b.edge_id === null || Number.isInteger(b.edge_id))) {
+        || !(b.edge_id === undefined || b.edge_id === null || Number.isInteger(b.edge_id))
+        || !(b.note === undefined || b.note === null || (typeof b.note === "string" && b.note.length <= 1000))
+        || !(b.on_site === undefined || typeof b.on_site === "boolean")
+        || !(b.acc_bucket === undefined || b.acc_bucket === null || b.acc_bucket === 20 || b.acc_bucket === 50)) {
       return fail(422, "apierr.bad_request");
     }
     const old = await store.get(b.id);
     if (old) return send(publicReport(old, now)); // a phone retrying a report we already have
+    if (!validDetails(b.kind, b.details ?? [])) return fail(422, "apierr.bad_details");
+    const note = cleanNote(b.note);
+    if (b.kind === "other" && !note) return fail(422, "apierr.note_required");
     const box = DATA.bbox;
     if (!(box.min_lat <= b.lat && b.lat <= box.max_lat && box.min_lng <= b.lng && b.lng <= box.max_lng)) return fail(422, "apierr.outside");
     const devKey = `d:${await store.hash(b.device)}`;
@@ -96,7 +109,8 @@ export async function handle(request, env, now) {
       locationId = b.location_id;
     }
     const [r, created] = await store.add({ id: b.id, kind: b.kind, lat, lng, device: b.device, ageS: b.age_s ?? 0, now,
-      locationId, edgeId, roadName });
+      locationId, edgeId, roadName, details: b.details ?? [], note, flagged: hasWord(note, DATA.words.flag),
+      onSite: Boolean(b.on_site), accBucket: b.acc_bucket ?? null });
     if (created) {
       await db.batch([
         db.prepare("INSERT INTO hits (key, at) VALUES (?, ?)").bind(devKey, now),
@@ -129,6 +143,17 @@ export async function handle(request, env, now) {
   if (path === "/api/logout" && request.method === "POST") {
     await logout(db, request.headers.get("Authorization"), now);
     return send({ ok: true });
+  }
+
+  if (m && m[2] === "/note" && request.method === "POST") {
+    const name = await sessionName(db, request.headers.get("Authorization"), now);
+    if (!name) return fail(401, "apierr.need_login");
+    const b = await readJson(request);
+    if (!b || !["approve", "hide"].includes(b.action)) return fail(422, "apierr.bad_request");
+    const r = await store.setNote(m[1], b.action === "approve" ? "approved" : "hidden");
+    if (!r) return fail(404, "apierr.gone");
+    await audit(db, name, b.action === "approve" ? "note_approve" : "note_hide", m[1], now);
+    return send(publicReport(r, now, true));
   }
 
   if (m && (m[2] === "/verify" || !m[2]) && request.method === (m[2] ? "POST" : "DELETE")) {

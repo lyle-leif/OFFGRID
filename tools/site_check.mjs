@@ -171,6 +171,8 @@ const reportOnMap = (page, kind, at) => js(page, `
   document.getElementById('tab-reports').click();
   document.getElementById('report-new').click();
   [...document.querySelectorAll('#report-kinds .report-kind')].find((b) => b.textContent.trim() === ${JSON.stringify(kind)}).click();
+  for (let i = 0; i < 20 && !document.querySelector('.report-form [data-where="map"]'); i++) await new Promise((r) => setTimeout(r, 100));
+  document.querySelector('.report-form [data-where="map"]').click(); // the report form: "Mark on the map"
   const m = window.__map; m.jumpTo({ center: [${at.lng}, ${at.lat}], zoom: 16.5 });
   await new Promise((r) => setTimeout(r, 300));
   m.fire('click', { lngLat: { lat: ${at.lat}, lng: ${at.lng} }, point: m.project([${at.lng}, ${at.lat}]), originalEvent: {} });
@@ -233,6 +235,17 @@ try {
     const audit = (await cloudDb.prepare("SELECT name, action, report_id FROM audit").all()).results;
     check("the responder verifies a report, and it is in the audit log", verified && audit.some((a) => a.action === "verify" && a.report_id === "other-phone-flood-1"),
       audit.map((a) => `${a.name}:${a.action}`).join(", "));
+
+    // Reports v2: another phone describes something; the responder approves the note; everyone sees it.
+    await fetch(`${CLOUD_URL}api/reports`, { method: "POST", headers: { "Content-Type": "application/json", Origin: "http://127.0.0.1:8768" },
+      body: JSON.stringify({ id: "other-phone-note-1", device: "other-phone-0002", kind: "other", lat: 13.7605, lng: 121.0605, note: "Bumagsak na poste, ingat" }) });
+    const publicNote0 = (await cloudList()).find((r) => r.id === "other-phone-note-1")?.note ?? null;
+    const seenWaiting = await waitFor(() => page.evaluate(`(document.querySelector('#report-list li.report[data-id="other-phone-note-1"]')?.innerText ?? '').includes('waiting for approval')`), 30000, "waiting note").catch(() => false);
+    check("the responder sees another phone's note waiting (the public doesn't)", seenWaiting && publicNote0 === null);
+    await js(page, `const li = document.querySelector('#report-list li.report[data-id="other-phone-note-1"]');
+      [...li.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Approve note').click(); return true;`);
+    const approvedNote = await waitFor(async () => (await cloudList()).find((r) => r.id === "other-phone-note-1")?.note, 15000, "approved note").catch(() => null);
+    check("an approved note is shared with everyone", approvedNote === "Bumagsak na poste, ingat", approvedNote);
   }
 
   // ---- the server goes away: everything from the phone ----

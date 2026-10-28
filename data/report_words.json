@@ -1,0 +1,12 @@
+{
+ "_about": "Words checked in report notes. The barangay may edit these lists (lowercase; whole words or phrases). danger: the phone shows 'Call 911 now' before sending. flag: the note is marked for a responder to check (never blocked). Run tools/build_phone_pack.py after a change, and tools/cloud_admin.mjs deploy for the online reports.",
+ "danger": [
+  "naiipit", "naipit", "nakaipit", "nalulunod", "nalunod", "lumulubog", "hindi makahinga", "di makahinga",
+  "walang malay", "nawalan ng malay", "tulungan niyo", "tulong po", "saklolo",
+  "trapped", "drowning", "can't breathe", "cannot breathe", "unconscious", "help us"
+ ],
+ "flag": [
+  "putang ina", "putangina", "tangina", "gago", "gaga", "tanga", "bobo", "ulol", "tarantado", "leche", "hayop ka",
+  "fuck", "shit", "bitch", "stupid", "idiot"
+ ]
+}

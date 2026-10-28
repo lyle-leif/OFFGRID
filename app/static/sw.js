@@ -23,14 +23,14 @@ const PRECACHE = [
   "./", "index.html", "privacy.html", "styles.css", "manifest.webmanifest",
   "app.js", "map.js", "chat.js", "directions.js", "icons.js", "ui-icons.js", "reports.js", "report-kinds.js", "sheet.js",
   "i18n.js", "mode.js", "lang/en.json", "lang/tl.json",
-  "offline/search.js", "offline/intents.js", "offline/router.js", "offline/answers.js", "offline/brain.js", "offline/reports.js", "offline/normalize.js",
+  "offline/search.js", "offline/intents.js", "offline/router.js", "offline/answers.js", "offline/brain.js", "offline/reports.js", "offline/normalize.js", "offline/notes.js",
   "vendor/maplibre-gl.js", "vendor/maplibre-gl.css", "vendor/pmtiles.js",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/logo.svg",
   "map/style.json", "map/style-dark.json",
   ...["light", "dark"].flatMap((t) => [`map/sprites/${t}.json`, `map/sprites/${t}.png`, `map/sprites/${t}@2x.json`, `map/sprites/${t}@2x.png`]),
   ...FONTS.flatMap((f) => FONT_RANGES.map((r) => `map/fonts/${encodeURIComponent(f)}/${r}.pbf`)),
   "pack/version.json", "pack/guides.json", "pack/lexicon.json", "pack/roads-meta.json", "pack/roads.bin",
-  "pack/locations.json", "pack/hotlines.json",
+  "pack/locations.json", "pack/hotlines.json", "pack/report_details.json", "pack/report_words.json",
   ...(SITE ? [] : ["api/locations", "api/hotlines"]), // the hub's live lists
   "map/area.pmtiles", // the big one (~32 MB) last
 ].map(at);

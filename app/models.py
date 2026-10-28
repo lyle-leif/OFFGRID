@@ -64,6 +64,7 @@ class AskRequest(BaseModel):
 
 ReportKind = Literal[
     "road_flooded", "road_blocked", "center_full", "center_open", "water_available", "power_out", "medical_need",
+    "other",
 ]
 # Random ids made on the phone: the report id (so a retried post isn't stored twice) and
 # an anonymous device id (so a phone votes once per report).
@@ -79,6 +80,18 @@ class NewReport(BaseModel):
     device: str = Field(pattern=TOKEN)
     # Seconds since the phone made the report (non-zero when it was queued offline).
     age_s: float = Field(default=0, ge=0, le=7 * 86400)
+    # Reports v2: one-tap details (data/report_details.json), the reporter's own words (cleaned
+    # by app/services/report_notes.py), and whether they marked it by GPS on site.
+    details: list[str] = Field(default_factory=list, max_length=4)
+    note: str | None = Field(default=None, max_length=1000)
+    on_site: bool = False
+    acc_bucket: Literal[20, 50] | None = None
+
+
+class NoteAction(BaseModel):
+    """A responder approves a note (the public may read it) or hides it."""
+
+    action: Literal["approve", "hide"]
 
 
 class ReportVote(BaseModel):

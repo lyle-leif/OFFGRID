@@ -4044,7 +4044,7 @@
      "summary": "unavailable",
      "summary_error": "no AI",
      "timing": {
-      "total_ms": 73
+      "total_ms": 0
      }
     }
    ]
@@ -6102,7 +6102,7 @@
      "summary": "unavailable",
      "summary_error": "no AI",
      "timing": {
-      "total_ms": 143
+      "total_ms": 0
      }
     }
    ]
@@ -7956,7 +7956,11 @@
     "confirms": 0,
     "disputes": 0,
     "reports": 1,
-    "trust": "unverified"
+    "trust": "unverified",
+    "details": [],
+    "on_site": false,
+    "acc_bucket": null,
+    "note": null
    },
    {
     "id": "r-flood",
@@ -7974,7 +7978,14 @@
     "confirms": 0,
     "disputes": 0,
     "reports": 1,
-    "trust": "unverified"
+    "trust": "unverified",
+    "details": [
+     "knee",
+     "no_cars"
+    ],
+    "on_site": true,
+    "acc_bucket": 20,
+    "note": null
    },
    {
     "id": "r-center",
@@ -7992,7 +8003,11 @@
     "confirms": 0,
     "disputes": 0,
     "reports": 1,
-    "trust": "verified"
+    "trust": "verified",
+    "details": [],
+    "on_site": false,
+    "acc_bucket": null,
+    "note": null
    },
    {
     "id": "r-block",
@@ -8010,7 +8025,11 @@
     "confirms": 2,
     "disputes": 1,
     "reports": 3,
-    "trust": "confirmed"
+    "trust": "confirmed",
+    "details": [],
+    "on_site": false,
+    "acc_bucket": null,
+    "note": null
    },
    {
     "id": "r-water",
@@ -8028,7 +8047,13 @@
     "confirms": 0,
     "disputes": 0,
     "reports": 1,
-    "trust": "unverified"
+    "trust": "unverified",
+    "details": [
+     "free"
+    ],
+    "on_site": false,
+    "acc_bucket": null,
+    "note": null
    }
   ],
   "cases": [
@@ -8040,8 +8065,8 @@
      "road_flooded",
      "road_blocked"
     ],
-    "text": "1 report on P. Burgos Street:\n- Road flooded: unverified, 25 min old, 1 report.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
-    "text_tl": "1 ulat sa P. Burgos Street:\n- Baha ang daan: hindi pa kumpirmado, 25 min na, 1 ulat.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
+    "text": "1 report on P. Burgos Street:\n- Road flooded (knee-deep, cars can't pass): unverified, reporter on site, 25 min old, 1 report.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "1 ulat sa P. Burgos Street:\n- Baha ang daan (hanggang tuhod, hindi madaanan ng sasakyan): hindi pa kumpirmado, nasa lugar ang nag-ulat, 25 min na, 1 ulat.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-flood"
     ],
@@ -8059,8 +8084,8 @@
      "road_flooded",
      "road_blocked"
     ],
-    "text": "2 reports within 3 km of you:\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
-    "text_tl": "2 ulat sa loob ng 3 km mula sa iyo:\n- Baha ang daan sa P. Burgos Street: hindi pa kumpirmado, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
+    "text": "2 reports within 3 km of you:\n- Road flooded (knee-deep, cars can't pass) on P. Burgos Street: unverified, reporter on site, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "2 ulat sa loob ng 3 km mula sa iyo:\n- Baha ang daan (hanggang tuhod, hindi madaanan ng sasakyan) sa P. Burgos Street: hindi pa kumpirmado, nasa lugar ang nag-ulat, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-flood",
      "r-block"
@@ -8075,8 +8100,8 @@
      "road_flooded",
      "road_blocked"
     ],
-    "text": "2 reports in the area:\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
-    "text_tl": "2 ulat sa lugar:\n- Baha ang daan sa P. Burgos Street: hindi pa kumpirmado, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
+    "text": "2 reports in the area:\n- Road flooded (knee-deep, cars can't pass) on P. Burgos Street: unverified, reporter on site, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "2 ulat sa lugar:\n- Baha ang daan (hanggang tuhod, hindi madaanan ng sasakyan) sa P. Burgos Street: hindi pa kumpirmado, nasa lugar ang nag-ulat, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-flood",
      "r-block"
@@ -8177,10 +8202,11 @@
      "center_open",
      "water_available",
      "power_out",
-     "medical_need"
+     "medical_need",
+     "other"
     ],
-    "text": "3 reports within 3 km of you:\n- Power out, 140 m from you: unverified, 5 min old, 1 report.\n- Road flooded on P. Burgos Street: unverified, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
-    "text_tl": "3 ulat sa loob ng 3 km mula sa iyo:\n- Walang kuryente, 140 m mula sa iyo: hindi pa kumpirmado, 5 min na, 1 ulat.\n- Baha ang daan sa P. Burgos Street: hindi pa kumpirmado, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
+    "text": "3 reports within 3 km of you:\n- Power out, 140 m from you: unverified, 5 min old, 1 report.\n- Road flooded (knee-deep, cars can't pass) on P. Burgos Street: unverified, reporter on site, 25 min old, 1 report.\n- Road blocked on Rizal Avenue: confirmed by others, 1 h 10 min old, 3 reports, 1 disputed.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
+    "text_tl": "3 ulat sa loob ng 3 km mula sa iyo:\n- Walang kuryente, 140 m mula sa iyo: hindi pa kumpirmado, 5 min na, 1 ulat.\n- Baha ang daan (hanggang tuhod, hindi madaanan ng sasakyan) sa P. Burgos Street: hindi pa kumpirmado, nasa lugar ang nag-ulat, 25 min na, 1 ulat.\n- Sarado ang daan sa Rizal Avenue: kinumpirma ng iba, 1 oras 10 min na, 3 ulat, 1 tumutol.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",
     "ids": [
      "r-power",
      "r-flood",
@@ -8203,7 +8229,8 @@
      "center_open",
      "water_available",
      "power_out",
-     "medical_need"
+     "medical_need",
+     "other"
     ],
     "text": "No reports within 3 km of you in the last 6 hours. That does not mean the roads are safe.\n\nNever walk or drive through floodwater.\nReports come from people nearby and may be wrong. Follow official instructions.",
     "text_tl": "Walang ulat sa loob ng 3 km mula sa iyo sa nakaraang 6 oras. Hindi ibig sabihin nito na ligtas ang mga daan.\n\nHuwag kailanman lumusong o magmaneho sa baha.\nAng mga ulat ay galing sa mga tao sa paligid at maaaring mali. Sundin ang opisyal na abiso.",

@@ -476,7 +476,7 @@ try {
   const kinds = await phone.evaluate("(async () => Object.keys((await import('/report-kinds.js')).REPORT_KINDS))()");
   const offsets = { road_flooded: FLOOD_AT, road_blocked: { lat: FLOOD_AT.lat + 0.0006, lng: FLOOD_AT.lng }, water_available: { lat: FLOOD_AT.lat - 0.0008, lng: FLOOD_AT.lng + 0.0008 },
     power_out: { lat: FLOOD_AT.lat + 0.0008, lng: FLOOD_AT.lng - 0.0008 }, medical_need: { lat: FLOOD_AT.lat - 0.0005, lng: FLOOD_AT.lng - 0.0006 },
-    center_full: bsu, center_open: bsu };
+    other: { lat: FLOOD_AT.lat + 0.0004, lng: FLOOD_AT.lng + 0.0009 }, center_full: bsu, center_open: bsu };
   for (const kind of kinds) {
     const at = offsets[kind];
     await js(phone, `window.__map.jumpTo({ center: [${at.lng}, ${at.lat}], zoom: 16.5 }); return true;`);
@@ -489,6 +489,10 @@ try {
     await tap(phone, "#kind-btn", `kind "${label}"`);
     await js(phone, "document.getElementById('kind-btn')?.removeAttribute('id'); return true;");
     await sleep(400);
+    // The report form: "Iba pa" needs words; then "Markahan sa mapa".
+    if (kind === "other") await typeInto(phone, "#report-note", "Bumagsak na poste sa kanto");
+    await tap(phone, '.report-form [data-where="map"]', "Mark on the map");
+    await sleep(400);
     // Re-centre (the sheet moved), then tap the spot.
     await js(phone, `window.__map.jumpTo({ center: [${at.lng}, ${at.lat}] }); return true;`);
     await sleep(400);
@@ -496,6 +500,48 @@ try {
     const ok = await waitUntil(() => phone.evaluate(`document.querySelectorAll('#report-list li.report:not(.pending)').length > ${n0}`), 15000, "report").catch(() => false);
     check(`phone: report "${label}" posted`, ok, await phone.evaluate("document.getElementById('report-msg').textContent"));
   }
+  // ---- Reports v2: the form ----
+  const openForm = async (kindLabel) => {
+    await sheetTo(phone, "peek");
+    await tap(phone, "#report-btn", "Report");
+    await js(phone, `[...document.querySelectorAll('#report-kinds .report-kind')].find(x => x.textContent.trim() === ${JSON.stringify(kindLabel)}).id = 'kind-btn'; return true;`);
+    await tap(phone, "#kind-btn", `kind "${kindLabel}"`);
+    await js(phone, "document.getElementById('kind-btn')?.removeAttribute('id'); return true;");
+    await sleep(500);
+  };
+  // "Iba pa" can't go without a description.
+  await openForm("Something else");
+  await tap(phone, '.report-form [data-where="map"]', "Mark on the map");
+  check("phone: \"Something else\" needs a description first", (await phone.evaluate("document.getElementById('report-msg').textContent")).includes("Describe")
+    && await phone.evaluate("!document.getElementById('report-kinds').hidden"));
+  await tap(phone, ".report-form .link-btn", "Cancel");
+  // "Nandito ako" by GPS, with two details and words that sound like an emergency.
+  const GPS_AT = { lat: FLOOD_AT.lat + 0.00005, lng: FLOOD_AT.lng + 0.00005 };
+  await js(phone, "localStorage.removeItem('bb.note_notice'); return true;"); // as if writing a note for the first time
+  await openForm("Road flooded");
+  await tap(phone, '.rep-chip[data-detail="knee"]', "chip knee-deep");
+  await tap(phone, '.rep-chip[data-detail="no_cars"]', "chip cars can't pass");
+  await tap(phone, '.rep-chip[data-detail="ankle"]', "a third chip");
+  check("phone: at most two details", (await phone.evaluate("document.querySelectorAll('.rep-chip[aria-pressed=true]').length")) === 2);
+  await typeInto(phone, "#report-note", "May naiipit sa sasakyan, tumataas ang tubig");
+  check("phone: danger words show Call 911 now", await phone.evaluate("!document.querySelector('.report-danger').hidden && !!document.querySelector('.report-danger a[href=\"tel:911\"]')"));
+  check("phone: the first time, it says who reads notes", await phone.evaluate("!document.querySelector('.report-notice').hidden"));
+  await phone.evaluate(`window.__gps.set([{ after: 300, lat: ${GPS_AT.lat}, lng: ${GPS_AT.lng}, acc: 12 }]); true`);
+  const n1 = await phone.evaluate("document.querySelectorAll('#report-list li.report:not(.pending)').length");
+  await tap(phone, '.report-form [data-where="gps"]', "I'm here (GPS)");
+  const gpsOk = await waitUntil(() => phone.evaluate(`document.querySelectorAll('#report-list li.report:not(.pending)').length > ${n1}`), 15000, "GPS report").catch(() => false);
+  const gpsLi = await phone.evaluate("[...document.querySelectorAll('#report-list li.report')].find(li => li.innerText.includes('Reporter on site'))?.innerText ?? ''");
+  check("phone: a GPS report shows its details and the on-site badge", gpsOk && /knee-deep/.test(gpsLi) && /cars can't pass/.test(gpsLi), gpsLi.split("\n").slice(0, 3).join(" | "));
+  check("phone: the note isn't public before a responder approves it", !gpsLi.includes("naiipit"));
+  const gpsReport = (await (await fetch(`${BASE}/api/reports`)).json()).find((r) => r.on_site && r.kind === "road_flooded");
+  // A GPS fix that never gets good enough: the form says so and stays open for the map.
+  await openForm("Power out");
+  await phone.evaluate("window.__gps.set([{ after: 200, lat: 13.7600, lng: 121.0600, acc: 400 }]); true");
+  await tap(phone, '.report-form [data-where="gps"]', "I'm here (GPS), weak signal");
+  const weak = await waitUntil(() => phone.evaluate("/accurate enough/.test(document.getElementById('report-msg').textContent)"), 40000, "weak GPS").catch(() => false);
+  check("phone: weak GPS asks to mark on the map instead", weak && await phone.evaluate("!!document.querySelector('.report-form [data-where=\"map\"]')"));
+  await tap(phone, ".report-form .link-btn", "Cancel");
+
   // Someone else's report: confirm it.
   const other = await (await fetch(`${BASE}/api/reports`, { method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: crypto.randomUUID(), kind: "road_blocked", lat: 13.7579, lng: 121.0601, device: "full-check-other-phone" }) })).json();
@@ -516,6 +562,14 @@ try {
   await tap(phone, "#responder-form button[type=submit]", "Unlock");
   await sleep(800);
   check("phone: the right PIN turns on responder mode", (await phone.evaluate("document.getElementById('responder-btn').textContent")).includes("Responder mode on"));
+  // The responder sees the waiting note, and approves it: then everyone sees it.
+  await waitFor(phone, `(document.querySelector('#report-list li.report[data-id="${gpsReport?.id}"]')?.innerText ?? '').includes('waiting for approval')`, 20000, "pending note").catch(() => {});
+  const waiting = await phone.evaluate(`document.querySelector('#report-list li.report[data-id="${gpsReport?.id}"]')?.innerText ?? ''`);
+  check("phone: a responder sees the note waiting for approval", waiting.includes("naiipit"), waiting.split("\n").slice(0, 4).join(" | "));
+  await js(phone, `const li = document.querySelector('#report-list li.report[data-id="${gpsReport?.id}"]'); const b = li && [...li.querySelectorAll('button')].find(x => x.textContent.trim() === 'Approve note'); if (b) b.id = 'approve-btn'; return !!b;`);
+  await tap(phone, "#approve-btn", "Approve note");
+  const approved = await waitUntil(async () => (await (await fetch(`${BASE}/api/reports`)).json()).find((r) => r.id === gpsReport?.id)?.note, 15000, "approved").catch(() => null);
+  check("phone: an approved note is public", approved && approved.includes("naiipit"), approved);
   await js(phone, `const li = document.querySelector('#report-list li.report[data-id="${other.id}"]'); [...li.querySelectorAll('button')].find(x => x.textContent.trim() === 'Verify').id = 'verify-btn'; return true;`);
   await tap(phone, "#verify-btn", "Verify");
   await waitFor(phone, `(document.querySelector('#report-list li.report[data-id="${other.id}"]')?.innerText ?? '').includes('verified by a responder')`, 15000, "verify").catch(() => {});
@@ -554,6 +608,8 @@ try {
   await js(phone, `[...document.querySelectorAll('#report-kinds .report-kind')].find(x => x.textContent.trim() === 'Power out').id = 'kind-btn'; return true;`);
   await tap(phone, "#kind-btn", "kind Power out");
   await js(phone, "document.getElementById('kind-btn')?.removeAttribute('id'); return true;");
+  await sleep(400);
+  await tap(phone, '.report-form [data-where="map"]', "Mark on the map");
   await js(phone, `window.__map.jumpTo({ center: [${FLOOD_AT.lng}, ${FLOOD_AT.lat}] }); return true;`);
   await sleep(400);
   await tapMapAt(phone, { lat: FLOOD_AT.lat + 0.0012, lng: FLOOD_AT.lng + 0.0012 });

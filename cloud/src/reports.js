@@ -3,6 +3,8 @@
 //
 // Reports carry no personal data: a kind, a pin, a time, and counts of confirm/dispute votes.
 // Phones send a random device id; only a salted hash of it is stored, so a phone votes once.
+// Reports v2: one-tap details, an optional note (shown to the public only once a responder
+// approves it, deleted as soon as the report expires), and a GPS "on site" badge.
 
 import { DATA } from "./data.js";
 
@@ -13,7 +15,7 @@ export const KEEP_EXPIRED_S = 24 * 3600;
 export const ROAD_KINDS = new Set(["road_flooded", "road_blocked"]);
 export const CENTER_KINDS = new Set(["center_full", "center_open"]);
 const COLS = ["id", "kind", "lat", "lng", "location_id", "edge_id", "road_name", "created_at", "expires_at",
-  "confirms", "disputes", "verified", "removed"];
+  "confirms", "disputes", "verified", "removed", "details", "note", "note_status", "flagged", "on_site", "acc_bucket"];
 
 export const ttlS = (kind) => DATA.ttl_h[kind] * 3600;
 export const trust = (r) => (r.verified ? "verified" : r.confirms >= CONFIRMED_AT ? "confirmed" : "unverified");
@@ -49,7 +51,8 @@ export class ReportStore {
 
   // Store a report. Posting the same id again (a phone retrying) changes nothing. `ageS`: how
   // long ago the phone made it (queued offline); only the elapsed time is trusted.
-  async add({ id, kind, lat, lng, device, ageS = 0, now, locationId = null, edgeId = null, roadName = null }) {
+  async add({ id, kind, lat, lng, device, ageS = 0, now, locationId = null, edgeId = null, roadName = null,
+    details = [], note = null, flagged = false, onSite = false, accBucket = null }) {
     const old = await this.get(id);
     if (old) return [old, false];
     await this.purge(now);
@@ -58,7 +61,9 @@ export class ReportStore {
     const h = await this.hash(device);
     await this.db.batch([
       this.db.prepare(`INSERT OR IGNORE INTO reports (${COLS.join(",")}) VALUES (${COLS.map(() => "?").join(",")})`)
-        .bind(id, kind, lat, lng, locationId, edgeId, roadName, created, created + ttl, 0, 0, 0, 0),
+        .bind(id, kind, lat, lng, locationId, edgeId, roadName, created, created + ttl, 0, 0, 0, 0,
+          JSON.stringify(details ?? []), note, note ? "pending" : "none", note && flagged ? 1 : 0,
+          onSite ? 1 : 0, onSite ? accBucket : null),
       // The reporter can't confirm or dispute their own report.
       this.db.prepare("INSERT OR IGNORE INTO votes (report_id, device_hash, vote) VALUES (?, ?, 'own')").bind(id, h),
     ]);
@@ -96,8 +101,21 @@ export class ReportStore {
     return this.get(id);
   }
 
+  // status: "approved" (the public may read the note) or "hidden" (responder actions).
+  async setNote(id, status) {
+    if (status !== "approved" && status !== "hidden") throw new Error(status);
+    await this.db.prepare("UPDATE reports SET note_status = ? WHERE id = ? AND note IS NOT NULL").bind(status, id).run();
+    return this.get(id);
+  }
+
+  // Notes go as soon as their report expires (the report itself is kept a day longer).
+  clearNotes(now) {
+    return this.db.prepare("UPDATE reports SET note = NULL WHERE expires_at <= ? AND note IS NOT NULL").bind(now);
+  }
+
   // Reports still in force and not hidden, newest first.
   async active(now) {
+    await this.clearNotes(now).run();
     const { results } = await this.db.prepare(
       `SELECT ${COLS.join(",")} FROM reports WHERE expires_at > ? AND removed = 0 ORDER BY created_at DESC`).bind(now).all();
     return results.filter((r) => !hidden(r));
@@ -106,6 +124,7 @@ export class ReportStore {
   async purge(now) {
     const old = now - KEEP_EXPIRED_S;
     await this.db.batch([
+      this.clearNotes(now),
       this.db.prepare("DELETE FROM votes WHERE report_id IN (SELECT id FROM reports WHERE expires_at < ?)").bind(old),
       this.db.prepare("DELETE FROM reports WHERE expires_at < ?").bind(old),
     ]);
@@ -121,10 +140,11 @@ function round6(x) {
 }
 
 // What phones get: the same shape as public() in app/services/reports.py. Ages, not
-// timestamps, because phone clocks may be wrong.
-export function publicReport(r, now) {
+// timestamps, because phone clocks may be wrong. A note is included once a responder approved
+// it; responders also see notes still waiting.
+export function publicReport(r, now, responder = false) {
   const center = r.location_id ? DATA.centers[r.location_id] : null;
-  return {
+  const out = {
     id: r.id, kind: r.kind, label: DATA.kind_label[r.kind],
     lat: round6(r.lat), lng: round6(r.lng),
     location_id: r.location_id, location_name: center ? center[0] : null,
@@ -134,5 +154,14 @@ export function publicReport(r, now) {
     ttl_min: Math.floor(ttlS(r.kind) / 60),
     confirms: r.confirms, disputes: r.disputes, reports: 1 + r.confirms,
     trust: trust(r),
+    details: JSON.parse(r.details || "[]"),
+    on_site: Boolean(r.on_site),
+    acc_bucket: r.acc_bucket ?? null,
+    note: r.note_status === "approved" || responder ? r.note ?? null : null,
   };
+  if (responder) {
+    out.note_status = r.note_status || "none";
+    out.flagged = Boolean(r.flagged);
+  }
+  return out;
 }

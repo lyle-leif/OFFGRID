@@ -32,7 +32,7 @@ REPORTS_DB = Path(os.getenv("BB_REPORTS_DB", DATA_DIR / "reports.db"))
 # Hours until a report expires on its own.
 REPORT_TTL_H = {
     "road_flooded": 2, "road_blocked": 2, "center_full": 6, "center_open": 6,
-    "water_available": 6, "power_out": 6, "medical_need": 2,
+    "water_available": 6, "power_out": 6, "medical_need": 2, "other": 3,
 }
 # Responders enter this on their phone to verify or remove reports. If unset, the hub
 # makes up a 6-digit PIN at startup and prints it in its console.

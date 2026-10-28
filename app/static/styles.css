@@ -590,6 +590,37 @@ a { color: var(--accent); }
   .tab-label { font-size: 10.5px; }
 }
 
+/* ---------- the report form (Reports v2) ---------- */
+.report-form { grid-column: 1 / -1; display: grid; gap: 8px; }
+.report-form .link-btn { justify-self: start; margin: 2px 0 0; }
+.report-form-head { display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 700; font-size: 15px; }
+.report-form-label { margin: 6px 0 0; font-size: 13px; font-weight: 650; }
+.rep-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rep-chip {
+  min-height: 36px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  color: var(--ink); font-size: 13px; cursor: pointer;
+}
+.rep-chip[aria-pressed="true"] { border-color: var(--accent); background: var(--selected-bg); font-weight: 650; }
+.report-note {
+  width: 100%; min-height: 56px; resize: vertical; padding: 8px 10px; border: 1px solid var(--line); border-radius: 11px;
+  background: var(--surface-2); font-size: 15px;
+}
+.report-form-hint, .report-notice { margin: 0; font-size: 12px; color: var(--muted); }
+.report-note-count { float: right; }
+.report-notice { padding: 8px 10px; border-radius: 10px; background: var(--info-bg); border: 1px solid var(--info-line); color: var(--ink); }
+.report-danger {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px; border-radius: 11px;
+  background: var(--error-bg); border: 1px solid var(--error-line); color: var(--bad); font-weight: 700;
+}
+.report-danger-call { background: var(--bad); border-color: var(--bad); color: #fff; text-decoration: none; }
+.report-where { display: flex; flex-wrap: wrap; gap: 8px; }
+.report-where .btn { flex: 1 1 140px; min-height: 44px; }
+.rep-badge { margin-top: 2px; font-size: 12px; color: var(--muted); }
+.rep-badge.on-site { color: var(--ok); }
+.rep-note { margin-top: 4px; font-size: 13px; font-style: italic; color: var(--ink); }
+.rep-note.note-pending, .rep-note.note-hidden { color: var(--muted); }
+.rep-flag { font-style: normal; font-weight: 700; color: var(--warn); }
+
 /* ---------- settings and the first-run language picker ---------- */
 .settings {
   position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px;

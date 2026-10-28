@@ -97,6 +97,9 @@ const REPORT_GLYPHS = {
     <path fill="none" stroke="C" stroke-width="3.6" stroke-linecap="round" d="M4 4l16 16"/>
     <path fill="none" stroke="W" stroke-width="1.8" stroke-linecap="round" d="M4 4l16 16"/>`,
   medical_need: `<path fill="W" d="M9.5 3h5v6.5H21v5h-6.5V21h-5v-6.5H3v-5h6.5z"/>`,
+  // "Iba pa" (something else): a speech bubble, the reporter describes it.
+  other: `<path fill="W" d="M4 4.5h16a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-8.5l-4.5 4v-4H4A1.5 1.5 0 0 1 2.5 15V6A1.5 1.5 0 0 1 4 4.5z"/>
+    <circle fill="C" cx="8" cy="10.5" r="1.4"/><circle fill="C" cx="12" cy="10.5" r="1.4"/><circle fill="C" cx="16" cy="10.5" r="1.4"/>`,
 };
 
 export const REPORT_W = 36;

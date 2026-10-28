@@ -80,10 +80,11 @@ export function createBrain(getLocations, getReports = () => null) {
   }
 
   // The road under a tapped point, as the hub snaps a road report: { edge_id, road_name,
-  // point } or null when no road is within 60 m (the online reports need the phone to do this).
+  // point }, null when no road is within 60 m, or undefined when this phone has no road data
+  // yet (then a hub snaps it itself; the online reports need the phone to do it).
   async function snapRoad(lat, lng) {
     const router = await getRouter();
-    if (!router) return null;
+    if (!router) return undefined;
     try {
       const s = router.snap(lat, lng, "walk", 60);
       return { edge_id: s.edge, road_name: router.roadLabel(s.edge), point: { lat: s.point[0], lng: s.point[1] } };

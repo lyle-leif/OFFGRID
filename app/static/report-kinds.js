@@ -11,6 +11,7 @@ const KINDS = {
   water_available: { color: "#0c8599", ttlMin: 360 },
   power_out: { color: "#5f3dc4", ttlMin: 360 },
   medical_need: { color: "#d6336c", ttlMin: 120 },
+  other: { color: "#495057", ttlMin: 180 }, // "Iba pa": the reporter's note says what it is
 };
 // { color, ttlMin, label, short }: the labels are read in the app's language.
 export const REPORT_KINDS = Object.fromEntries(Object.entries(KINDS).map(([kind, k]) => [kind, {

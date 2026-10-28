@@ -118,8 +118,10 @@ def write_cloud_data(store, edges: int) -> None:
     for lang in ("en", "tl"):
         table = json.loads((ROOT / "app" / "static" / "lang" / f"{lang}.json").read_text(encoding="utf-8"))
         strings[lang] = {k: v for k, v in table.items() if k.startswith("apierr.") or k == "rerr.unknown_location"}
+    from app.services.report_notes import details_table, word_lists  # noqa: E402
     data = {"kinds": list(config.REPORT_TTL_H), "ttl_h": config.REPORT_TTL_H, "kind_label": KIND_LABEL,
-            "bbox": config.BBOX, "edges": edges, "centers": centers, "strings": strings}
+            "bbox": config.BBOX, "edges": edges, "centers": centers, "strings": strings,
+            "details": details_table(), "words": word_lists()}
     out = ROOT / "cloud" / "src" / "data.js"
     out.write_text("// Written by tools/build_phone_pack.py from the hub's data; do not edit by hand.\n"
                    f"export const DATA = {json.dumps(data, ensure_ascii=False, indent=1)};\n", encoding="utf-8")
@@ -143,6 +145,12 @@ def main() -> int:
                 for c in load_chunks(config.GUIDES_DIR) if c.doc == "hotlines.md"]
     (OUT / "hotlines.json").write_text(json.dumps(hotlines, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
+    # Reports v2: the one-tap details per kind, and the danger words the phone checks a note for.
+    from app.services.report_notes import details_table, word_lists  # noqa: E402
+    (OUT / "report_details.json").write_text(json.dumps(details_table(), separators=(",", ":")), encoding="utf-8")
+    (OUT / "report_words.json").write_text(json.dumps({"danger": word_lists()["danger"]}, ensure_ascii=False,
+                                                      separators=(",", ":")), encoding="utf-8")
+
     roads_bin, roads_meta = build_roads()
     write_cloud_data(store, roads_meta["edges"])
     (OUT / "roads.bin").write_bytes(roads_bin)
@@ -153,7 +161,8 @@ def main() -> int:
     places_date = next((p["source"].rsplit("retrieved ", 1)[-1] for p in places if "retrieved " in p.get("source", "")), "")
     map_date = "2026-10-08"  # the Protomaps daily build used for area.pmtiles (see README)
     digest = hashlib.sha256()
-    for f in ["guides.json", "lexicon.json", "roads.bin", "roads-meta.json", "locations.json", "hotlines.json"]:
+    for f in ["guides.json", "lexicon.json", "roads.bin", "roads-meta.json", "locations.json", "hotlines.json",
+              "report_details.json", "report_words.json"]:
         digest.update((OUT / f).read_bytes())
     digest.update(config.LOCATIONS_FILE.read_bytes())
     # The app's own code and map styles too, so phones re-save their copy after any app

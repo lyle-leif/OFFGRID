@@ -369,7 +369,8 @@
     "center_open",
     "water_available",
     "power_out",
-    "medical_need"
+    "medical_need",
+    "other"
    ]
   },
   {
@@ -382,7 +383,8 @@
     "center_open",
     "water_available",
     "power_out",
-    "medical_need"
+    "medical_need",
+    "other"
    ]
   },
   {

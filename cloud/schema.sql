@@ -9,7 +9,10 @@ CREATE TABLE IF NOT EXISTS reports (
   location_id TEXT, edge_id INTEGER, road_name TEXT,
   created_at REAL NOT NULL, expires_at REAL NOT NULL,
   confirms INTEGER NOT NULL DEFAULT 0, disputes INTEGER NOT NULL DEFAULT 0,
-  verified INTEGER NOT NULL DEFAULT 0, removed INTEGER NOT NULL DEFAULT 0
+  verified INTEGER NOT NULL DEFAULT 0, removed INTEGER NOT NULL DEFAULT 0,
+  -- Reports v2 (also in migrations/0002_reports_v2.sql for databases made before it)
+  details TEXT, note TEXT, note_status TEXT NOT NULL DEFAULT 'none', flagged INTEGER NOT NULL DEFAULT 0,
+  on_site INTEGER NOT NULL DEFAULT 0, acc_bucket INTEGER
 );
 CREATE INDEX IF NOT EXISTS reports_expires ON reports (expires_at);
 

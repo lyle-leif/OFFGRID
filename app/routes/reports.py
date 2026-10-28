@@ -5,8 +5,9 @@ import hmac
 from fastapi import APIRouter, Header, HTTPException, Request
 
 from app import config
-from app.models import NewReport, ReportVote, ResponderLogin
+from app.models import NewReport, NoteAction, ReportVote, ResponderLogin
 from app.services.i18n import request_lang, t
+from app.services.report_notes import clean_note, has_word, valid_details, word_lists
 from app.services.reports import CENTER_KINDS, ROAD_KINDS, public
 from app.services.routing import CLASS_LABEL, RoutingError
 
@@ -19,9 +20,15 @@ def _client(request: Request) -> str:
     return request.client.host if request.client else "?"
 
 
-def _public(request: Request, r: dict) -> dict:
+def _public(request: Request, r: dict, responder: bool = False) -> dict:
     loc = request.app.state.locations.get(r["location_id"]) if r["location_id"] else None
-    return public(r, location_name=loc.name if loc else None)
+    return public(r, location_name=loc.name if loc else None, responder=responder)
+
+
+def _is_responder(request: Request, pin: str | None) -> bool:
+    """For reading only (responders also see notes still waiting): a wrong PIN here just
+    means the public view, and doesn't count towards the lockout."""
+    return bool(pin) and hmac.compare_digest(pin.encode(), request.app.state.responder_pin.encode())
 
 
 def _check_pin(request: Request, pin: str | None) -> None:
@@ -34,14 +41,14 @@ def _check_pin(request: Request, pin: str | None) -> None:
         raise HTTPException(403, t(request_lang(request), "apierr.pin_wrong"))
 
 
-def active_public(request: Request) -> list[dict]:
+def active_public(request: Request, responder: bool = False) -> list[dict]:
     """Active reports as phones see them, newest first."""
-    return [_public(request, r) for r in request.app.state.reports.active()]
+    return [_public(request, r, responder) for r in request.app.state.reports.active()]
 
 
 @router.get("")
-def list_reports(request: Request):
-    return active_public(request)
+def list_reports(request: Request, x_responder_pin: str | None = Header(default=None)):
+    return active_public(request, _is_responder(request, x_responder_pin))
 
 
 @router.post("")
@@ -57,6 +64,12 @@ def add_report(body: NewReport, request: Request):
     ip = _client(request)
     if state.report_limits["device"].blocked(body.device) or state.report_limits["ip"].blocked(ip):
         raise HTTPException(429, t(request_lang(request), "apierr.too_many"))
+
+    if not valid_details(body.kind, body.details):
+        raise HTTPException(422, t(request_lang(request), "apierr.bad_details"))
+    note = clean_note(body.note)
+    if body.kind == "other" and not note:
+        raise HTTPException(422, t(request_lang(request), "apierr.note_required"))
 
     lat, lng, edge_id, road_name = body.lat, body.lng, None, None
     loc = state.locations.get(body.location_id) if body.location_id else None
@@ -76,7 +89,9 @@ def add_report(body: NewReport, request: Request):
         lat, lng = snap.point
 
     r, created = state.reports.add(body.id, body.kind, lat, lng, body.device, body.age_s,
-                                   location_id=loc.id if loc else None, edge_id=edge_id, road_name=road_name)
+                                   location_id=loc.id if loc else None, edge_id=edge_id, road_name=road_name,
+                                   details=body.details, note=note, flagged=has_word(note, word_lists()["flag"]),
+                                   on_site=body.on_site, acc_bucket=body.acc_bucket)
     if created:
         state.report_limits["device"].hit(body.device)
         state.report_limits["ip"].hit(ip)
@@ -105,6 +120,16 @@ def verify(report_id: str, request: Request, x_responder_pin: str | None = Heade
     if r is None:
         raise HTTPException(404, t(request_lang(request), "apierr.gone"))
     return _public(request, r)
+
+
+@router.post("/{report_id}/note")
+def note_action(report_id: str, body: NoteAction, request: Request, x_responder_pin: str | None = Header(default=None)):
+    """A responder approves a note (the public may read it) or hides it."""
+    _check_pin(request, x_responder_pin)
+    r = request.app.state.reports.set_note(report_id, "approved" if body.action == "approve" else "hidden")
+    if r is None:
+        raise HTTPException(404, t(request_lang(request), "apierr.gone"))
+    return _public(request, r, responder=True)
 
 
 @router.delete("/{report_id}")

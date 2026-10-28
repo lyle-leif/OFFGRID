@@ -69,12 +69,14 @@ ASKS += [{**ASKS[i], "lang": "tl"} for i in TL_ASKS] + [
 
 
 # Situation reports as phones receive them (GET /api/reports), fixed so answers are stable.
-def _report(rid, kind, label, lat, lng, age, trust="unverified", confirms=0, disputes=0, road=None, loc=None, loc_name=None):
+def _report(rid, kind, label, lat, lng, age, trust="unverified", confirms=0, disputes=0, road=None, loc=None, loc_name=None,
+            details=(), on_site=False):
     ttl = {"road_flooded": 120, "road_blocked": 120, "center_full": 360, "center_open": 360,
            "water_available": 360, "power_out": 360, "medical_need": 120}[kind]
     return {"id": rid, "kind": kind, "label": label, "lat": lat, "lng": lng, "location_id": loc, "location_name": loc_name,
             "road_name": road, "edge_id": None, "age_min": age, "expires_in_min": ttl - age, "ttl_min": ttl,
-            "confirms": confirms, "disputes": disputes, "reports": 1 + confirms, "trust": trust}
+            "confirms": confirms, "disputes": disputes, "reports": 1 + confirms, "trust": trust,
+            "details": list(details), "on_site": on_site, "acc_bucket": 20 if on_site else None, "note": None}
 
 
 def report_fixtures() -> dict:
@@ -82,12 +84,13 @@ def report_fixtures() -> dict:
     center = next(l for l in locs.all() if l.type == "evacuation_center" and l.lat < 13.80 and l.lng < 121.10)
     reports = [
         _report("r-power", "power_out", "Power out", 13.7680, 121.0650, 5),
-        _report("r-flood", "road_flooded", "Road flooded", 13.7565, 121.0583, 25, road="P. Burgos Street"),
+        _report("r-flood", "road_flooded", "Road flooded", 13.7565, 121.0583, 25, road="P. Burgos Street",
+                details=("knee", "no_cars"), on_site=True),
         _report("r-center", "center_full", "Evacuation center full", center.lat, center.lng, 40, trust="verified",
                 loc=center.id, loc_name=center.name),
         _report("r-block", "road_blocked", "Road blocked", 13.7600, 121.0590, 70, trust="confirmed", confirms=2,
                 disputes=1, road="Rizal Avenue"),
-        _report("r-water", "water_available", "Drinking water available", 13.9400, 121.1630, 200),
+        _report("r-water", "water_available", "Drinking water available", 13.9400, 121.1630, 200, details=("free",)),
     ]
     asks = [
         {"question": "Is P. Burgos flooded?"},

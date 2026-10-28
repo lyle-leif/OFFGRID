@@ -64,7 +64,8 @@ def test_not_location_intents(question, has_place):
 
 ROADS = ["road_flooded", "road_blocked"]
 CENTERS = ["center_full", "center_open"]
-ALL = ["road_flooded", "road_blocked", "center_full", "center_open", "water_available", "power_out", "medical_need"]
+ALL = ["road_flooded", "road_blocked", "center_full", "center_open", "water_available", "power_out", "medical_need",
+       "other"]
 
 # (question, the selected place is an evacuation center, report kinds or None)
 REPORT_CASES = [

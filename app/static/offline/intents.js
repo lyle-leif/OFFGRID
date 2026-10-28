@@ -87,7 +87,7 @@ const ADVICE = rx(String.raw`\b(what (should|do|can) (i|we) do|how (do|can|shoul
   String.raw`|tips?|is it safe to|safe (ba )?(to|na|bang)|ligtas (ba )?(na|bang|mag\w*)|if|kung` +
   String.raw`|who (do|should|can) (i|we) (call|contact)|sino(ng)? (ang )?(tatawagan|tawagan)|hotlines?|numbers?` +
   String.raw`|warning signs?|signs? of|symptoms?)\b`);
-export const REPORT_KIND_ORDER = ["road_flooded", "road_blocked", "center_full", "center_open", "water_available", "power_out", "medical_need"];
+export const REPORT_KIND_ORDER = ["road_flooded", "road_blocked", "center_full", "center_open", "water_available", "power_out", "medical_need", "other"];
 
 // Report kinds a question asks about ("Is P. Burgos flooded?" -> road kinds), or null.
 export function reportQuery(question, placeIsCenter = false) {

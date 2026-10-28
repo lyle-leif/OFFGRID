@@ -724,6 +724,25 @@ const directions = createDirections({
   onGpsHeading: (deg) => reportHeading(deg, "gps"),
 });
 
+// One GPS fix for "Nandito ako" in the report form: watch until a fix is at least as good as
+// maxAcc (and fresh), or give up after timeoutMs with { error: "weak" }. Same handling as
+// "Use GPS" (locateMe), but it never moves the map or the blue dot.
+function getFix({ maxAcc = 50, maxAgeMs = 60_000, timeoutMs = 30_000 } = {}) {
+  return new Promise((resolve) => {
+    let timer = null;
+    let id = null;
+    const done = (v) => { clearTimeout(timer); if (id !== null) navigator.geolocation.clearWatch(id); resolve(v); };
+    timer = setTimeout(() => done({ error: "weak" }), timeoutMs);
+    id = navigator.geolocation.watchPosition((p) => {
+      if (p.timestamp && Date.now() - p.timestamp > maxAgeMs) return; // an old cached fix
+      const fix = { lat: p.coords.latitude, lng: p.coords.longitude, acc: p.coords.accuracy };
+      if (!inBounds(fix)) { done({ error: "outside" }); return; }
+      if (fix.acc <= maxAcc) done({ fix });
+    }, (err) => { if (err.code === err.PERMISSION_DENIED) done({ error: "off" }); },
+    { enableHighAccuracy: true, maximumAge: maxAgeMs, timeout: timeoutMs });
+  });
+}
+
 const reports = createReports({
   getMapApi: () => mapApi,
   getPos: () => state.userPos,
@@ -733,6 +752,7 @@ const reports = createReports({
   cancelPick: cancelMapPick,
   showTab,
   snapRoad: (lat, lng) => brain.snapRoad(lat, lng),
+  getFix: "geolocation" in navigator && window.isSecureContext ? getFix : null,
   onChange: (list) => {
     renderPlaceReports();
     directions.reportsChanged(list);

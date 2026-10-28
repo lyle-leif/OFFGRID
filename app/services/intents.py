@@ -98,7 +98,7 @@ _ADVICE = _rx(
     r"|warning signs?|signs? of|symptoms?)\b"
 )
 REPORT_KIND_ORDER = ["road_flooded", "road_blocked", "center_full", "center_open", "water_available", "power_out",
-                     "medical_need"]
+                     "medical_need", "other"]
 
 
 def report_query(question: str, place_is_center: bool = False) -> list[str] | None:

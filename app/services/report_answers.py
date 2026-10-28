@@ -19,9 +19,10 @@ GROUPS = [  # (kinds, rans.group.<key>: how a "no reports" line names them)
     (("water_available",), "water"),
     (("power_out",), "power"),
     (("medical_need",), "medical"),
+    (("other",), "other"),
 ]
 TTL_H = {"road_flooded": 2, "road_blocked": 2, "center_full": 6, "center_open": 6, "water_available": 6,
-         "power_out": 6, "medical_need": 2}
+         "power_out": 6, "medical_need": 2, "other": 3}
 _ROAD_SUFFIX = re.compile(r"\s+(street|st|road|rd|avenue|ave|highway|hwy|boulevard|blvd|drive|dr|extension|ext)$")
 
 
@@ -88,8 +89,12 @@ def answer(question: str, kinds: list[str], reports: list[dict], place: dict | N
             elif pos and not place:
                 where = t(lang, "rans.where_from", d=fmt_m(meters((r["lat"], r["lng"]), pos)))
             disputed = t(lang, "rans.disputed", n=r["disputes"]) if r["disputes"] else ""
-            lines.append(t(lang, "rans.line", label=t(lang, f"kind.{r['kind']}"), where=where,
-                           trust=t(lang, f"rans.trust.{r['trust']}"), age=fmt_old(r["age_min"], lang),
+            # The one-tap details and the GPS badge; a reporter's note is never quoted here.
+            chips = [t(lang, f"detail.{d}") for d in r.get("details") or []]
+            details = t(lang, "rans.details", list=", ".join(chips)) if chips else ""
+            onsite = t(lang, "rans.onsite") if r.get("on_site") else ""
+            lines.append(t(lang, "rans.line", label=t(lang, f"kind.{r['kind']}"), details=details, where=where,
+                           trust=t(lang, f"rans.trust.{r['trust']}"), onsite=onsite, age=fmt_old(r["age_min"], lang),
                            count=t(lang, "rans.count", n=r["reports"]), disputed=disputed))
         if len(sel) > MAX_LISTED:
             lines.append(t(lang, "rans.more", n=len(sel) - MAX_LISTED))
