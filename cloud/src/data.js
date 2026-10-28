@@ -969,7 +969,8 @@ export const DATA = {
    "apierr.login_locked": "Too many wrong tries. Wait 10 minutes and try again.",
    "apierr.need_login": "Log in as a responder first.",
    "apierr.bad_details": "Those details don't fit this kind of report.",
-   "apierr.note_required": "Describe what you see for “Something else”."
+   "apierr.note_required": "Describe what you see for “Something else”.",
+   "apierr.too_many_votes": "Too many votes from this network. Try again later."
   },
   "tl": {
    "rerr.unknown_location": "Hindi kilalang location_id '{id}'",
@@ -985,7 +986,8 @@ export const DATA = {
    "apierr.login_locked": "Masyadong maraming maling subok. Maghintay ng 10 minuto at subukan ulit.",
    "apierr.need_login": "Mag-log in muna bilang responder.",
    "apierr.bad_details": "Hindi tugma ang mga detalyeng iyon sa ganitong ulat.",
-   "apierr.note_required": "Ilarawan ang nakikita mo para sa “Iba pa”."
+   "apierr.note_required": "Ilarawan ang nakikita mo para sa “Iba pa”.",
+   "apierr.too_many_votes": "Masyadong maraming boto mula sa network na ito. Subukan ulit mamaya."
   }
  },
  "details": {

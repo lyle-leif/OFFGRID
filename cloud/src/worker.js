@@ -14,7 +14,8 @@ import { DATA } from "./data.js";
 import { CENTER_KINDS, ROAD_KINDS, ReportStore, publicReport } from "./reports.js";
 
 const TOKEN = /^[A-Za-z0-9-]{8,64}$/;
-const LIMITS = { device: [10, 3600], ip: [30, 3600], login: [10, 600] }; // [count, seconds], as on the hub
+const LIMITS = { device: [10, 3600], ip: [30, 3600], login: [10, 600], // [count, seconds], as on the hub
+  voteIp: [60, 3600], dispute: [1, 3600], confirm: [3, 3600] }; // votes per network address: in all, and per report
 const ROUTE = /^\/api\/reports\/([A-Za-z0-9-]{8,64})(\/vote|\/verify|\/note)?$/;
 const DEFAULT_ORIGINS = ["https://lyle-leif.github.io"];
 const LOCAL_ORIGIN = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
@@ -124,15 +125,29 @@ export async function handle(request, env, now) {
   if (m && m[2] === "/vote" && request.method === "POST") {
     const b = await readJson(request);
     if (!b || !TOKEN.test(b.device ?? "") || !["confirm", "dispute"].includes(b.vote)) return fail(422, "apierr.bad_request");
+    // Per network address and report: 1 dispute (hiding needs 2) or 3 confirms an hour, 60 votes in
+    // all. Confirms stay generous (many phones share an address); made-up phone ids from one
+    // place can't dispute a true report away.
+    const ipHash = await store.hash(`ip:${ip}`);
+    const voteIp = `vi:${ipHash}`;
+    const voteReport = `v${b.vote[0]}:${ipHash}:${m[1]}`;
+    if (await limited(db, voteIp, LIMITS.voteIp, now) || await limited(db, voteReport, LIMITS[b.vote], now)) {
+      return fail(429, "apierr.too_many_votes");
+    }
+    await db.batch([
+      db.prepare("INSERT INTO hits (key, at) VALUES (?, ?)").bind(voteIp, now),
+      db.prepare("INSERT INTO hits (key, at) VALUES (?, ?)").bind(voteReport, now),
+    ]);
     const r = await store.vote(m[1], b.device, b.vote, now);
     return r ? send(publicReport(r, now)) : fail(404, "apierr.gone");
   }
 
   if (path === "/api/login" && request.method === "POST") {
-    const loginKey = `l:${await store.hash(`ip:${ip}`)}`;
+    const ipHash = await store.hash(`ip:${ip}`);
+    const loginKey = `l:${ipHash}`;
     if (await limited(db, loginKey, LIMITS.login, now)) return fail(429, "apierr.login_locked");
     const b = await readJson(request);
-    const res = await login(db, b?.name, b?.password, now);
+    const res = await login(db, b?.name, b?.password, now, ipHash);
     if (res.error) {
       await hit(db, loginKey, now);
       return fail(res.error === "login_locked" ? 429 : 403, `apierr.${res.error}`);
@@ -169,7 +184,20 @@ export async function handle(request, env, now) {
   return fail(404, "apierr.bad_request");
 }
 
+// Hourly (cloud/wrangler.toml [triggers], free): delete the notes of expired reports and old
+// reports even when nobody opens the list, and clear old rate-limit entries and sessions.
+export async function cleanUp(db, now) {
+  await new ReportStore(db).purge(now);
+  await db.batch([
+    db.prepare("DELETE FROM hits WHERE at < ?").bind(now - 3600),
+    db.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(now),
+  ]);
+}
+
 export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(cleanUp(env.DB, (env.NOW ?? Date.now)() / 1000));
+  },
   async fetch(request, env) {
     const cors = corsHeaders(request, env);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });

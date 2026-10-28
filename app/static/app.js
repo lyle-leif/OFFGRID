@@ -1085,9 +1085,21 @@ checkHealth();
 // Every 15 s normally; open the app with ?demo for every 3 s, so in a live demo a report
 // posted from a phone shows on this screen almost at once. (The website has no hub to check.)
 if (!SITE) setInterval(checkHealth, new URLSearchParams(window.location.search).has("demo") ? 3000 : 15000);
-// The website's online reports: every 20 s, only while the app is on screen (it keeps the
-// free plan's daily request limit far away), and at once when it comes back on screen.
+// The website's online reports, only while the app is on screen: every 20 s for 2 minutes after
+// opening it or doing something with reports, then every 60 s; at once when it comes back on
+// screen. That keeps the free plan's daily request limit far away, even in a big event.
 if (SITE && CLOUD) {
-  setInterval(() => { if (document.visibilityState === "visible") checkHealth(); }, 20000);
-  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkHealth(); });
+  let lastActive = Date.now();
+  let lastRefresh = Date.now();
+  const refresh = () => { lastRefresh = Date.now(); checkHealth(); };
+  document.addEventListener("click", (e) => {
+    if (e.target.closest?.("#panel-reports, #report-btn, #place")) lastActive = Date.now();
+  }, true);
+  setInterval(() => {
+    if (document.visibilityState !== "visible") return;
+    if (Date.now() - lastActive < 120_000 || Date.now() - lastRefresh >= 59_000) refresh();
+  }, 20000);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") { lastActive = Date.now(); refresh(); }
+  });
 }

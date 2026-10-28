@@ -8,7 +8,7 @@ import { test } from "node:test";
 import { openD1 } from "../../cloud/local/d1shim.mjs";
 import { hashPassword, newPassword } from "../../cloud/src/auth.js";
 import { DATA } from "../../cloud/src/data.js";
-import worker from "../../cloud/src/worker.js";
+import worker, { cleanUp } from "../../cloud/src/worker.js";
 
 const TL = JSON.parse(readFileSync(new URL("../../app/static/lang/tl.json", import.meta.url), "utf-8"));
 const EN = JSON.parse(readFileSync(new URL("../../app/static/lang/en.json", import.meta.url), "utf-8"));
@@ -75,7 +75,8 @@ test("posting: checks, road and center rules, retries, Tagalog errors", async ()
 test("votes: one per phone, never your own, hiding and expiry", async () => {
   const { post, call, clock } = setup();
   const r = (await post({ kind: "road_blocked", ...ROAD })).body;
-  const vote = (device, v) => call("POST", `/api/reports/${r.id}/vote`, { body: { device, vote: v } });
+  // Each phone on its own network address (votes are limited per address).
+  const vote = (device, v) => call("POST", `/api/reports/${r.id}/vote`, { body: { device, vote: v }, ip: `10.9.0.${device.slice(-1)}` });
   assert.equal((await vote("phone-0001", "confirm")).body.confirms, 0); // the reporter's own
   assert.equal((await vote("phone-0002", "confirm")).body.confirms, 1);
   assert.equal((await vote("phone-0002", "confirm")).body.confirms, 1); // once per phone
@@ -180,4 +181,36 @@ test("Reports v2: details per kind, Iba pa needs a note, notes public only once 
   clock.now += 2 * 3600 + 1; // the flood report expires: its note is deleted, not just hidden
   await call("GET", "/api/reports");
   assert.equal((await env.DB.prepare("SELECT note FROM reports WHERE id = ?").bind(flood.id).first()).note, null);
+});
+
+test("safety: vote limits per address, lockout only from the guessing address, hourly clean-up", async () => {
+  const { env, post, call, clock } = setup();
+  const r = (await post({ kind: "road_flooded", ...ROAD })).body;
+  // Made-up phone ids from one address can't dispute a true report away.
+  const dispute = (device, ip = "198.51.100.7") => call("POST", `/api/reports/${r.id}/vote`, { body: { device, vote: "dispute" }, ip });
+  assert.equal((await dispute("fake-0001")).status, 200);
+  const second = await dispute("fake-0002");
+  assert.equal(second.status, 429); // one dispute per address on a report: hiding needs two
+  assert.equal(second.body.detail, EN["apierr.too_many_votes"]);
+  assert.ok((await call("GET", "/api/reports")).body.some((x) => x.id === r.id)); // still listed
+  const confirm = (device) => call("POST", `/api/reports/${r.id}/vote`, { body: { device, vote: "confirm" }, ip: "198.51.100.8" });
+  assert.deepEqual([await confirm("neighbour-0001"), await confirm("neighbour-0002"), await confirm("neighbour-0003"), await confirm("neighbour-0004")].map((x) => x.status),
+    [200, 200, 200, 429]); // neighbours on one Wi-Fi can still back it up
+  assert.equal((await dispute("real-0005", "203.0.113.9")).status, 200); // someone else still can
+  clock.now += 3601;
+  assert.equal((await dispute("fake-0006")).status, 200); // an hour later
+
+  // Wrong passwords lock the account only from where they came from.
+  const password = await addAccount(env, "Ana Reyes", clock.now);
+  const login = (pw, ip) => call("POST", "/api/login", { body: { name: "Ana Reyes", password: pw }, ip });
+  for (let i = 0; i < 5; i++) await login("wrong", "198.51.100.66");
+  assert.equal((await login(password, "198.51.100.66")).status, 429);
+  assert.equal((await login(password, "203.0.113.20")).status, 200); // the responder, elsewhere
+
+  // The hourly clean-up deletes the notes of expired reports even if nobody opens the list.
+  const noted = (await post({ kind: "power_out", lat: 13.7, lng: 121.0, note: "TEST note", device: "phone-0042" })).body;
+  clock.now += 6 * 3600 + 1;
+  await cleanUp(env.DB, clock.now);
+  assert.equal((await env.DB.prepare("SELECT note FROM reports WHERE id = ?").bind(noted.id).first()).note, null);
+  assert.equal((await env.DB.prepare("SELECT COUNT(*) AS n FROM hits WHERE at < ?").bind(clock.now - 3600).first()).n, 0);
 });

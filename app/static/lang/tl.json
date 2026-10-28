@@ -557,5 +557,6 @@
   "rep.flagged": "suriin ang salita",
   "rep.approve_note": "Aprubahan ang tala",
   "rep.hide_note": "Itago ang tala",
-  "rep.send_for": "Ipadala para sa {name}"
+  "rep.send_for": "Ipadala para sa {name}",
+  "apierr.too_many_votes": "Masyadong maraming boto mula sa network na ito. Subukan ulit mamaya."
 }

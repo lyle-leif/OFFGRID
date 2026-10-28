@@ -279,3 +279,44 @@ def test_route_goes_around_a_reported_road(client):
     ev = ask(client, question="How do I get there?", location_id=loc["id"],
              from_pos={"lat": 13.7672, "lng": 121.0660}, travel_mode="drive")
     assert "goes around 1 road people reported flooded or blocked" in ev[0]["text"]
+
+
+def test_vote_limit_per_address(client):
+    """Made-up phone ids from one address can't dispute a true report away."""
+    (lat, lng), _ = road_point(client)
+    rid_ = post(client, kind="road_flooded", lat=lat, lng=lng).json()["id"]
+    codes = [client.post(f"/api/reports/{rid_}/vote", json={"device": f"fake-phone-{i:04d}", "vote": "dispute"}).status_code
+             for i in range(4)]
+    assert codes == [200, 429, 429, 429]  # one dispute per address on a report
+    assert rid_ in [r["id"] for r in client.get("/api/reports").json()]  # so one place can't hide it (needs 2)
+    confirms = [client.post(f"/api/reports/{rid_}/vote", json={"device": f"neighbour-{i:04d}", "vote": "confirm"}).status_code
+                for i in range(4)]
+    assert confirms == [200, 200, 200, 429]  # neighbours on one Wi-Fi can still back it up
+
+
+def test_old_hub_database_is_upgraded(tmp_path):
+    """A hub database made before Reports v2 (no details/note columns) still opens and lists."""
+    import sqlite3
+
+    path = tmp_path / "old.db"
+    db = sqlite3.connect(path)
+    db.executescript("""
+        CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+        CREATE TABLE reports (id TEXT PRIMARY KEY, kind TEXT NOT NULL, lat REAL NOT NULL, lng REAL NOT NULL,
+            location_id TEXT, edge_id INTEGER, road_name TEXT, created_at REAL NOT NULL, expires_at REAL NOT NULL,
+            confirms INTEGER NOT NULL DEFAULT 0, disputes INTEGER NOT NULL DEFAULT 0,
+            verified INTEGER NOT NULL DEFAULT 0, removed INTEGER NOT NULL DEFAULT 0);
+        CREATE TABLE votes (report_id TEXT NOT NULL, device_hash TEXT NOT NULL, vote TEXT NOT NULL,
+            PRIMARY KEY (report_id, device_hash));
+    """)
+    db.execute("INSERT INTO reports VALUES ('old-report-1', 'power_out', 13.76, 121.06, NULL, NULL, NULL, ?, ?, 0, 0, 0, 0)",
+               (T0, T0 + 6 * 3600))
+    db.commit()
+    db.close()
+    store = ReportStore(path)
+    cols = {row[1] for row in store._db.execute("PRAGMA table_info(reports)")}
+    assert {"details", "note", "note_status", "flagged", "on_site", "acc_bucket"} <= cols
+    [r] = store.active(T0 + 60)
+    p = public(r, T0 + 60)
+    assert (p["id"], p["details"], p["note"], p["on_site"]) == ("old-report-1", [], None, False)
+    store.close()

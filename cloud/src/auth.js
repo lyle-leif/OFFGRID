@@ -26,24 +26,26 @@ export async function audit(db, name, action, reportId, now) {
   await db.prepare("INSERT INTO audit (at, name, action, report_id) VALUES (?, ?, ?, ?)").bind(now, name, action, reportId ?? null).run();
 }
 
-// Returns { token, name } or { error: "login_wrong" | "login_locked" }.
-export async function login(db, name, password, now) {
+// Returns { token, name } or { error: "login_wrong" | "login_locked" }. Wrong passwords lock the
+// account only from the network address they came from (`ipHash`), so nobody elsewhere can
+// keep a responder locked out during an emergency.
+export async function login(db, name, password, now, ipHash = "") {
   if (!validName(name) || typeof password !== "string" || password.length > 100) return { error: "login_wrong" };
-  const acc = await db.prepare("SELECT name, salt, pw_hash, active, failures, locked_until FROM accounts WHERE name = ?").bind(name).first();
+  const acc = await db.prepare("SELECT name, salt, pw_hash, active FROM accounts WHERE name = ?").bind(name).first();
   if (!acc || !acc.active) return { error: "login_wrong" };
-  if (acc.locked_until > now) return { error: "login_locked" };
+  const failKey = `f:${name}:${ipHash}`;
+  const fails = (await db.prepare("SELECT COUNT(*) AS n FROM hits WHERE key = ? AND at > ?").bind(failKey, now - LOCK_S).first()).n;
+  if (fails >= MAX_FAILURES) return { error: "login_locked" };
   // Passwords are made lowercase by newPassword(); phones often capitalize the first letter.
   if ((await hashPassword(acc.salt, password.trim().toLowerCase())) !== acc.pw_hash) {
-    const failures = acc.failures + 1;
-    const locked = failures >= MAX_FAILURES;
-    await db.prepare("UPDATE accounts SET failures = ?, locked_until = ? WHERE name = ?")
-      .bind(locked ? 0 : failures, locked ? now + LOCK_S : acc.locked_until, name).run();
+    const locked = fails + 1 >= MAX_FAILURES;
+    await db.prepare("INSERT INTO hits (key, at) VALUES (?, ?)").bind(failKey, now).run();
     await audit(db, name, locked ? "locked" : "login_failed", null, now);
     return { error: locked ? "login_locked" : "login_wrong" };
   }
   const token = randomHex(32);
   await db.batch([
-    db.prepare("UPDATE accounts SET failures = 0 WHERE name = ?").bind(name),
+    db.prepare("DELETE FROM hits WHERE key = ?").bind(failKey),
     db.prepare("DELETE FROM sessions WHERE expires_at < ?").bind(now),
     db.prepare("INSERT INTO sessions (token_hash, name, expires_at) VALUES (?, ?, ?)").bind(await sha256(token), name, now + SESSION_S),
   ]);

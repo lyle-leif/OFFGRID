@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS hits (key TEXT NOT NULL, at REAL NOT NULL);
 CREATE INDEX IF NOT EXISTS hits_key ON hits (key, at);
 
 -- Responder accounts, made by the admin with tools/cloud_admin.mjs. Passwords are long random
--- strings made by that tool, stored only as a salted SHA-256.
+-- strings made by that tool, stored only as a salted SHA-256. (failures and locked_until are no
+-- longer used: wrong passwords are counted per account and network address in hits.)
 CREATE TABLE IF NOT EXISTS accounts (
   name TEXT PRIMARY KEY, salt TEXT NOT NULL, pw_hash TEXT NOT NULL,
   active INTEGER NOT NULL DEFAULT 1, failures INTEGER NOT NULL DEFAULT 0, locked_until REAL NOT NULL DEFAULT 0,

@@ -557,5 +557,6 @@
   "rep.flagged": "check the wording",
   "rep.approve_note": "Approve note",
   "rep.hide_note": "Hide note",
-  "rep.send_for": "Send for {name}"
+  "rep.send_for": "Send for {name}",
+  "apierr.too_many_votes": "Too many votes from this network. Try again later."
 }

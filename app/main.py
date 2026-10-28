@@ -54,7 +54,10 @@ async def lifespan(app: FastAPI):
     app.state.router = _load_router()
     app.state.normalizer = Normalizer(app_lexicon(app.state.retriever.chunks, app.state.locations, app.state.router))
     app.state.reports = ReportStore(config.REPORTS_DB)
-    app.state.report_limits = {"device": Limiter(10, 3600), "ip": Limiter(30, 3600)}
+    app.state.report_limits = {"device": Limiter(10, 3600), "ip": Limiter(30, 3600),
+                               # Votes: so made-up phone ids can't dispute a true report away.
+                               # 1 dispute (hiding needs 2) or 3 confirms per address on a report.
+                               "vote_ip": Limiter(60, 3600), "dispute": Limiter(1, 3600), "confirm": Limiter(3, 3600)}
     app.state.pin_failures = Limiter(5, 600)
     app.state.responder_pin = config.RESPONDER_PIN or f"{secrets.randbelow(10**6):06d}"
     if not config.RESPONDER_PIN:

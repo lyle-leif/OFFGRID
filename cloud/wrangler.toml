@@ -12,6 +12,11 @@ binding = "DB"
 database_name = "offgrid"
 database_id = "5ce887c3-0c62-42ab-a7af-508e40f3a4fb"
 
+# Hourly clean-up (free on the Workers free plan): notes of expired reports, old reports,
+# old rate-limit entries and sessions are deleted even when nobody opens the app.
+[triggers]
+crons = ["17 * * * *"]
+
 [vars]
 # Pages that may call this Worker (the website). Comma-separated.
 ALLOWED_ORIGINS = "https://lyle-leif.github.io"

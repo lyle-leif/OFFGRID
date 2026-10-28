@@ -100,6 +100,16 @@ def add_report(body: NewReport, request: Request):
 
 @router.post("/{report_id}/vote")
 def vote(report_id: str, body: ReportVote, request: Request):
+    # Per network address and report: 1 dispute (hiding a report needs 2) or 3 confirms an hour,
+    # and 60 votes an hour in all. Many phones share an address, so confirms stay generous; but
+    # made-up phone ids from one place can't dispute a true report away.
+    limits = request.app.state.report_limits
+    ip = _client(request)
+    key = f"{ip}:{report_id}"
+    if limits["vote_ip"].blocked(ip) or limits[body.vote].blocked(key):
+        raise HTTPException(429, t(request_lang(request), "apierr.too_many_votes"))
+    limits["vote_ip"].hit(ip)
+    limits[body.vote].hit(key)
     r = request.app.state.reports.vote(report_id, body.device, body.vote)
     if r is None:
         raise HTTPException(404, t(request_lang(request), "apierr.gone"))
