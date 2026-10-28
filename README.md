@@ -6,6 +6,11 @@
 <p align="center"><b>Ready beyond the grid.</b><br>
 An offline emergency map and AI assistant for all of Batangas, Philippines.</p>
 
+> **Under redevelopment.** OFFGRID is being transformed into a bigger, more reliable system. The published website is an early public preview: features, data and wording may change, and the app updates itself when it does.
+> *Binubuo muli ang OFFGRID para maging mas malaki at mas maaasahang sistema. Maagang bersiyon pa lang ang website, kaya maaaring may magbago.*
+
+**Try it now, free, no setup:** [lyle-leif.github.io/OFFGRID](https://lyle-leif.github.io/OFFGRID/) (see [Published website](#published-website-github-pages)).
+
 OFFGRID keeps working when the power and the internet are gone. A laptop runs a small AI model **locally** (no cloud) and acts as a **hub** for the neighborhood. Phones connect to it over local Wi-Fi once, save a full offline copy, and from then on keep working **on their own**, even when the hub is switched off.
 
 > **Information aid only.** OFFGRID does not replace official alerts, emergency services or local authorities. In an emergency, call **911**.
@@ -28,6 +33,7 @@ Both are made from the real app, recorded with the internet blocked.
 
 ## Contents
 - [Watch](#watch)
+- [Published website (GitHub Pages)](#published-website-github-pages)
 - [What it does](#what-it-does)
 - [Screenshots](#screenshots)
 - [How it works](#how-it-works)
@@ -43,6 +49,40 @@ Both are made from the real app, recorded with the internet blocked.
 - [For developers](#for-developers)
 - [Data and sources](#data-and-sources)
 - [Known limits](#known-limits)
+
+---
+
+## Published website (GitHub Pages)
+
+**https://lyle-leif.github.io/OFFGRID/**: the OFFGRID app as a website, for anyone with a phone and one internet connection. No hub, no certificate, no account.
+
+> **Early preview, under redevelopment.** OFFGRID is being transformed into a bigger, more reliable system. Expect changes; the app updates itself the next time it's opened online.
+
+**What works on the website**
+- The offline map of all of Batangas, with 1,758 facilities.
+- Emergency guides, with whether each section was checked against an official source.
+- Nearest places by road, and walking or driving directions with GPS tracking.
+- Official hotlines.
+- Tagalog or English (asked the first time; change it in **Settings**, the gear).
+- **After the first visit it works with no internet at all**, like a phone whose hub is off.
+
+**What the website doesn't have yet** (both work with a local OFFGRID hub, and are part of the redevelopment)
+- **AI summaries:** you get the exact guide text, and the app's own answers for places, directions and hotlines.
+- **Shared situation reports** (flooded roads, full evacuation centers): reports are shared only through a local hub for now.
+
+**Install it on your phone**
+1. Open **https://lyle-leif.github.io/OFFGRID/** while you have internet (Wi-Fi is best: about 46 MB is saved).
+2. Choose **Tagalog** or **English**.
+3. **Android (Chrome):** menu (⋮) → **Install app** (or **Add to Home screen**).
+   **iPhone (Safari):** Share button → **Add to Home Screen** → **Add**, then open OFFGRID **from the new icon**. The icon keeps its own copy, so it asks for the language once more.
+4. Wait until the bottom of the app says **"Saved on this phone"** (*"Naka-save sa teleponong ito"*). From then on it works offline.
+
+**Good to know**
+- **Updates:** when the app is opened with internet, it checks for a newer version and saves it by itself.
+- **Privacy:** the website collects nothing: no accounts, no tracking, no cookies. Your settings and position stay on your phone. Full details: [privacy page](https://lyle-leif.github.io/OFFGRID/privacy.html) ([source](app/static/privacy.html)).
+- **Not an official service:** OFFGRID is an information aid. Facility details are community-mapped (OpenStreetMap) and can be wrong or out of date. **In an emergency, call 911** and follow official announcements.
+- **Free:** free to use, and hosted for free on GitHub Pages.
+- **Problems or ideas:** [open an issue](https://github.com/lyle-leif/OFFGRID/issues).
 
 ---
 
@@ -326,6 +366,12 @@ node tools\showreel\build.mjs              # soundtrack -> 3,600 frames -> docs/
 ```
 After changing answer logic, also run `.venv\Scripts\python tools\make_parity_fixtures.py`.
 
+**Publishing the website (GitHub Pages).** The website is the same app in "website mode": `tools/build_site.py` copies `app/static` and adds `<meta name="offgrid-mode" content="site">` to `index.html`. `app/static/mode.js` reads it (`SITE`), and the app then skips the hub entirely (no `/api`; answers, places and routes come from the phone engine; places and hotlines from `pack/locations.json` and `pack/hotlines.json`). All app paths are relative to `mode.js`'s `BASE`, so the same files work at `/` (hub) and `/OFFGRID/` (website); `tests/test_site.py` fails on any `"/..."` path.
+- To publish an update: run `tools/build_phone_pack.py`, commit, and push to `main`. `.github/workflows/pages.yml` builds and deploys when `app/static/**` changes (or use **Run workflow** in the Actions tab).
+- One-time setup: repo **Settings → Pages → Source: GitHub Actions**.
+- `node tools/site_check.mjs` checks the website build end to end: it serves the site under `/OFFGRID/` like GitHub Pages, installs it in headless Edge, turns the server off, and checks answers, directions, Tagalog, the privacy page, updates, and that no `/api` call is ever made.
+- **Cost: nothing.** GitHub Pages and Actions are free for public repositories. The workflow uses only the standard `ubuntu-latest` runner (never a paid "larger runner"), no Git LFS and no custom domain. GitHub's 100 GB/month download limit for Pages is a soft limit (about 2,000 first installs); going over doesn't charge anything.
+
 **Interface language.** Every sentence the app shows or writes itself lives in `app/static/lang/en.json` and `tl.json` (flat keys, `{placeholders}`, plurals as `key_one`/`key_other`). The interface, the phone engine and the hub all read these same files, so their wording can't drift; `tests/test_i18n.py` checks both files have the same keys and placeholders and that every key the code uses exists. After changing Tagalog text, run `.venv\Scripts\python tools\make_translation_review.py` to refresh [docs/translation_review.md](docs/translation_review.md), the side-by-side list for a native speaker to check. To add a language: a new `lang/<id>.json` with the same keys, plus an entry in `LANGS` in `app/static/i18n.js` and `app/services/i18n.py`.
 
 **Where things are**
@@ -336,6 +382,7 @@ After changing answer logic, also run `.venv\Scripts\python tools\make_parity_fi
 | `app/routes/` | `assistant.py` (answers), `directions.py`, `reports.py`, `locations.py`, `setup.py` |
 | `app/services/` | `retrieval.py` (BM25 + synonyms), `normalize.py` (spelling fixer), `intents.py`, `verify.py` (AI summary check), `routing.py` (A*), `reports.py`, `llm.py` (Ollama) |
 | `app/static/` | The web app (vanilla JS, MapLibre, PMTiles) and `sw.js`, the offline copy |
+| `.github/workflows/pages.yml`, `tools/build_site.py` | The free website: build and publish to GitHub Pages |
 | `app/static/offline/` | The phone engine: search, spelling fixer, answers, router, reports |
 | `data/` | Facilities, guides, roads, question bank |
 | `tools/` | Imports, phone pack, certificates, map styles, demo, showreel and screenshot tools |
@@ -418,5 +465,6 @@ The showreel's voice-over and sound effects were generated with [ElevenLabs](htt
 - **Facility data is community-mapped,** not an official list, and may be out of date.
 - **Routes and reports can be wrong or missing.** Every route says so: OFFGRID only knows about the floods and closures people reported.
 - **AI summaries are most reliable in English.** For Filipino questions the guide text is always shown.
+- **The website version has no AI summaries and no shared reports** (they need a local hub). They come with the redevelopment.
 - **Guides and hotlines are in English only,** also with the Tagalog interface: they are copied from official sources, and translating them is separate work. The Tagalog interface text has not yet been reviewed by a native speaker ([docs/translation_review.md](docs/translation_review.md)).
 - **Content gaps:** the official evacuation-center list (a request to the Batangas PDRRMO is drafted in [docs/pdrrmo_request_letter.md](docs/pdrrmo_request_letter.md)), hotlines for the remaining towns, and the current Taal alert level (only PHIVOLCS can say which level is in force).

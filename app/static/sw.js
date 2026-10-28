@@ -1,8 +1,17 @@
 // OFFGRID service worker: keeps a full copy of the app on the phone so it works with no
 // hub and no internet. Registered as /sw.js?v=<pack id>; a new data pack means a new URL,
 // so the phone downloads the new copy the next time it reaches the hub.
+//
+// The same worker runs on the GitHub Pages website (registered with &site=1): there is no
+// hub there, so it saves no /api answers. Every path is relative to the worker's scope:
+// "/" on a hub, "/OFFGRID/" on the website.
 
-const VERSION = new URL(self.location.href).searchParams.get("v") || "dev";
+const PARAMS = new URL(self.location.href).searchParams;
+const VERSION = PARAMS.get("v") || "dev";
+const SITE = PARAMS.get("site") === "1";
+const SCOPE = self.registration.scope; // ends with "/"
+const SCOPE_PATH = new URL(SCOPE).pathname;
+const at = (path) => new URL(path, SCOPE).href;
 const CACHE = `offgrid-${VERSION}`;
 const RUNTIME = "offgrid-runtime"; // map glyphs fetched later, kept across versions
 
@@ -11,19 +20,20 @@ const FONTS = ["Noto Sans Regular", "Noto Sans Medium", "Noto Sans Italic"];
 const FONT_RANGES = ["0-255", "256-511", "8192-8447"];
 
 const PRECACHE = [
-  "/", "/index.html", "/styles.css", "/manifest.webmanifest",
-  "/app.js", "/map.js", "/chat.js", "/directions.js", "/icons.js", "/ui-icons.js", "/reports.js", "/report-kinds.js", "/sheet.js",
-  "/i18n.js", "/lang/en.json", "/lang/tl.json",
-  "/offline/search.js", "/offline/intents.js", "/offline/router.js", "/offline/answers.js", "/offline/brain.js", "/offline/reports.js", "/offline/normalize.js",
-  "/vendor/maplibre-gl.js", "/vendor/maplibre-gl.css", "/vendor/pmtiles.js",
-  "/icons/icon-192.png", "/icons/icon-512.png", "/icons/icon-maskable-512.png", "/icons/apple-touch-icon.png", "/icons/logo.svg",
-  "/map/style.json", "/map/style-dark.json",
-  ...["light", "dark"].flatMap((t) => [`/map/sprites/${t}.json`, `/map/sprites/${t}.png`, `/map/sprites/${t}@2x.json`, `/map/sprites/${t}@2x.png`]),
-  ...FONTS.flatMap((f) => FONT_RANGES.map((r) => `/map/fonts/${encodeURIComponent(f)}/${r}.pbf`)),
-  "/pack/version.json", "/pack/guides.json", "/pack/lexicon.json", "/pack/roads-meta.json", "/pack/roads.bin",
-  "/api/locations", "/api/hotlines",
-  "/map/area.pmtiles", // the big one (~32 MB) last
-];
+  "./", "index.html", "privacy.html", "styles.css", "manifest.webmanifest",
+  "app.js", "map.js", "chat.js", "directions.js", "icons.js", "ui-icons.js", "reports.js", "report-kinds.js", "sheet.js",
+  "i18n.js", "mode.js", "lang/en.json", "lang/tl.json",
+  "offline/search.js", "offline/intents.js", "offline/router.js", "offline/answers.js", "offline/brain.js", "offline/reports.js", "offline/normalize.js",
+  "vendor/maplibre-gl.js", "vendor/maplibre-gl.css", "vendor/pmtiles.js",
+  "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/logo.svg",
+  "map/style.json", "map/style-dark.json",
+  ...["light", "dark"].flatMap((t) => [`map/sprites/${t}.json`, `map/sprites/${t}.png`, `map/sprites/${t}@2x.json`, `map/sprites/${t}@2x.png`]),
+  ...FONTS.flatMap((f) => FONT_RANGES.map((r) => `map/fonts/${encodeURIComponent(f)}/${r}.pbf`)),
+  "pack/version.json", "pack/guides.json", "pack/lexicon.json", "pack/roads-meta.json", "pack/roads.bin",
+  "pack/locations.json", "pack/hotlines.json",
+  ...(SITE ? [] : ["api/locations", "api/hotlines"]), // the hub's live lists
+  "map/area.pmtiles", // the big one (~32 MB) last
+].map(at);
 
 // Tell open pages how the offline copy is going (shown as "Saving offline copy… 40%").
 async function report(msg) {
@@ -115,41 +125,44 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return; // questions (POST) fall back in the page itself
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
+  if (url.origin !== self.location.origin || !url.pathname.startsWith(SCOPE_PATH)) return;
+  const path = url.pathname.slice(SCOPE_PATH.length); // e.g. "pack/version.json"
 
   // Map tiles: always from the saved copy (they never change within a version).
-  if (url.pathname === "/map/area.pmtiles") {
+  if (path === "map/area.pmtiles") {
     event.respondWith((async () => {
-      const cached = await caches.match("/map/area.pmtiles");
+      const cached = await caches.match(at("map/area.pmtiles"));
       return cached ? rangeResponse(request, cached) : fetch(request);
     })());
     return;
   }
-  // Places, hotlines and health: try the hub first, fall back to the saved copy.
-  if (url.pathname === "/api/locations" || url.pathname === "/api/hotlines") {
+  // Places and hotlines: try the hub first, fall back to the saved copy.
+  if (path === "api/locations" || path === "api/hotlines") {
     event.respondWith(networkFirst(request));
     return;
   }
-  // Which pack the hub has now: this is how the page notices an update, so it must come
-  // from the hub when reachable (a page's cache: "no-store" doesn't get past this worker).
-  if (url.pathname === "/pack/version.json") {
+  // Which pack the hub (or website) has now: this is how the page notices an update, so it
+  // must come from the network when reachable (a page's cache: "no-store" doesn't get past this worker).
+  if (path === "pack/version.json") {
     event.respondWith(networkFirst(request, { save: false }));
     return;
   }
-  if (url.pathname.startsWith("/api/")) return; // health etc.: no offline copy (the page handles failure)
+  if (path.startsWith("api/")) return; // health etc.: no offline copy (the page handles failure)
   // The hub's setup page and certificate are the hub's own, never the saved app.
-  if (url.pathname === "/setup" || url.pathname === "/offgrid-ca.crt") return;
-  // Opening the app (also from the home-screen icon): the saved page.
+  if (path === "setup" || path === "offgrid-ca.crt") return;
+  // Opening the app (also from the home-screen icon): the saved page. The privacy page is
+  // saved too, so it opens offline.
   if (request.mode === "navigate") {
-    event.respondWith(caches.match("/").then((c) => c || fetch(request)));
+    event.respondWith((async () => (path === "privacy.html" && await caches.match(at("privacy.html")))
+      || (await caches.match(at("./"))) || fetch(request))());
     return;
   }
-  // Everything else: saved copy first, then the hub; glyph ranges not saved upfront are kept once fetched.
+  // Everything else: saved copy first, then the network; glyph ranges not saved upfront are kept once fetched.
   event.respondWith((async () => {
-    const cached = await caches.match(request, { ignoreSearch: url.pathname.startsWith("/pack/") });
+    const cached = await caches.match(request, { ignoreSearch: path.startsWith("pack/") });
     if (cached) return cached;
     const resp = await fetch(request);
-    if (resp.ok && url.pathname.startsWith("/map/fonts/")) (await caches.open(RUNTIME)).put(request, resp.clone());
+    if (resp.ok && path.startsWith("map/fonts/")) (await caches.open(RUNTIME)).put(request, resp.clone());
     return resp;
   })());
 });

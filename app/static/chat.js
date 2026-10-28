@@ -1,4 +1,5 @@
 import { getLang, roadName, t } from "./i18n.js";
+import { SITE, url } from "./mode.js";
 import { icon, iconLabel } from "./ui-icons.js";
 
 // Chat UI: streams NDJSON events from /api/assistant/ask and renders answer + sources.
@@ -204,7 +205,7 @@ export function createChat({
           break;
         case "offline":
           summaryHead?.remove();
-          if (passageText) body.replaceWith(note("panel", t("sum.offline")));
+          if (passageText) body.replaceWith(note("panel", t(SITE ? "sum.site" : "sum.offline")));
           break;
         default:
           break;
@@ -297,11 +298,12 @@ export function createChat({
     };
     try {
       let resp = null;
-      try {
+      // The website has no hub: answer on this phone straight away.
+      if (!SITE) try {
         // Give up on the hub quickly if it's gone (left its Wi-Fi, laptop off).
         const ctrl = new AbortController();
         const timer = setTimeout(() => ctrl.abort(), 6000);
-        resp = await fetch("/api/assistant/ask", {
+        resp = await fetch(url("api/assistant/ask"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -314,7 +316,7 @@ export function createChat({
       let finished = false;
       if (!resp) {
         offline = true;
-        onHubState?.(false);
+        if (!SITE) onHubState?.(false);
         for (const ev of await brain.ask(payload)) if (handle(ev)) { finished = true; break; }
       } else {
         onHubState?.(true);

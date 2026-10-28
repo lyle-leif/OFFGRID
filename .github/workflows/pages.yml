@@ -1,0 +1,47 @@
+# Publishes the OFFGRID website (the app in website mode) to GitHub Pages:
+#   https://lyle-leif.github.io/OFFGRID/
+# Free: GitHub Pages and Actions cost nothing for public repositories. This uses only the
+# standard ubuntu-latest runner (never a paid "larger runner") and no Git LFS.
+# One-time setup: repo Settings -> Pages -> Source: "GitHub Actions".
+name: Publish website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/static/**"
+      - "tools/build_site.py"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch: # "Run workflow" button, to publish by hand
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the website (Python standard library only)
+        run: python3 tools/build_site.py --out _site
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

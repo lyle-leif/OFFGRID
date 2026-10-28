@@ -7,10 +7,10 @@
   <meta name="description" content="Ready beyond the grid: offline emergency map, guides, reports and directions for Batangas.">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f7f8f4">
-  <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="icon" type="image/svg+xml" href="/icons/logo.svg">
-  <link rel="icon" href="/icons/icon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icons/logo.svg">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
   <!-- iPhone: opened from the home screen, run full screen like an app -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -49,7 +49,7 @@
       setTimeout(fit, 1000);
     })();
   </script>
-  <link rel="stylesheet" href="/vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="vendor/maplibre-gl.css">
   <!-- Launch screen: the icon's colour and tern, painted on the very first frame (before
        styles.css), then faded out once the map has drawn (app.js hideSplash). -->
   <style>
@@ -65,7 +65,7 @@
     .splash-tag { font-size: 14px; color: #b9c2cb; }
     @media (prefers-reduced-motion: reduce) { .splash { transition: none; } }
   </style>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="splash" class="splash" aria-hidden="true">
@@ -278,6 +278,14 @@
         <div id="settings-langs" class="lang-options"></div>
         <p class="list-note" data-i18n="settings.lang_note"></p>
       </fieldset>
+      <fieldset class="settings-group">
+        <legend data-i18n="about.title">About</legend>
+        <p class="list-note" data-i18n="about.redevelopment"></p>
+        <p class="list-note" data-i18n="about.disclaimer"></p>
+        <p id="about-version" class="list-note" hidden></p>
+        <p class="about-links"><a href="privacy.html" data-i18n="about.privacy">Privacy</a> ·
+          <a href="https://github.com/lyle-leif/OFFGRID" target="_blank" rel="noopener" data-i18n="about.source">Source code</a></p>
+      </fieldset>
     </div>
   </div>
 
@@ -290,8 +298,8 @@
     </div>
   </div>
 
-  <script src="/vendor/maplibre-gl.js"></script>
-  <script src="/vendor/pmtiles.js"></script>
-  <script type="module" src="/app.js"></script>
+  <script src="vendor/maplibre-gl.js"></script>
+  <script src="vendor/pmtiles.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

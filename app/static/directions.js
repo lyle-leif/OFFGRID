@@ -9,6 +9,7 @@
 // the user turns that off; a new or expired road report recomputes the route.
 
 import { getLang, t } from "./i18n.js";
+import { SITE, url } from "./mode.js";
 import { icon, iconLabel } from "./ui-icons.js";
 
 const $ = (id) => document.getElementById(id);
@@ -172,9 +173,10 @@ export function createDirections({ getMapApi, getPlace, getPos, setPos, requestP
     try {
       let body;
       try {
+        if (SITE) throw new TypeError("no hub on the website"); // route on this phone, below
         const ctrl = new AbortController();
         const timer = setTimeout(() => ctrl.abort(), 5000);
-        const resp = await fetch(`/api/route?${q}`, { signal: ctrl.signal }).finally(() => clearTimeout(timer));
+        const resp = await fetch(url(`api/route?${q}`), { signal: ctrl.signal }).finally(() => clearTimeout(timer));
         body = await resp.json();
         if (seq !== requestSeq) return;
         if (!resp.ok) throw new Error(typeof body.detail === "string" ? body.detail : t("route.compute_failed"));

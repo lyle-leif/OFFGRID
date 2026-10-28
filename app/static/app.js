@@ -4,6 +4,7 @@ import { createDirections } from "./directions.js";
 import { createBrain } from "./offline/brain.js";
 import { createReports } from "./reports.js";
 import { applyStatic, getLang, LANGS, loadLang, saveLang, savedLang, t } from "./i18n.js";
+import { SITE, url } from "./mode.js";
 import { createSheet } from "./sheet.js";
 import { pinImg, reportImg } from "./icons.js";
 import { REPORT_KINDS } from "./report-kinds.js";
@@ -42,6 +43,8 @@ await loadLang(await chooseLanguage());
 applyStatic();
 document.title = t("app.title");
 $("hotlines-lang").hidden = !t("hotlines.lang_note");
+// The website has no hub, so nothing can be reported from it (reports are shared through hubs).
+if (SITE) $("report-btn").hidden = true;
 
 // Launch screen (index.html): fade it out once the map has drawn, so the app appears in one
 // piece. Never longer than 5 s, whatever happens to the map.
@@ -125,8 +128,14 @@ async function checkHealth() {
   const box = $("status");
   const text = $("status-text");
   const banner = $("banner");
+  if (SITE) {
+    // The website: no hub to check; the phone answers on its own.
+    box.className = "status";
+    setStatusText(t("status.web_full"), t("status.web"));
+    return;
+  }
   try {
-    const h = await (await fetch("/api/health")).json();
+    const h = await (await fetch(url("api/health"))).json();
     box.className = "status";
     banner.hidden = true;
     if (h.ollama !== "ok") {
@@ -243,10 +252,10 @@ async function setUpOfflineCopy() {
   }, { once: true });
   try {
     // Fresh from the hub when reachable, else the saved copy (via the worker).
-    const version = await (await fetch("/pack/version.json", { cache: "no-store" })).json();
+    const version = await (await fetch(url("pack/version.json"), { cache: "no-store" })).json();
     packDates = version.dates;
     hubPack = version.pack;
-    const reg = await navigator.serviceWorker.register(`/sw.js?v=${version.pack}`);
+    const reg = await navigator.serviceWorker.register(url(`sw.js?v=${version.pack}${SITE ? "&site=1" : ""}`));
     if (navigator.serviceWorker.controller && reg.active && !reg.installing && !reg.waiting
         && new URL(reg.active.scriptURL).searchParams.get("v") === version.pack) {
       showOfflineCopy({ state: "ready" });
@@ -284,6 +293,9 @@ function openSettings() {
     label.append(input, l.name);
     box.append(label);
   }
+  const about = $("about-version");
+  about.textContent = packDates ? t("about.version", { pack: hubPack, ...packDates }) : "";
+  about.hidden = !packDates;
   $("settings").hidden = false;
   box.querySelector("input:checked")?.focus();
 }
@@ -416,7 +428,7 @@ function linkifyPhones(text) {
 
 async function loadHotlines() {
   try {
-    const sections = await (await fetch("/api/hotlines")).json();
+    const sections = await (await fetch(url(SITE ? "pack/hotlines.json" : "api/hotlines"))).json();
     const box = $("hotline-list");
     for (const s of sections) {
       const div = document.createElement("div");
@@ -1004,7 +1016,7 @@ renderChips();
 // ---------- startup ----------
 (async () => {
   try {
-    state.locations = await (await fetch("/api/locations")).json();
+    state.locations = await (await fetch(url(SITE ? "pack/locations.json" : "api/locations"))).json();
   } catch {
     $("map-error").hidden = false;
     $("map-error").textContent = t("map.error_locations");
@@ -1043,5 +1055,5 @@ renderChips();
 
 checkHealth();
 // Every 15 s normally; open the app with ?demo for every 3 s, so in a live demo a report
-// posted from a phone shows on this screen almost at once.
-setInterval(checkHealth, new URLSearchParams(window.location.search).has("demo") ? 3000 : 15000);
+// posted from a phone shows on this screen almost at once. (The website has no hub to check.)
+if (!SITE) setInterval(checkHealth, new URLSearchParams(window.location.search).has("demo") ? 3000 : 15000);

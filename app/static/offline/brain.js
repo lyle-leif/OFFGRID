@@ -3,6 +3,7 @@
 // low-end phones), then answers with exact data via localAsk.
 
 import { format } from "../i18n.js";
+import { url } from "../mode.js";
 import { blockedEdges, localAsk, planRoute } from "./answers.js";
 import { createNormalizer } from "./normalize.js";
 import { createRouter, RoutingError } from "./router.js";
@@ -16,8 +17,8 @@ export function createBrain(getLocations, getReports = () => null) {
   async function getSearch() {
     if (!search) {
       const [guides, lexicon] = await Promise.all([
-        fetch("/pack/guides.json").then((r) => r.json()),
-        fetch("/pack/lexicon.json").then((r) => r.json()),
+        fetch(url("pack/guides.json")).then((r) => r.json()),
+        fetch(url("pack/lexicon.json")).then((r) => r.json()),
       ]);
       search = createSearch(guides);
       normalizer = createNormalizer(lexicon);
@@ -29,8 +30,8 @@ export function createBrain(getLocations, getReports = () => null) {
     routerPromise ??= (async () => {
       try {
         const [meta, bin] = await Promise.all([
-          fetch("/pack/roads-meta.json").then((r) => r.json()),
-          fetch("/pack/roads.bin").then((r) => r.arrayBuffer()),
+          fetch(url("pack/roads-meta.json")).then((r) => r.json()),
+          fetch(url("pack/roads.bin")).then((r) => r.arrayBuffer()),
         ]);
         return createRouter(meta, bin);
       } catch (e) {

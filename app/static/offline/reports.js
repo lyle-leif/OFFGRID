@@ -75,7 +75,8 @@ export function answerReports(question, kinds, reports, place = null, pos = null
   sel = [...sel].sort((a, b) => a.age_min - b.age_min);
 
   const lines = [];
-  if (syncedMinAgo === undefined) lines.push(t("rans.never_synced"));
+  if (syncedMinAgo === "site") lines.push(t("rans.site")); // the website: no hub, so no reports
+  else if (syncedMinAgo === undefined) lines.push(t("rans.never_synced"));
   else if (syncedMinAgo !== null) lines.push(t("rans.synced", { ago: ago(syncedMinAgo, lang) }));
   if (sel.length) {
     lines.push(t("rans.head", { n: sel.length, scope }));

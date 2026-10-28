@@ -4,6 +4,7 @@
 // layers (facilities, situation reports, route, GPS accuracy) are re-added whenever the style changes.
 /* global maplibregl, pmtiles */
 import { t } from "./i18n.js";
+import { BASE } from "./mode.js";
 import { loadPinImage, loadReportImage } from "./icons.js";
 import { REPORT_KINDS } from "./report-kinds.js";
 import { icon } from "./ui-icons.js";
@@ -51,12 +52,13 @@ const THEME = {
 };
 
 async function loadStyle(theme) {
-  const url = theme === "dark" ? "/map/style-dark.json" : "/map/style.json";
-  const style = await (await fetch(url)).json();
-  const origin = window.location.origin;
-  style.glyphs = origin + style.glyphs;
-  style.sprite = origin + style.sprite;
-  style.sources.protomaps.url = `pmtiles://${origin}/map/area.pmtiles`;
+  const style = await (await fetch(BASE + (theme === "dark" ? "map/style-dark.json" : "map/style.json"))).json();
+  // The styles name their files from the site root ("/map/..."); point them at this copy of
+  // the app (the hub's "/", or "/OFFGRID/" on the website). Joined as text, so MapLibre's
+  // "{fontstack}" placeholders stay as they are.
+  style.glyphs = BASE + style.glyphs.replace(/^\//, "");
+  style.sprite = BASE + style.sprite.replace(/^\//, "");
+  style.sources.protomaps.url = `pmtiles://${BASE}map/area.pmtiles`;
   return style;
 }
 

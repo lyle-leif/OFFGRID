@@ -6,6 +6,7 @@
 // offline, marked with how long ago it was synced.
 import { CENTER_KINDS, REPORT_KINDS, ROAD_KINDS, fmtAge, trustLabel } from "./report-kinds.js";
 import { getLang, roadName, t } from "./i18n.js";
+import { SITE, url } from "./mode.js";
 import { reportImg } from "./icons.js";
 import { icon, iconLabel } from "./ui-icons.js";
 
@@ -40,12 +41,12 @@ function meters(a, b) {
 }
 
 // The hub words its error messages in the app's language (X-Lang).
-async function fetchJSON(url, opts = {}) {
+async function fetchJSON(path, opts = {}) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
     const headers = { ...opts.headers, "X-Lang": getLang() };
-    const resp = await fetch(url, { ...opts, headers, signal: ctrl.signal, cache: "no-store" });
+    const resp = await fetch(url(path), { ...opts, headers, signal: ctrl.signal, cache: "no-store" });
     let body = null;
     try { body = await resp.json(); } catch { /* empty body */ }
     return { ok: resp.ok, status: resp.status, body };
@@ -90,6 +91,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
 
   // For the assistant: the hub's last list, how old that copy is, and unsent reports.
   function snapshot() {
+    if (SITE) return { reports: [], syncedMinAgo: "site" }; // the website gets no reports
     return {
       reports: current(),
       // undefined: this phone never got a copy from the hub.
@@ -109,7 +111,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       };
       let res;
       try {
-        res = await fetchJSON("/api/reports", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        res = await fetchJSON("api/reports", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       } catch {
         hubUp = false;
         return failed; // hub gone again: keep the rest for later
@@ -128,7 +130,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
       try {
         const failed = outbox.length ? await flush() : [];
         if (failed.length) message(t("rep.not_sent", { list: failed.join("; ") }), true);
-        const res = await fetchJSON("/api/reports");
+        const res = await fetchJSON("api/reports");
         if (res.ok && Array.isArray(res.body)) {
           hubUp = true;
           cache = { synced_at: Date.now(), reports: res.body };
@@ -145,6 +147,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
   }
 
   function setHubUp(up) {
+    if (SITE) return;
     hubUp = up;
     if (up) sync(); else render();
   }
@@ -232,7 +235,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
   async function vote(r, v) {
     if (!hubUp) { message(t("rep.vote_needs_hub"), true); return; }
     try {
-      const res = await fetchJSON(`/api/reports/${encodeURIComponent(r.id)}/vote`, {
+      const res = await fetchJSON(`api/reports/${encodeURIComponent(r.id)}/vote`, {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ device, vote: v }),
       });
       if (!res.ok) { message(detail(res, t("rep.vote_failed")), true); return; }
@@ -247,7 +250,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
 
   async function responderAction(r, action) {
     try {
-      const res = await fetchJSON(`/api/reports/${encodeURIComponent(r.id)}${action === "verify" ? "/verify" : ""}`, {
+      const res = await fetchJSON(`api/reports/${encodeURIComponent(r.id)}${action === "verify" ? "/verify" : ""}`, {
         method: action === "verify" ? "POST" : "DELETE", headers: { "X-Responder-Pin": pin ?? "" },
       });
       if (!res.ok) message(detail(res, t("rep.not_allowed")), true);
@@ -274,7 +277,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
     e.preventDefault();
     const value = $("responder-pin").value.trim();
     try {
-      const res = await fetchJSON("/api/reports/responder", {
+      const res = await fetchJSON("api/reports/responder", {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin: value }),
       });
       if (!res.ok) { message(detail(res, t("rep.wrong_pin")), true); return; }
@@ -323,6 +326,13 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
 
     const syncEl = $("reports-sync");
     syncEl.replaceChildren();
+    if (SITE) {
+      // The website: reports are shared only through local hubs, so there are none here.
+      syncEl.append(icon("warning", 13), ` ${t("reports.site_note")}`);
+      $("report-list").replaceChildren();
+      onChange?.([]);
+      return;
+    }
     if (hubUp) syncEl.append(icon("check", 13), ` ${t("rep.connected")}`);
     else if (cache.synced_at) syncEl.append(icon("warning", 13), ` ${t("rep.copy_from", { age: fmtAge(Math.floor((Date.now() - cache.synced_at) / 60000)) })}`);
     else syncEl.append(icon("warning", 13), ` ${t("rep.no_hub_yet")}`);
@@ -390,6 +400,7 @@ export function createReports({ getMapApi, getPos, getSelected, getLocations, pi
   }
 
   $("report-new").addEventListener("click", openChooser);
+  if (SITE) for (const id of ["report-new", "responder-btn"]) $(id).hidden = true;
   // After the caller has its handle on us (render calls back into it).
   queueMicrotask(() => (pin ? setPin(pin) : render()));
 

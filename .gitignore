@@ -13,3 +13,6 @@ tools/showreel/out/
 
 # Local notes, kept off GitHub
 Brownout_Brain_Build_Plan.md
+
+# The website build (tools/build_site.py), published by GitHub Actions
+_site/

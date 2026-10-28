@@ -11,6 +11,9 @@ Writes app/static/pack/:
   roads.bin       the road network as compact binary arrays (typed arrays in the browser:
                   ~10x smaller in memory than JSON objects, fine on 2 GB phones)
   roads-meta.json layout of roads.bin, road names, road classes
+  locations.json  the facility list, exactly as the hub's /api/locations
+  hotlines.json   the hotline sections, exactly as the hub's /api/hotlines (the website,
+                  which has no hub, reads these two)
   version.json    data dates + a pack id; phones re-download when it changes
 """
 
@@ -113,6 +116,14 @@ def main() -> int:
     lexicon = app_lexicon(load_chunks(config.GUIDES_DIR), LocationStore(config.LOCATIONS_FILE), _load_router())
     (OUT / "lexicon.json").write_text(json.dumps(lexicon, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
+    # The website (tools/build_site.py) has no hub: it reads the same lists as static files.
+    store = LocationStore(config.LOCATIONS_FILE)
+    locations = [loc.model_dump(mode="json") for loc in store.all()]
+    (OUT / "locations.json").write_text(json.dumps(locations, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    hotlines = [{"title": c.title, "text": c.text, "chunk_id": c.chunk_id, **c.trust()}
+                for c in load_chunks(config.GUIDES_DIR) if c.doc == "hotlines.md"]
+    (OUT / "hotlines.json").write_text(json.dumps(hotlines, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
     roads_bin, roads_meta = build_roads()
     (OUT / "roads.bin").write_bytes(roads_bin)
     (OUT / "roads-meta.json").write_text(json.dumps(roads_meta, ensure_ascii=False, separators=(",", ":")),
@@ -122,7 +133,7 @@ def main() -> int:
     places_date = next((p["source"].rsplit("retrieved ", 1)[-1] for p in places if "retrieved " in p.get("source", "")), "")
     map_date = "2026-10-08"  # the Protomaps daily build used for area.pmtiles (see README)
     digest = hashlib.sha256()
-    for f in ["guides.json", "lexicon.json", "roads.bin", "roads-meta.json"]:
+    for f in ["guides.json", "lexicon.json", "roads.bin", "roads-meta.json", "locations.json", "hotlines.json"]:
         digest.update((OUT / f).read_bytes())
     digest.update(config.LOCATIONS_FILE.read_bytes())
     # The app's own code and map styles too, so phones re-save their copy after any app

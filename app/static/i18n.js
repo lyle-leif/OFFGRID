@@ -50,7 +50,7 @@ export function saveLang(id) {
 export async function loadLang(id = savedLang() ?? "en") {
   current = IDS.has(id) ? id : "en";
   const need = [...new Set(["en", current])].filter((l) => !tables[l]);
-  await Promise.all(need.map(async (l) => register(l, await (await fetch(`/lang/${l}.json`)).json())));
+  await Promise.all(need.map(async (l) => register(l, await (await fetch(new URL(`lang/${l}.json`, document.baseURI))).json())));
   document.documentElement.lang = LANGS.find((l) => l.id === current).html;
   return current;
 }

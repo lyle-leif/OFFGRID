@@ -612,6 +612,9 @@ a { color: var(--accent); }
 .lang-option:has(input:checked) { border-color: var(--accent); background: var(--selected-bg); }
 .lang-option input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
 .settings-group .list-note { margin: 12px 0 0; }
+.settings-group + .settings-group { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.settings-group legend + .list-note { margin-top: 0; }
+.about-links { margin: 12px 0 0; font-size: 14px; font-weight: 600; }
 
 /* Over the launch screen, in its colours, so the first run looks like one screen. */
 .lang-picker {
