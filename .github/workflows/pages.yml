@@ -11,6 +11,7 @@ on:
     paths:
       - "app/static/**"
       - "tools/build_site.py"
+      - "cloud/site.json" # the online-reports address
       - ".github/workflows/pages.yml"
   workflow_dispatch: # "Run workflow" button, to publish by hand
 

@@ -52,7 +52,8 @@ function ago(min, lang) {
  * pos: [lat, lng] or null. syncedMinAgo: null on the hub; on the phone, how old its copy is
  * (undefined if it never got one). Returns [text, done fields].
  */
-export function answerReports(question, kinds, reports, place = null, pos = null, syncedMinAgo = null, lang = "en") {
+// source: "online" when the copy comes from the internet (the website) instead of a hub.
+export function answerReports(question, kinds, reports, place = null, pos = null, syncedMinAgo = null, lang = "en", source = null) {
   const t = (key, vars) => format(lang, key, vars);
   const pool = reports.filter((r) => kinds.includes(r.kind));
   let road = null;
@@ -76,8 +77,8 @@ export function answerReports(question, kinds, reports, place = null, pos = null
 
   const lines = [];
   if (syncedMinAgo === "site") lines.push(t("rans.site")); // the website: no hub, so no reports
-  else if (syncedMinAgo === undefined) lines.push(t("rans.never_synced"));
-  else if (syncedMinAgo !== null) lines.push(t("rans.synced", { ago: ago(syncedMinAgo, lang) }));
+  else if (syncedMinAgo === undefined) lines.push(t(source === "online" ? "rans.never_synced_online" : "rans.never_synced"));
+  else if (syncedMinAgo !== null) lines.push(t(source === "online" ? "rans.synced_online" : "rans.synced", { ago: ago(syncedMinAgo, lang) }));
   if (sel.length) {
     lines.push(t("rans.head", { n: sel.length, scope }));
     for (const r of sel.slice(0, MAX_LISTED)) {

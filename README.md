@@ -66,9 +66,11 @@ Both are made from the real app, recorded with the internet blocked.
 - Tagalog or English (asked the first time; change it in **Settings**, the gear).
 - **After the first visit it works with no internet at all**, like a phone whose hub is off.
 
-**What the website doesn't have yet** (both work with a local OFFGRID hub, and are part of the redevelopment)
+**Shared situation reports, online:** report a flooded or blocked road, a full or open evacuation center, drinking water, a power outage or a medical need. Everyone using the website sees it within about 20 seconds, and directions go around reported roads. With no signal, your report waits on the phone and is sent when you're back online. Barangay responders log in to verify or remove reports (see [Online reports](#online-reports-cloudflare-free)).
+
+**What the website doesn't have yet** (it works with a local OFFGRID hub, and is part of the redevelopment)
 - **AI summaries:** you get the exact guide text, and the app's own answers for places, directions and hotlines.
-- **Shared situation reports** (flooded roads, full evacuation centers): reports are shared only through a local hub for now.
+- **Photos on reports:** the next step.
 
 **Install it on your phone**
 1. Open **https://lyle-leif.github.io/OFFGRID/** while you have internet (Wi-Fi is best: about 46 MB is saved).
@@ -79,7 +81,7 @@ Both are made from the real app, recorded with the internet blocked.
 
 **Good to know**
 - **Updates:** when the app is opened with internet, it checks for a newer version and saves it by itself.
-- **Privacy:** the website collects nothing: no accounts, no tracking, no cookies. Your settings and position stay on your phone. Full details: [privacy page](https://lyle-leif.github.io/OFFGRID/privacy.html) ([source](app/static/privacy.html)).
+- **Privacy:** no sign-up, no tracking, no cookies. Your settings and position stay on your phone. A report you choose to send is shared (the kind, the spot and the time; never names, numbers or photos). Full details: [privacy page](https://lyle-leif.github.io/OFFGRID/privacy.html) ([source](app/static/privacy.html)).
 - **Not an official service:** OFFGRID is an information aid. Facility details are community-mapped (OpenStreetMap) and can be wrong or out of date. **In an emergency, call 911** and follow official announcements.
 - **Free:** free to use, and hosted for free on GitHub Pages.
 - **Problems or ideas:** [open an issue](https://github.com/lyle-leif/OFFGRID/issues).
@@ -372,6 +374,21 @@ After changing answer logic, also run `.venv\Scripts\python tools\make_parity_fi
 - `node tools/site_check.mjs` checks the website build end to end: it serves the site under `/OFFGRID/` like GitHub Pages, installs it in headless Edge, turns the server off, and checks answers, directions, Tagalog, the privacy page, updates, and that no `/api` call is ever made.
 - **Cost: nothing.** GitHub Pages and Actions are free for public repositories. The workflow uses only the standard `ubuntu-latest` runner (never a paid "larger runner"), no Git LFS and no custom domain. GitHub's 100 GB/month download limit for Pages is a soft limit (about 2,000 first installs); going over doesn't charge anything.
 
+**Online reports (Cloudflare, free).** <a id="online-reports-cloudflare-free"></a> The website shares situation reports over the internet through a small service in [cloud/](cloud): a Cloudflare Worker with a D1 (SQLite) database, on Cloudflare's **free plan, which needs no card**. It follows the hub's report rules exactly: the same kinds and lifetimes, trust labels, one vote per phone, hiding and purging (`tests/test_cloud.py` replays the same steps on both and compares), and answers on the same `/api/reports` paths, so the app works with it unchanged.
+- **Real time:** the website refreshes reports every 20 s while it's on screen, and at once after posting or voting. A report made offline waits on the phone and is sent when it's back online.
+- **Road reports** are snapped to the road on the phone (the cloud has no road network); the cloud checks the road id, and that center reports name a real evacuation center.
+- **Responders log in with personal accounts** (no shared PIN online). Each login, verify and remove goes into an audit log.
+- **Live at** https://offgrid.offgrid-batangas.workers.dev/ (set up 2026-10-29).
+- **One-time setup** (done; for a new account, about 10 minutes, nothing to pay):
+  1. Make a free Cloudflare account at https://dash.cloudflare.com/sign-up (email only; **don't add a card**).
+  2. `npx wrangler@4.150.0 login` (approve in the browser that opens).
+  3. `node tools/cloud_admin.mjs setup`: it creates the database, applies [cloud/schema.sql](cloud/schema.sql), publishes the Worker at a free `*.workers.dev` address and writes it to `cloud/site.json`. (If Cloudflare asks you to pick a free workers.dev subdomain, do it in the dashboard and run `setup` again.)
+  4. Add responders: `node tools/cloud_admin.mjs add "Juan Dela Cruz"`. It prints the password **once**; give it privately. Also `reset`, `disable`, `enable`, `list`, and `log` (the audit log).
+  5. Commit and push `cloud/site.json` (and `cloud/wrangler.toml`): the website republishes with online reports switched on.
+- **After a data or rule change:** `tools/build_phone_pack.py` also rewrites `cloud/src/data.js`; publish it with `node tools/cloud_admin.mjs deploy`.
+- **Testing without Cloudflare:** `node cloud/local/server.mjs` runs the same Worker on this computer (Node's built-in SQLite). `node tools/site_check.mjs --cloud` checks the website with it end to end: another phone's report arrives within 20 s and directions go around it, this phone's reports (also queued offline) arrive, and a responder login, verify and audit entry all work.
+- **Cost: nothing.** The Workers free plan allows about 100,000 requests a day; refreshing only while the app is on screen keeps a barangay's use far below that. If the limit were ever reached, requests would simply fail until the next day: phones keep working from their saved copy and keep reports in their outbox. **Nothing is ever charged** unless someone upgrades the account and adds a card. The setup uses no paid features (no custom domain, no R2 storage, no paid add-ons); `tests/test_cloud.py` checks that.
+
 **Interface language.** Every sentence the app shows or writes itself lives in `app/static/lang/en.json` and `tl.json` (flat keys, `{placeholders}`, plurals as `key_one`/`key_other`). The interface, the phone engine and the hub all read these same files, so their wording can't drift; `tests/test_i18n.py` checks both files have the same keys and placeholders and that every key the code uses exists. After changing Tagalog text, run `.venv\Scripts\python tools\make_translation_review.py` to refresh [docs/translation_review.md](docs/translation_review.md), the side-by-side list for a native speaker to check. To add a language: a new `lang/<id>.json` with the same keys, plus an entry in `LANGS` in `app/static/i18n.js` and `app/services/i18n.py`.
 
 **Where things are**
@@ -383,6 +400,7 @@ After changing answer logic, also run `.venv\Scripts\python tools\make_parity_fi
 | `app/services/` | `retrieval.py` (BM25 + synonyms), `normalize.py` (spelling fixer), `intents.py`, `verify.py` (AI summary check), `routing.py` (A*), `reports.py`, `llm.py` (Ollama) |
 | `app/static/` | The web app (vanilla JS, MapLibre, PMTiles) and `sw.js`, the offline copy |
 | `.github/workflows/pages.yml`, `tools/build_site.py` | The free website: build and publish to GitHub Pages |
+| `cloud/`, `tools/cloud_admin.mjs` | Online reports for the website: Cloudflare Worker + D1 (free plan), responder accounts |
 | `app/static/offline/` | The phone engine: search, spelling fixer, answers, router, reports |
 | `data/` | Facilities, guides, roads, question bank |
 | `tools/` | Imports, phone pack, certificates, map styles, demo, showreel and screenshot tools |
@@ -465,6 +483,6 @@ The showreel's voice-over and sound effects were generated with [ElevenLabs](htt
 - **Facility data is community-mapped,** not an official list, and may be out of date.
 - **Routes and reports can be wrong or missing.** Every route says so: OFFGRID only knows about the floods and closures people reported.
 - **AI summaries are most reliable in English.** For Filipino questions the guide text is always shown.
-- **The website version has no AI summaries and no shared reports** (they need a local hub). They come with the redevelopment.
+- **The website version has no AI summaries** (they need a local hub). **Photos on reports** are the next step of the redevelopment.
 - **Guides and hotlines are in English only,** also with the Tagalog interface: they are copied from official sources, and translating them is separate work. The Tagalog interface text has not yet been reviewed by a native speaker ([docs/translation_review.md](docs/translation_review.md)).
 - **Content gaps:** the official evacuation-center list (a request to the Batangas PDRRMO is drafted in [docs/pdrrmo_request_letter.md](docs/pdrrmo_request_letter.md)), hotlines for the remaining towns, and the current Taal alert level (only PHIVOLCS can say which level is in force).

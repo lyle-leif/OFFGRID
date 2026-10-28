@@ -15,6 +15,9 @@ Writes app/static/pack/:
   hotlines.json   the hotline sections, exactly as the hub's /api/hotlines (the website,
                   which has no hub, reads these two)
   version.json    data dates + a pack id; phones re-download when it changes
+
+and cloud/src/data.js, what the online reports Worker needs to check reports (kinds and
+lifetimes, the map area, evacuation centers, the number of roads, error messages).
 """
 
 import gzip
@@ -106,6 +109,22 @@ def build_roads() -> tuple[bytes, dict]:
     return bytes(blob), meta
 
 
+def write_cloud_data(store, edges: int) -> None:
+    """cloud/src/data.js for the online reports Worker (cloud/src/worker.js)."""
+    from app.services.reports import KIND_LABEL  # noqa: E402
+    centers = {l.id: [l.name, l.lat, l.lng] for l in store.all()
+               if l.type == "evacuation_center" or "evacuation_center" in l.also}
+    strings = {}
+    for lang in ("en", "tl"):
+        table = json.loads((ROOT / "app" / "static" / "lang" / f"{lang}.json").read_text(encoding="utf-8"))
+        strings[lang] = {k: v for k, v in table.items() if k.startswith("apierr.") or k == "rerr.unknown_location"}
+    data = {"kinds": list(config.REPORT_TTL_H), "ttl_h": config.REPORT_TTL_H, "kind_label": KIND_LABEL,
+            "bbox": config.BBOX, "edges": edges, "centers": centers, "strings": strings}
+    out = ROOT / "cloud" / "src" / "data.js"
+    out.write_text("// Written by tools/build_phone_pack.py from the hub's data; do not edit by hand.\n"
+                   f"export const DATA = {json.dumps(data, ensure_ascii=False, indent=1)};\n", encoding="utf-8")
+
+
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     guides, guides_date = build_guides()
@@ -125,6 +144,7 @@ def main() -> int:
     (OUT / "hotlines.json").write_text(json.dumps(hotlines, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     roads_bin, roads_meta = build_roads()
+    write_cloud_data(store, roads_meta["edges"])
     (OUT / "roads.bin").write_bytes(roads_bin)
     (OUT / "roads-meta.json").write_text(json.dumps(roads_meta, ensure_ascii=False, separators=(",", ":")),
                                          encoding="utf-8")

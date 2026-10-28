@@ -235,7 +235,7 @@ export async function localAsk(body, ctx) {
   if (kinds) {
     const snap = ctx.reports ?? { reports: [], syncedMinAgo: null };
     const place = loc ? { id: loc.id, name: loc.name, lat: loc.lat, lng: loc.lng } : null;
-    const [text, done] = answerReports(body.question, kinds, snap.reports, place, pos, snap.syncedMinAgo, lang);
+    const [text, done] = answerReports(body.question, kinds, snap.reports, place, pos, snap.syncedMinAgo, lang, snap.source);
     return reply(text, done);
   }
 

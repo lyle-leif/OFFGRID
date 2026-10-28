@@ -32,7 +32,7 @@
 
     <h2>The website version</h2>
     <ul>
-      <li><b>Nothing about you is collected.</b> No accounts, no sign-in, no analytics, no ads, no cookies.</li>
+      <li><b>Nothing about you is collected.</b> No sign-up, no analytics, no ads, no cookies. The only thing sent anywhere is a situation report, and only if you send one (see below).</li>
       <li><b>Saved only on your phone:</b> the app and its data (about 46 MB), your language and theme, the battery saver choice, and the last position you set. They never leave the phone. Clearing the browser's site data removes them.</li>
       <li><b>GPS</b> is used only when you tap “Use GPS” or start tracking a route. Your position stays on the phone.</li>
       <li><b>Questions</b> you type are answered on the phone itself; they are not sent anywhere.</li>
@@ -43,6 +43,15 @@
     <ul>
       <li>Questions go to the hub laptop to be answered; its window may show them while it runs. They are not saved in a database.</li>
       <li><b>Situation reports</b> store only what was reported (the kind, the spot, the time and confirmations). No names, phone numbers or notes. Your phone's id is stored only in a scrambled (hashed) form, and IP addresses are not stored. Reports expire on their own after 2 to 6 hours (longer while people keep confirming them, up to three times that).</li>
+    </ul>
+
+    <h2>Online reports (website)</h2>
+    <ul>
+      <li>When you send a report from the website, it goes to OFFGRID's online reports service, run on <b>Cloudflare</b> (free plan), so everyone using the website can see it.</li>
+      <li>It stores only what was reported: the kind (for example “road flooded”), the spot, the time, and how many people confirmed or disputed it. <b>No names, phone numbers, notes or photos.</b></li>
+      <li>Your phone's random id is stored only in a scrambled (hashed) form, so you can vote once per report. Your network address is stored only scrambled, for one hour, to stop flooding with fake reports.</li>
+      <li>Reports expire on their own after 2 to 6 hours (longer while people keep confirming them, up to three times that) and are deleted a day after that.</li>
+      <li><b>Responders</b> (barangay and rescue staff) log in with personal accounts to verify or remove reports. Each of those actions is recorded with the responder's name and time.</li>
     </ul>
 
     <h2>Not an official service</h2>
@@ -60,7 +69,7 @@
 
     <h2>Ang bersiyong website</h2>
     <ul>
-      <li><b>Walang kinokolektang impormasyon tungkol sa iyo.</b> Walang account, walang sign-in, walang analytics, walang ads, walang cookies.</li>
+      <li><b>Walang kinokolektang impormasyon tungkol sa iyo.</b> Walang sign-up, walang analytics, walang ads, walang cookies. Ang tanging ipinapadala ay ulat ng sitwasyon, at kung magpapadala ka lang (tingnan sa ibaba).</li>
       <li><b>Sa teleponong ito lang naka-save:</b> ang app at ang datos nito (mga 46 MB), ang napili mong wika at tema, ang tipid-baterya, at ang huling lokasyong itinakda mo. Hindi ito umaalis sa telepono. Mabubura ang mga ito kapag binura ang site data ng browser.</li>
       <li>Ginagamit lang ang <b>GPS</b> kapag pinindot mo ang “Gamitin ang GPS” o sinundan ang isang ruta. Nananatili sa telepono ang iyong lokasyon.</li>
       <li>Ang mga <b>tanong</b> mo ay sinasagot sa telepono mismo; hindi ito ipinapadala kahit saan.</li>
@@ -71,6 +80,15 @@
     <ul>
       <li>Ipinapadala ang mga tanong sa hub (laptop) para masagot; maaaring makita ang mga ito sa window nito habang tumatakbo. Hindi ito sine-save sa database.</li>
       <li>Ang mga <b>ulat</b> ay nagtatabi lang ng iniulat (uri, lugar, oras at mga kumpirma). Walang pangalan, numero ng telepono o tala. Ang id ng telepono ay nakatabi lang sa anyong naka-scramble (hashed), at hindi itinatabi ang IP address. Kusang nawawala ang mga ulat pagkalipas ng 2 hanggang 6 na oras (mas matagal kung patuloy itong kinukumpirma, hanggang tatlong beses nito).</li>
+    </ul>
+
+    <h2>Mga ulat online (website)</h2>
+    <ul>
+      <li>Kapag nagpadala ka ng ulat mula sa website, napupunta ito sa serbisyo ng OFFGRID para sa mga ulat online, na tumatakbo sa <b>Cloudflare</b> (libreng plan), para makita ito ng lahat ng gumagamit ng website.</li>
+      <li>Ang itinatabi lang ay ang iniulat: ang uri (halimbawa, “baha ang daan”), ang lugar, ang oras, at kung ilan ang kumumpirma o tumutol. <b>Walang pangalan, numero ng telepono, tala o litrato.</b></li>
+      <li>Ang random na id ng telepono mo ay nakatabi lang sa anyong naka-scramble (hashed), para isang beses ka lang makaboto sa bawat ulat. Ang network address mo ay nakatabi lang nang naka-scramble, sa loob ng isang oras, para mapigilan ang dami ng pekeng ulat.</li>
+      <li>Kusang nawawala ang mga ulat pagkalipas ng 2 hanggang 6 na oras (mas matagal kung patuloy itong kinukumpirma, hanggang tatlong beses nito) at binubura pagkalipas ng isang araw.</li>
+      <li>Ang mga <b>responder</b> (taga-barangay at rescue) ay nagla-log in gamit ang sariling account para beripikahin o alisin ang mga ulat. Naitatala ang bawat ganitong aksiyon kasama ang pangalan ng responder at oras.</li>
     </ul>
 
     <h2>Hindi opisyal na serbisyo</h2>

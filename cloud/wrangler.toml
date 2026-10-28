@@ -1,0 +1,17 @@
+# OFFGRID online reports: a Cloudflare Worker on the FREE plan (no card needed).
+# Set up once with: node tools/cloud_admin.mjs setup  (it fills in database_id below).
+# Free plan limits (about 100,000 requests a day): going over only makes requests fail until
+# the next day; nothing is ever charged unless someone upgrades the account to a paid plan.
+name = "offgrid"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "offgrid"
+database_id = "5ce887c3-0c62-42ab-a7af-508e40f3a4fb"
+
+[vars]
+# Pages that may call this Worker (the website). Comma-separated.
+ALLOWED_ORIGINS = "https://lyle-leif.github.io"

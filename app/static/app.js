@@ -4,7 +4,7 @@ import { createDirections } from "./directions.js";
 import { createBrain } from "./offline/brain.js";
 import { createReports } from "./reports.js";
 import { applyStatic, getLang, LANGS, loadLang, saveLang, savedLang, t } from "./i18n.js";
-import { SITE, url } from "./mode.js";
+import { CLOUD, SITE, url } from "./mode.js";
 import { createSheet } from "./sheet.js";
 import { pinImg, reportImg } from "./icons.js";
 import { REPORT_KINDS } from "./report-kinds.js";
@@ -43,8 +43,8 @@ await loadLang(await chooseLanguage());
 applyStatic();
 document.title = t("app.title");
 $("hotlines-lang").hidden = !t("hotlines.lang_note");
-// The website has no hub, so nothing can be reported from it (reports are shared through hubs).
-if (SITE) $("report-btn").hidden = true;
+// The website without online reports has no way to share them (they go through hubs).
+if (SITE && !CLOUD) $("report-btn").hidden = true;
 
 // Launch screen (index.html): fade it out once the map has drawn, so the app appears in one
 // piece. Never longer than 5 s, whatever happens to the map.
@@ -128,6 +128,13 @@ async function checkHealth() {
   const box = $("status");
   const text = $("status-text");
   const banner = $("banner");
+  if (SITE && CLOUD) {
+    // The website with online reports: fetching them is the check (one request).
+    const up = await reports.sync();
+    box.className = `status ${up ? "ok" : "warn"}`;
+    setStatusText(t(up ? "status.cloud_full" : "status.cloud_off_full"), t(up ? "status.cloud" : "status.cloud_off"));
+    return;
+  }
   if (SITE) {
     // The website: no hub to check; the phone answers on its own.
     box.className = "status";
@@ -725,6 +732,7 @@ const reports = createReports({
   pickOnMap,
   cancelPick: cancelMapPick,
   showTab,
+  snapRoad: (lat, lng) => brain.snapRoad(lat, lng),
   onChange: (list) => {
     renderPlaceReports();
     directions.reportsChanged(list);
@@ -1057,3 +1065,9 @@ checkHealth();
 // Every 15 s normally; open the app with ?demo for every 3 s, so in a live demo a report
 // posted from a phone shows on this screen almost at once. (The website has no hub to check.)
 if (!SITE) setInterval(checkHealth, new URLSearchParams(window.location.search).has("demo") ? 3000 : 15000);
+// The website's online reports: every 20 s, only while the app is on screen (it keeps the
+// free plan's daily request limit far away), and at once when it comes back on screen.
+if (SITE && CLOUD) {
+  setInterval(() => { if (document.visibilityState === "visible") checkHealth(); }, 20000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkHealth(); });
+}

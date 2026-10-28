@@ -4044,7 +4044,7 @@
      "summary": "unavailable",
      "summary_error": "no AI",
      "timing": {
-      "total_ms": 0
+      "total_ms": 73
      }
     }
    ]
@@ -6102,7 +6102,7 @@
      "summary": "unavailable",
      "summary_error": "no AI",
      "timing": {
-      "total_ms": 0
+      "total_ms": 143
      }
     }
    ]

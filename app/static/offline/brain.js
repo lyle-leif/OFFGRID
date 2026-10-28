@@ -79,5 +79,19 @@ export function createBrain(getLocations, getReports = () => null) {
     return { ...r, to_id: place.id, to_name: place.name, warning: format(lang, "ans.route_warning"), offline: true };
   }
 
-  return { ask, route };
+  // The road under a tapped point, as the hub snaps a road report: { edge_id, road_name,
+  // point } or null when no road is within 60 m (the online reports need the phone to do this).
+  async function snapRoad(lat, lng) {
+    const router = await getRouter();
+    if (!router) return null;
+    try {
+      const s = router.snap(lat, lng, "walk", 60);
+      return { edge_id: s.edge, road_name: router.roadLabel(s.edge), point: { lat: s.point[0], lng: s.point[1] } };
+    } catch (e) {
+      if (e instanceof RoutingError) return null;
+      throw e;
+    }
+  }
+
+  return { ask, route, snapRoad };
 }

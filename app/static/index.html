@@ -239,6 +239,8 @@
         <p class="list-note" data-i18n="reports.note">Reports come from people nearby and may be wrong. They are shared only through the hub, and expire on their own: roads after 2 hours, evacuation centers after 6. No names or phone numbers are collected.</p>
         <p class="list-note"><button id="responder-btn" type="button" class="link-btn" data-i18n="reports.responder">I'm a responder</button></p>
         <form id="responder-form" class="responder-form" hidden>
+          <label for="responder-name" class="sr-only" data-i18n="reports.name_label" hidden>Responder name</label>
+          <input id="responder-name" type="text" autocomplete="username" maxlength="40" placeholder="Name" data-i18n-ph="reports.name_ph" hidden>
           <label for="responder-pin" class="sr-only" data-i18n="reports.pin_label">Responder PIN</label>
           <input id="responder-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="32" placeholder="Hub PIN" data-i18n-ph="reports.pin_ph">
           <button type="submit" class="btn secondary" data-i18n="reports.unlock">Unlock</button>

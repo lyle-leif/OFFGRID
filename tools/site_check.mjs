@@ -9,12 +9,24 @@
 // must still open and answer (English and Tagalog), find places, route, show hotlines and the
 // privacy page. It also checks that the website never calls the hub's /api, that the Reports
 // tab explains reports need a hub, and that a new version reaches the phone by itself.
+//
+//   node tools/site_check.mjs --cloud
+//
+// Also runs the online-reports Worker (cloud/) on this computer and builds the site with it:
+// another phone's flooded road reaches this phone within the 20 s refresh and directions go
+// around it; this phone's reports (a road one snapped on the phone) reach the cloud, also
+// after a spell offline (outbox); a responder logs in with a personal account, verifies a
+// report, and it is in the audit log.
 
 import { spawnSync, spawn } from "node:child_process";
 import { createReadStream, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { extname, join, normalize } from "node:path";
+
+import { openD1 } from "../cloud/local/d1shim.mjs";
+import { startCloud } from "../cloud/local/server.mjs";
+import { hashPassword } from "../cloud/src/auth.js";
 
 const PORT = 8768;
 const DEBUG_PORT = 9351;
@@ -24,6 +36,11 @@ const PY = process.env.PYTHON ?? ".venv\\Scripts\\python.exe";
 const PHONE = { width: 393, height: 852, deviceScaleFactor: 2, mobile: true };
 const NEAR_BMC = { lat: 13.7672, lng: 121.066 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const CLOUD_MODE = process.argv.includes("--cloud");
+const CLOUD_PORT = 8787;
+const CLOUD_URL = `http://127.0.0.1:${CLOUD_PORT}/`;
+const BSU = "osm-way-129493352"; // Batangas State University, the directions target
+const FLOOD_AT = { lat: 13.7565, lng: 121.0583 }; // P. Burgos Street, Batangas City
 
 const results = [];
 function check(name, ok, detail = "") {
@@ -41,7 +58,7 @@ async function waitFor(fn, ms, what) {
 
 // ---- build the site ----------------------------------------------------------------
 const siteDir = mkdtempSync(join(tmpdir(), "offgrid-site-"));
-const built = spawnSync(PY, ["tools/build_site.py", "--out", siteDir], { encoding: "utf-8" });
+const built = spawnSync(PY, ["tools/build_site.py", "--out", siteDir, "--cloud", CLOUD_MODE ? CLOUD_URL : ""], { encoding: "utf-8" });
 if (built.status !== 0) { console.log(built.stdout, built.stderr); process.exit(1); }
 console.log(built.stdout.trim());
 
@@ -127,7 +144,41 @@ const ask = (page, q) => js(page, `
   }
   return 'TIMEOUT';`);
 
+// The online reports, on this computer (the same Worker code, Node's SQLite instead of D1).
+const cloudDb = openD1();
+let cloud = null;
+const startCloudServer = async () => { cloud = await startCloud({ port: CLOUD_PORT, db: cloudDb }); };
+const cloudList = async () => (await fetch(`${CLOUD_URL}api/reports`)).json();
+
+// Another phone's report: a flooded road on the way to Batangas State University (the longest
+// stretch of the phone engine's own route there), so this phone's directions must go around it.
+async function otherPhoneFlood() {
+  const { register } = await import("../app/static/i18n.js");
+  register("en", JSON.parse(readFileSync("app/static/lang/en.json", "utf-8")));
+  const { createRouter } = await import("../app/static/offline/router.js");
+  const bin = readFileSync("app/static/pack/roads.bin");
+  const router = createRouter(JSON.parse(readFileSync("app/static/pack/roads-meta.json", "utf-8")), bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength));
+  const bsu = JSON.parse(readFileSync("app/static/pack/locations.json", "utf-8")).find((l) => l.id === BSU);
+  const r = router.route([NEAR_BMC.lat, NEAR_BMC.lng], [bsu.lat, bsu.lng], "walk", "X");
+  const step = r.steps.reduce((a, b) => (b.distance_m > a.distance_m ? b : a));
+  const snap = router.snap(step.lat, step.lng, "walk", 60);
+  const body = { id: "other-phone-flood-1", device: "other-phone-0001", kind: "road_flooded", lat: snap.point[0], lng: snap.point[1],
+    edge_id: snap.edge, road_name: router.roadLabel(snap.edge) };
+  return fetch(`${CLOUD_URL}api/reports`, { method: "POST", headers: { "Content-Type": "application/json", Origin: "http://127.0.0.1:8768" }, body: JSON.stringify(body) });
+}
+// Report through the app's own Reports flow: a kind, then a tap on the map.
+const reportOnMap = (page, kind, at) => js(page, `
+  document.getElementById('tab-reports').click();
+  document.getElementById('report-new').click();
+  [...document.querySelectorAll('#report-kinds .report-kind')].find((b) => b.textContent.trim() === ${JSON.stringify(kind)}).click();
+  const m = window.__map; m.jumpTo({ center: [${at.lng}, ${at.lat}], zoom: 16.5 });
+  await new Promise((r) => setTimeout(r, 300));
+  m.fire('click', { lngLat: { lat: ${at.lat}, lng: ${at.lng} }, point: m.project([${at.lng}, ${at.lat}]), originalEvent: {} });
+  await new Promise((r) => setTimeout(r, 1500));
+  return true;`);
+
 try {
+  if (CLOUD_MODE) await startCloudServer();
   await startServer();
   await waitFor(async () => (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/version`)).json(), 30000, "Edge");
   const page = await open(`${BASE}?debug`);
@@ -142,7 +193,47 @@ try {
   const scope = await page.evaluate("navigator.serviceWorker.getRegistration().then((r) => r?.scope + ' ' + new URL(r.active.scriptURL).search)");
   check("the offline copy belongs to /OFFGRID/ and runs in website mode", /\/OFFGRID\/ .*site=1/.test(scope), scope);
   await ready(page);
-  check("status pill says Website", (await page.evaluate("document.getElementById('status-text').textContent")).startsWith("Website"));
+  const pillWord = CLOUD_MODE ? "Online" : "Website";
+  const pill0 = await waitFor(() => page.evaluate(`document.getElementById('status-text').textContent.startsWith(${JSON.stringify(pillWord)}) && document.getElementById('status-text').textContent`), 30000, "status pill").catch(() => "");
+  check(`status pill says ${pillWord}`, pill0, pill0);
+
+  if (CLOUD_MODE) {
+    // ---- online reports ----
+    const other = await otherPhoneFlood();
+    check("another phone's flooded road reaches the online reports", other.ok, other.status);
+    const seen = await waitFor(() => page.evaluate("(localStorage.getItem('bb.reports.cache') || '').includes('other-phone-flood-1')"), 30000, "report on this phone").catch(() => false);
+    check("it reaches this phone within the 20 s refresh", seen);
+    await reportOnMap(page, "Road flooded", FLOOD_AT);
+    const mine = await waitFor(async () => (await cloudList()).find((r) => r.kind === "road_flooded" && r.id !== "other-phone-flood-1"), 20000, "road report in the cloud").catch(() => null);
+    check("this phone's road report reaches the cloud, snapped to the road on the phone", mine && Number.isInteger(mine.edge_id) && mine.road_name, mine?.road_name);
+    await cloud.close();
+    await reportOnMap(page, "Power out", { lat: 13.7600, lng: 121.0600 });
+    check("offline, a report waits on the phone", await page.evaluate("!!document.querySelector('#report-list li.report.pending')"));
+    await startCloudServer();
+    const sent = await waitFor(async () => (await cloudList()).some((r) => r.kind === "power_out"), 45000, "outbox sent").catch(() => false);
+    check("it is sent when the phone is back online", sent);
+
+    const password = "abcde-fghjk-mnpqr-stuvw";
+    await cloudDb.prepare("INSERT INTO accounts (name, salt, pw_hash, created_at) VALUES (?, ?, ?, ?)")
+      .bind("Test Responder", "s1", await hashPassword("s1", password), Date.now() / 1000).run();
+    const login = await js(page, `
+      document.getElementById('tab-reports').click();
+      document.getElementById('responder-btn').click();
+      document.getElementById('responder-name').value = 'Test Responder';
+      document.getElementById('responder-pin').value = ${JSON.stringify(password)};
+      document.getElementById('responder-form').requestSubmit();
+      for (let i = 0; i < 40 && !sessionStorage.getItem('bb.token'); i++) await new Promise((r) => setTimeout(r, 250));
+      await new Promise((r) => setTimeout(r, 500));
+      const li = document.querySelector('#report-list li.report[data-id="other-phone-flood-1"]');
+      const b = li && [...li.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Verify');
+      if (b) b.click();
+      return { token: !!sessionStorage.getItem('bb.token'), nameField: !document.getElementById('responder-name').hidden, verify: !!b };`);
+    check("a responder logs in with a personal account", login.token && login.nameField, JSON.stringify(login));
+    const verified = await waitFor(async () => (await cloudList()).find((r) => r.id === "other-phone-flood-1")?.trust === "verified", 15000, "verified").catch(() => false);
+    const audit = (await cloudDb.prepare("SELECT name, action, report_id FROM audit").all()).results;
+    check("the responder verifies a report, and it is in the audit log", verified && audit.some((a) => a.action === "verify" && a.report_id === "other-phone-flood-1"),
+      audit.map((a) => `${a.name}:${a.action}`).join(", "));
+  }
 
   // ---- the server goes away: everything from the phone ----
   await js(page, `localStorage.setItem('bb.userPos', JSON.stringify(${JSON.stringify(NEAR_BMC)})); localStorage.setItem('bb.sheet.start', 'half'); return true;`);
@@ -159,7 +250,8 @@ try {
   const guide = await ask(page, "How do I stop bleeding?");
   check("guide answer, with the website note", /press(ing)? firmly/i.test(guide) && guide.includes("need a local OFFGRID hub"), guide.split("\n").pop());
   const flooded = await ask(page, "Is the road flooded?");
-  check("report questions explain the website has no reports", flooded.includes("website version has none"), flooded.split("\n")[1]);
+  if (CLOUD_MODE) check("report questions answer from the online reports", flooded.includes("Road flooded"), flooded.split("\n")[1]);
+  else check("report questions explain the website has no reports", flooded.includes("website version has none"), flooded.split("\n")[1]);
   const route = await js(page, `
     document.getElementById('tab-list').click();
     const s = document.getElementById('fac-search'); s.value = 'Batangas State University'; s.dispatchEvent(new Event('input'));
@@ -170,9 +262,14 @@ try {
     for (let i = 0; i < 80; i++) { await new Promise((r) => setTimeout(r, 250)); const t = document.getElementById('route-summary').textContent; if (/km|m ·/.test(t) || t === 'No route') return t; }
     return 'TIMEOUT';`);
   check("directions on the phone", /^(Walk|Drive) /.test(route), route);
+  if (CLOUD_MODE) {
+    const around = await page.evaluate("document.getElementById('route-reports').innerText");
+    check("directions go around the road another phone reported flooded", /Goes around/.test(around), around);
+  }
   const reportsTab = await js(page, `document.getElementById('tab-reports').click(); await new Promise((r) => setTimeout(r, 200));
     return { note: document.getElementById('reports-sync').innerText, hidden: ['report-btn', 'report-new', 'responder-btn'].every((id) => document.getElementById(id).hidden) };`);
-  check("Reports tab says reports need a hub; report buttons hidden", reportsTab.note.includes("local OFFGRID hub") && reportsTab.hidden, reportsTab.note);
+  if (CLOUD_MODE) check("Reports tab: shared online, report buttons shown", /Online|Offline/.test(reportsTab.note) && !reportsTab.hidden, reportsTab.note);
+  else check("Reports tab says reports need a hub; report buttons hidden", reportsTab.note.includes("local OFFGRID hub") && reportsTab.hidden, reportsTab.note);
   const about = await js(page, `document.getElementById('settings-btn').click(); await new Promise((r) => setTimeout(r, 200));
     const a = document.querySelector('.about-links a[href="privacy.html"]');
     return { privacy: !!a, version: document.getElementById('about-version').textContent, note: document.querySelector('[data-i18n="about.redevelopment"]').textContent };`);
@@ -189,7 +286,7 @@ try {
   await sleep(1500);
   await ready(page);
   const tl = await ask(page, "pinakamalapit na ospital");
-  check("Tagalog answer on the website", tl.includes("Pinakamalapit na") && (await page.evaluate("document.getElementById('status-text').textContent")) === "Website", tl.split("\n")[1]);
+  check("Tagalog answer on the website", tl.includes("Pinakamalapit na") && (await page.evaluate("document.getElementById('status-text').textContent")).startsWith(pillWord), tl.split("\n")[1]);
   await js(page, "localStorage.setItem('bb.lang', 'en'); return true;");
 
   // ---- a new version is published: the phone picks it up by itself ----
@@ -212,6 +309,16 @@ try {
   check("site check run", false, e.message);
 } finally {
   try { await stopServer(); } catch { /* already stopped */ }
+  try { await cloud?.close(); } catch { /* not running */ }
+  // Ask Edge itself to quit: on Windows, killing the process we started leaves the real browser
+  // running on the debug port, and the next run would connect to that old browser.
+  try {
+    const v = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/version`)).json();
+    const bws = new WebSocket(v.webSocketDebuggerUrl);
+    await new Promise((res, rej) => { bws.onopen = res; bws.onerror = rej; });
+    bws.send(JSON.stringify({ id: 1, method: "Browser.close" }));
+    await new Promise((r) => setTimeout(r, 500));
+  } catch { /* already gone */ }
   edge.kill();
   await sleep(1000);
   for (const d of [profile, siteDir]) { try { rmSync(d, { recursive: true, force: true }); } catch { /* Edge may still hold files */ } }

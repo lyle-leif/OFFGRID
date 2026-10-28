@@ -16,3 +16,8 @@ Brownout_Brain_Build_Plan.md
 
 # The website build (tools/build_site.py), published by GitHub Actions
 _site/
+
+# Online reports: local test database and Cloudflare tool caches
+cloud/local/*.db
+cloud/.wrangler/
+cloud/node_modules/

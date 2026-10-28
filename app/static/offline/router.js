@@ -463,5 +463,8 @@ export function createRouter(meta, buffer) {
     };
   }
 
-  return { route, snap };
+  // A road's name, or its class ("local road") when it has none: what the hub stores for a road report.
+  const roadLabel = (e) => name(e) || CLASS_LABEL[cls(e)] || "road";
+
+  return { route, snap, roadLabel };
 }

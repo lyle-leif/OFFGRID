@@ -234,6 +234,15 @@ try {
   console.log(`saved ${frameNo} frames to ${OUT}`);
 } finally {
   server.kill();
+  // Ask Edge itself to quit: on Windows, killing the process we started leaves the real browser
+  // running on the debug port, and the next run would connect to that old browser.
+  try {
+    const v = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/version`)).json();
+    const bws = new WebSocket(v.webSocketDebuggerUrl);
+    await new Promise((res, rej) => { bws.onopen = res; bws.onerror = rej; });
+    bws.send(JSON.stringify({ id: 1, method: "Browser.close" }));
+    await new Promise((r) => setTimeout(r, 500));
+  } catch { /* already gone */ }
   edge.kill();
   await sleep(1000);
   try { rmSync(profile, { recursive: true, force: true }); } catch { /* Edge may still hold files */ }

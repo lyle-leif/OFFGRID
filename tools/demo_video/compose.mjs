@@ -52,6 +52,15 @@ try {
   const result = await Promise.race([done, new Promise((_, rej) => setTimeout(() => rej(new Error("timed out after 4 minutes")), 240000))]);
   console.log(`saved ${result.file}: ${result.seconds} s, ${(result.bytes / 1e6).toFixed(1)} MB`);
 } finally {
+  // Ask Edge itself to quit: on Windows, killing the process we started leaves the real browser
+  // running on the debug port, and the next run would connect to that old browser.
+  try {
+    const v = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/version`)).json();
+    const bws = new WebSocket(v.webSocketDebuggerUrl);
+    await new Promise((res, rej) => { bws.onopen = res; bws.onerror = rej; });
+    bws.send(JSON.stringify({ id: 1, method: "Browser.close" }));
+    await new Promise((r) => setTimeout(r, 500));
+  } catch { /* already gone */ }
   edge.kill();
   server.close();
   await new Promise((r) => setTimeout(r, 800));
