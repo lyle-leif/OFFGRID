@@ -19,8 +19,8 @@ Every sentence the OFFGRID interface shows, in English and in Tagalog. Please ch
 
 | Key | English | Tagalog |
 |---|---|---|
-| `settings.open` | Settings | Mga setting |
-| `settings.title` | Settings | Mga setting |
+| `settings.open` | Settings | Setting |
+| `settings.title` | Settings | Setting |
 | `settings.language` | Language | Wika |
 | `settings.lang_note` | Guides and hotlines stay in English for now: they are copied word for word from official sources. | Nasa English pa ang mga gabay at hotline: kinopya ang mga ito nang eksakto mula sa opisyal na pinagmulan. |
 | `settings.close` | Close | Isara |
